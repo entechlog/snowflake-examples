@@ -1,0 +1,28 @@
+---
+version: '3'
+
+services:
+  snow-tools:
+    image: entechlog/snow-tools${SNOWFLAKE_TOOLS_VERSION_TAG}
+    container_name: snow-tools
+    build:
+      context: ./docker/
+    env_file:
+      - ./.env
+    command: 
+      - bash 
+      - -c 
+      - |
+        echo "Launching snow-tools"
+        sleep infinity
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /C
+        target: /C
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    environment:
+      - TZ=Etc/GMT
+      - DOCKER_HOST=unix:///var/run/docker.sock

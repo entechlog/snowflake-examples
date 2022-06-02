@@ -43,7 +43,7 @@ variable "warehouse_scaling_policy" {
 }
 
 variable "warehouse_grant_roles" {
-  type        = set(string)
+  type        = map(any)
 }
 
 variable "warehouse_grant_with_grant_option" {

@@ -110,6 +110,7 @@ module "all_users" {
   user_map = {
     "dev_entechlog_dbt_user" : { "first_name" = "datastage", "last_name" = "User", "email" = "dev_entechlog_dbt_user@example.com", "default_warehouse" = "DATASTAGE_WH", "default_role" = "DATASTAGE_ROLE" },
     "dev_entechlog_atlan_user" : { "first_name" = "atlan", "last_name" = "User", "email" = "dev_entechlog_atlan_user@example.com" }
+    "dev_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", "email" = "dev_entechlog_kafka_user@example.com" }
   }
 }
 
@@ -178,13 +179,28 @@ module "dev_entechlog_raw_db" {
   schemas = ["FACEBOOK", "GOOGLE"]
   schema_grant = {
     "FACEBOOK CREATE TABLE" = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
-    "FACEBOOK CREATE VIEW" = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
+    "FACEBOOK CREATE VIEW"  = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
     "GOOGLE CREATE TABLE"   = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
-    "GOOGLE CREATE VIEW"   = { "roles" = [snowflake_role.entechlog_dbt_role.name] }
+    "GOOGLE CREATE VIEW"    = { "roles" = [snowflake_role.entechlog_dbt_role.name] }
   }
 }
 
 output "dev_entechlog_raw_db" {
   value = module.dev_entechlog_raw_db
 
+}
+
+//***************************************************************************//
+// Create roles using modules
+//***************************************************************************//
+
+module "entechlog_kafka_role" {
+  source       = "./modules/roles"
+  role_name    = "ENTECHLOG_KAFKA_ROLE"
+  role_comment = "Snowflake role used by Kafka"
+
+  roles = []
+  users = [
+    "${module.all_users.user.dev_entechlog_kafka_user.name}"
+  ]
 }

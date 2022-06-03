@@ -1,3 +1,3 @@
 variable "user_map" {
-  type        = map(any)
+  type = map(any)
 }

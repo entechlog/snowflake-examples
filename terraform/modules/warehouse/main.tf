@@ -28,10 +28,10 @@ resource "snowflake_warehouse" "warehouse" {
 //***************************************************************************//
 
 resource "snowflake_warehouse_grant" "warehouse_grant" {
-  for_each            = var.warehouse_grant_roles
-  
-  warehouse_name      = snowflake_warehouse.warehouse.name
-  privilege           = each.key
-  roles               = each.value
-  with_grant_option   = var.warehouse_grant_with_grant_option
+  for_each = var.warehouse_grant_roles
+
+  warehouse_name    = snowflake_warehouse.warehouse.name
+  privilege         = each.key
+  roles             = each.value
+  with_grant_option = var.warehouse_grant_with_grant_option
 }

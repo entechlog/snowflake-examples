@@ -10,6 +10,6 @@ This repository contains Snowflake examples running in docker for quick demo.
 
 ## Blog with Demo
 - [Snowflake - Tools Docker container](./snow-tools/README.md)
-- [Snowflake - Terraform Examples](./snow-tools/README.md)
+- [Snowflake - Terraform Examples](./terraform/README.md)
   
 ## References

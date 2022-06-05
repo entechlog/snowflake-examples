@@ -35,3 +35,24 @@ resource "snowflake_warehouse_grant" "warehouse_grant" {
   roles             = each.value
   with_grant_option = var.warehouse_grant_with_grant_option
 }
+
+//***************************************************************************//
+// Create Snowflake resource monitor
+//***************************************************************************//
+
+# resource "snowflake_resource_monitor" "resource_monitor" {
+#   name                       = snowflake_warehouse.warehouse.name
+#   credit_quota               = var.resource_monitor_credit_quota
+#   frequency                  = var.resource_monitor_frequency
+#   start_timestamp            = var.resource_monitor_start_timestamp
+#   notify_triggers            = var.resource_monitor_notify_triggers
+#   suspend_triggers           = var.resource_monitor_suspend_triggers
+#   suspend_immediate_triggers = var.resource_monitor_suspend_immediate_triggers
+# }
+
+//***************************************************************************//
+// Output block
+//***************************************************************************//
+output "warehouse" {
+  value = snowflake_warehouse.warehouse
+}

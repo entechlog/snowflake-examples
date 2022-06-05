@@ -36,14 +36,4 @@ See here for more details on how to use [Streamlit](https://docs.streamlit.io/li
 
 ## Terraform
 
-Some common commands
-
-```bash
-terraform init
-
-terraform fmt
-
-terraform plan
-
-terraform apply
-```
+See here for more details on how to use [Terraform](../terraform/README.md)

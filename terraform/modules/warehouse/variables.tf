@@ -50,3 +50,33 @@ variable "warehouse_grant_with_grant_option" {
   type    = bool
   default = false
 }
+
+variable "resource_monitor_credit_quota" {
+  type    = number
+  default = 25
+}
+
+variable "resource_monitor_frequency" {
+  type    = string
+  default = "DAILY"
+}
+
+variable "resource_monitor_start_timestamp" {
+  type    = string
+  default = "IMMEDIATELY"
+}
+
+variable "resource_monitor_notify_triggers" {
+  type    = list(number)
+  default = [80]
+}
+
+variable "resource_monitor_suspend_triggers" {
+  type    = list(number)
+  default = [100]
+}
+
+variable "resource_monitor_suspend_immediate_triggers" {
+  type    = list(number)
+  default = [150]
+}

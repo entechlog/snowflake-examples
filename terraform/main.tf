@@ -55,7 +55,7 @@ resource "snowflake_role" "entechlog_demo_role" {
 
 resource "snowflake_role_grants" "entechlog_demo_role_grant" {
   role_name = snowflake_role.entechlog_demo_role.name
-  roles     = []
+  roles     = ["SYSADMIN"]
   users = [
     "${snowflake_user.demo_user.name}"
   ]
@@ -99,108 +99,4 @@ resource "snowflake_warehouse_grant" "dev_entechlog_demo_wh_s_grant" {
   ]
 
   with_grant_option = false
-}
-
-//***************************************************************************//
-// Create Snowflake user using modules
-//***************************************************************************//
-
-module "all_users" {
-  source = "./modules/user"
-  user_map = {
-    "dev_entechlog_dbt_user" : { "first_name" = "datastage", "last_name" = "User", "email" = "dev_entechlog_dbt_user@example.com", "default_warehouse" = "DATASTAGE_WH", "default_role" = "DATASTAGE_ROLE" },
-    "dev_entechlog_atlan_user" : { "first_name" = "atlan", "last_name" = "User", "email" = "dev_entechlog_atlan_user@example.com" }
-    "dev_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", "email" = "dev_entechlog_kafka_user@example.com" }
-  }
-}
-
-output "all_users" {
-  value     = module.all_users
-  sensitive = true
-}
-
-resource "snowflake_role" "entechlog_dbt_role" {
-  name    = "ENTECHLOG_DBT_ROLE"
-  comment = "Snowflake role used by dbt"
-}
-
-resource "snowflake_role_grants" "entechlog_dbt_role_grant" {
-  role_name = snowflake_role.entechlog_dbt_role.name
-  roles     = []
-  users = [
-    "${module.all_users.user.dev_entechlog_dbt_user.name}"
-  ]
-}
-
-resource "snowflake_role" "entechlog_atlan_role" {
-  name    = "ENTECHLOG_ATLAN_ROLE"
-  comment = "Snowflake role used by Atlan"
-}
-
-resource "snowflake_role_grants" "entechlog_atlan_role_grant" {
-  role_name = snowflake_role.entechlog_atlan_role.name
-  roles     = []
-  users = [
-    "${module.all_users.user.dev_entechlog_atlan_user.name}"
-  ]
-}
-
-//***************************************************************************//
-// Create Snowflake warehouse using modules
-//***************************************************************************//
-
-module "dev_entechlog_dbt_wh_xs" {
-  source         = "./modules/warehouse"
-  warehouse_name = "DEV_ENTECHLOG_DBT_WH_XS"
-  warehouse_size = "XSMALL"
-  warehouse_grant_roles = {
-    "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [snowflake_role.entechlog_dbt_role.name]
-  }
-}
-
-
-//***************************************************************************//
-// Create Snowflake database and schema using modules
-//***************************************************************************//
-
-module "dev_entechlog_raw_db" {
-  source = "./modules/database"
-
-  db_name    = "DEV_ENTECHLOG_RAW_DB"
-  db_comment = "Database to store the ingested RAW data"
-
-  db_grant_roles = {
-    "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [snowflake_role.entechlog_dbt_role.name]
-    "USAGE"     = ["SYSADMIN"]
-  }
-
-  schemas = ["FACEBOOK", "GOOGLE"]
-  schema_grant = {
-    "FACEBOOK CREATE TABLE" = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
-    "FACEBOOK CREATE VIEW"  = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
-    "GOOGLE CREATE TABLE"   = { "roles" = [snowflake_role.entechlog_dbt_role.name] },
-    "GOOGLE CREATE VIEW"    = { "roles" = [snowflake_role.entechlog_dbt_role.name] }
-  }
-}
-
-output "dev_entechlog_raw_db" {
-  value = module.dev_entechlog_raw_db
-
-}
-
-//***************************************************************************//
-// Create roles using modules
-//***************************************************************************//
-
-module "entechlog_kafka_role" {
-  source       = "./modules/roles"
-  role_name    = "ENTECHLOG_KAFKA_ROLE"
-  role_comment = "Snowflake role used by Kafka"
-
-  roles = []
-  users = [
-    "${module.all_users.user.dev_entechlog_kafka_user.name}"
-  ]
 }

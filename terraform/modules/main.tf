@@ -2,7 +2,7 @@ terraform {
   backend "remote" {
     organization = "entechlog"
     workspaces {
-      name = "snowflake-examples"
+      prefix = "snowflake-"
     }
   }
 }

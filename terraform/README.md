@@ -15,9 +15,11 @@ terraform plan
 
 # apply the changes to target environment
 terraform apply
+terraform apply --auto-approve
 
 # delete all resources from target, DO NOT do this in any environment unless its really needed 🔥
 terraform destroy
+terraform destroy --auto-approve
 
 # Generate token by running
 terraform login

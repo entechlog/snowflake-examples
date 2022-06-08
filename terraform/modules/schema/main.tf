@@ -7,27 +7,9 @@ terraform {
   }
 }
 
-resource "snowflake_database" "database" {
-  name    = var.db_name
-  comment = var.db_comment
-}
-
-resource "snowflake_database_grant" "database_grant" {
-
-  for_each = var.db_grant_roles
-
-  database_name     = snowflake_database.database.name
-  privilege         = each.key
-  roles             = each.value
-  with_grant_option = false
-}
-
 resource "snowflake_schema" "schema" {
-
-  for_each = toset(var.schemas)
-
-  database = snowflake_database.database.name
-  name     = each.key
+  database = var.database_name
+  name     = var.schema_name
 }
 
 resource "snowflake_schema_grant" "schema_grant" {
@@ -55,12 +37,6 @@ resource "snowflake_table_grant" "table_grant" {
   with_grant_option = false
 }
 
-
-
-
-output "database" {
-  value = snowflake_database.database
-}
 
 output "schema" {
   value = snowflake_schema.schema

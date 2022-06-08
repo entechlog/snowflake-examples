@@ -1,8 +1,17 @@
 terraform {
+  backend "remote" {
+    organization = "entechlog"
+    workspaces {
+      name = "snowflake-examples"
+    }
+  }
+}
+
+terraform {
   required_providers {
     snowflake = {
       source  = "Snowflake-Labs/snowflake"
-      version = "0.33.1"
+      version = "0.35.0"
     }
   }
 }
@@ -70,6 +79,15 @@ module "entechlog_kafka_role" {
   ]
 }
 
+module "entechlog_analyst_role" {
+  source       = "./roles"
+  role_name    = "ENTECHLOG_ANALYST_ROLE"
+  role_comment = "Snowflake role used by Analyst"
+
+  roles = ["SYSADMIN"]
+  users = ["admin@entechlog.com"]
+}
+
 //***************************************************************************//
 // Create Snowflake warehouse using modules
 //***************************************************************************//
@@ -107,6 +125,12 @@ module "entechlog_raw_db" {
     "GOOGLE CREATE TABLE"   = { "roles" = [module.entechlog_dbt_role.role.name] },
     "GOOGLE CREATE VIEW"    = { "roles" = [module.entechlog_dbt_role.role.name] }
   }
+
+  table_grant = {
+    "SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] },
+    "SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] }
+  }
+
 }
 
 output "entechlog_raw_db" {

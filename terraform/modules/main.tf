@@ -120,6 +120,8 @@ module "entechlog_raw_db" {
 
   schemas = ["FACEBOOK", "GOOGLE", "COMPLIANCE"]
   schema_grant = {
+    "FACEBOOK OWNERSHIP"    = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "GOOGLE OWNERSHIP"      = { "roles" = [module.entechlog_dbt_role.role.name] },
     "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
     "GOOGLE USAGE"          = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
     "FACEBOOK CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },

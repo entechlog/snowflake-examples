@@ -17,3 +17,7 @@ variable "schemas" {
 variable "schema_grant" {
   type = map(any)
 }
+
+variable "table_grant" {
+  type = map(any)
+}

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     snowflake = {
       source  = "Snowflake-Labs/snowflake"
-      version = "0.33.1"
+      version = "0.35.0"
     }
   }
 }
@@ -18,6 +18,7 @@ resource "snowflake_role_grants" "grants" {
   users     = var.users
 }
 
+// Output block starts here
 output "role" {
   value = snowflake_role.role
 }

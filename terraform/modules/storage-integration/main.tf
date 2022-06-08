@@ -2,7 +2,7 @@ terraform {
   required_providers {
     snowflake = {
       source  = "Snowflake-Labs/snowflake"
-      version = "0.33.1"
+      version = "0.35.0"
     }
   }
 }
@@ -25,6 +25,8 @@ resource "snowflake_integration_grant" "integration_grant" {
 
   with_grant_option = false
 }
+
+// Output block starts here
 
 output "storage_integration" {
   value = snowflake_storage_integration.storage_integration

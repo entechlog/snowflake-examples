@@ -29,6 +29,8 @@ resource "snowflake_user" "user" {
   must_change_password = false
 }
 
+// Output block starts here
+
 output "user" {
   value = snowflake_user.user
 }

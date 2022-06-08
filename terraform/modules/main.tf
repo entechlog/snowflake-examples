@@ -120,6 +120,8 @@ module "entechlog_raw_db" {
 
   schemas = ["FACEBOOK", "GOOGLE", "COMPLIANCE"]
   schema_grant = {
+    "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
+    "GOOGLE USAGE"          = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
     "FACEBOOK CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
     "FACEBOOK CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
     "GOOGLE CREATE TABLE"   = { "roles" = [module.entechlog_dbt_role.role.name] },
@@ -127,14 +129,9 @@ module "entechlog_raw_db" {
   }
 
   table_grant = {
-    "SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] },
-    "SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] }
+    "FACEBOOK SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] },
+    "GOOGLE SELECT"   = { "roles" = [module.entechlog_atlan_role.role.name] }
   }
-
-}
-
-output "entechlog_raw_db" {
-  value = module.entechlog_raw_db
 
 }
 
@@ -171,4 +168,11 @@ module "entechlog_str_s3_intg" {
   storage_blocked_locations = ["s3://entechlog-demo/secure/"]
   storage_aws_role_arn      = "arn:aws:iam::001234567890:role/myrole"
   roles                     = [module.entechlog_dbt_role.role.name]
+}
+
+// Output block starts here
+
+output "entechlog_raw_db" {
+  value = module.entechlog_raw_db
+
 }

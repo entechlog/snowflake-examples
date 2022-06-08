@@ -30,6 +30,12 @@ rm terraform.tfstate
 
 # To upgrade provider version
 terraform init -upgrade
+
+# List Terrafrom state
+terraform state list
+
+# Remove all states, DO NOT do this in any environment unless its really needed 🔥
+for i in $(terraform state list); do terraform state rm $i; done
 ```
 
 # Reference 

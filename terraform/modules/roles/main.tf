@@ -18,6 +18,7 @@ resource "snowflake_role_grants" "grants" {
   users     = var.users
 }
 
+// Output block starts here
 output "role" {
   value = snowflake_role.role
 }

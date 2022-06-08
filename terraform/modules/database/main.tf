@@ -46,17 +46,17 @@ resource "snowflake_table_grant" "table_grant" {
 
   for_each      = var.table_grant
   database_name = snowflake_database.database.name
-  schema_name   = snowflake_schema.schema.name
+  schema_name   = split(" ", each.key)[0]
 
-  privilege = each.key
+  privilege = join(" ", slice(split(" ", each.key), 1, length(split(" ", each.key))))
   roles     = each.value.roles
 
   on_future         = true
   with_grant_option = false
+  depends_on        = [snowflake_schema.schema]
 }
 
-
-
+// Output block starts here
 
 output "database" {
   value = snowflake_database.database

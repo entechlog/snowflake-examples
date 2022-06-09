@@ -151,6 +151,7 @@ module "entechlog_raw_db" {
 
 module "mp_encrypt_email" {
   source                   = "./masking-policy"
+  count                    = local.enable_resource_flag
   masking_policy_name      = "MP_ENCRYPT_EMAIL"
   masking_policy_database  = module.entechlog_raw_db.database.name
   masking_policy_schema    = "COMPLIANCE"
@@ -170,6 +171,7 @@ module "mp_encrypt_email" {
 
 module "entechlog_str_s3_intg" {
   source                    = "./storage-integration"
+  count                     = local.enable_resource_flag
   name                      = "ENTECHLOG_STR_S3_INTG"
   comment                   = ""
   storage_provider          = "S3"

@@ -40,6 +40,14 @@ terraform state list
 for i in $(terraform state list); do terraform state rm $i; done
 ```
 
+# Design
+
+- Objects are named based on [Snowflake object naming conventions](https://www.entechlog.com/blog/data/snowflake-object-naming-conventions/)
+- Idea is to have 3 workspaces in terraform, say snowflake-dev, snowflake-stg and snowflake-prd
+- Development and Stage deployments happen when code is merged to develop branch
+- Production deployments happen only when code is merged to main branch
+- Common resources like user, role requires a production merge for deployment
+
 # Reference 
 - https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
 - https://www.udemy.com/course/terraform-snowflake-from-scratch

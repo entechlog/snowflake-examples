@@ -154,7 +154,7 @@ module "mp_encrypt_email" {
   count                    = local.enable_resource_flag
   masking_policy_name      = "MP_ENCRYPT_EMAIL"
   masking_policy_database  = module.entechlog_raw_db.database.name
-  masking_policy_schema    = "COMPLIANCE"
+  masking_policy_schema    = module.entechlog_raw_db.schema["COMPLIANCE"].name
   masking_value_data_type  = "VARCHAR"
   masking_expression       = "CASE WHEN CURRENT_ROLE() IN ('SYSADMIN') THEN val ELSE '**********' END"
   masking_return_data_type = "VARCHAR(16777216)"
@@ -163,6 +163,7 @@ module "mp_encrypt_email" {
     "OWNERSHIP" = [var.snowflake_role]
     "APPLY"     = [try(module.entechlog_dbt_role[0].role.name, "")]
   }
+  
 }
 
 //***************************************************************************//

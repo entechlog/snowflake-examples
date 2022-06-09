@@ -8,12 +8,20 @@ terraform {
 }
 
 locals {
-  enable_resource_mapping = {
+  create_user_map = {
+    snowflake-dev = 1
+    snowflake-stg = 0
+    snowflake-prd = 0
+  }
+
+  create_schema_objects_map = {
     snowflake-dev = 0
     snowflake-stg = 0
     snowflake-prd = 1
   }
-  enable_resource_flag = local.enable_resource_mapping[terraform.workspace]
+
+  enable_user_flag           = local.create_user_map[terraform.workspace]
+  enable_schema_objects_flag = local.create_schema_objects_map[terraform.workspace]
 }
 
 terraform {
@@ -34,74 +42,91 @@ provider "snowflake" {
 }
 
 //***************************************************************************//
-// Create Snowflake user using modules
+// Create Snowflake service accounts using modules. We will have one service account in each enviroment with different roles and each with different level of access
 //***************************************************************************//
 
-module "all_users" {
+module "all_service_accounts" {
   source = "./user"
-  count  = local.enable_resource_flag
   user_map = {
-    "entechlog_dbt_user" : { "first_name" = "datastage", "last_name" = "User", "email" = "entechlog_dbt_user@example.com" },
-    "entechlog_atlan_user" : { "first_name" = "atlan", "last_name" = "User", "email" = "entechlog_atlan_user@example.com" },
-    "entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", "email" = "entechlog_kafka_user@example.com" }
+    "${lower(var.env_code)}_entechlog_dbt_user" : { "first_name" = "datastage", "last_name" = "User", "email" = "${lower(var.env_code)}_entechlog_dbt_user@example.com" },
+    "${lower(var.env_code)}_entechlog_atlan_user" : { "first_name" = "atlan", "last_name" = "User", "email" = "${lower(var.env_code)}_entechlog_atlan_user@example.com" },
+    "${lower(var.env_code)}_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", "email" = "${lower(var.env_code)}_entechlog_kafka_user@example.com" }
   }
 }
 
-output "all_users" {
-  value     = module.all_users
+output "all_service_accounts" {
+  value     = module.all_service_accounts
   sensitive = true
 }
 
 //***************************************************************************//
-// Create roles using modules
+// Create Snowflake user accounts using modules. We will have only one user account for all enviroment
+//***************************************************************************//
+
+module "all_user_accounts" {
+  source = "./user"
+  count  = local.enable_user_flag
+  user_map = {
+    "admin@entechlog.com" : { "first_name" = "Siva", "last_name" = "Nadesan", "email" = "admin@entechlog.com" }
+  }
+}
+
+output "all_user_accounts" {
+  value     = module.all_user_accounts
+  sensitive = true
+}
+
+//***************************************************************************//
+// Create service roles using modules. We will have one service role in each enviroment with different level of access
 //***************************************************************************//
 
 module "entechlog_dbt_role" {
   source       = "./roles"
-  count        = local.enable_resource_flag
-  role_name    = "ENTECHLOG_DBT_ROLE"
-  role_comment = "Snowflake role used by dbt"
+  role_name    = "${upper(var.env_code)}_ENTECHLOG_DBT_ROLE"
+  role_comment = "Snowflake role used by dbt in ${var.env_code}"
 
   roles = ["SYSADMIN"]
-  users = ["entechlog_dbt_user"]
+  users = [upper("${var.env_code}_entechlog_dbt_user")]
 
-  depends_on = [module.all_users.snowflake_user]
+  depends_on = [module.all_service_accounts.snowflake_user]
 }
 
 module "entechlog_atlan_role" {
   source       = "./roles"
-  count        = local.enable_resource_flag
-  role_name    = "ENTECHLOG_ATLAN_ROLE"
-  role_comment = "Snowflake role used by Atlan"
+  role_name    = "${upper(var.env_code)}_ENTECHLOG_ATLAN_ROLE"
+  role_comment = "Snowflake role used by Atlan in ${var.env_code}"
 
   roles = ["SYSADMIN"]
-  users = ["entechlog_atlan_user"]
+  users = [upper("${var.env_code}_entechlog_atlan_user")]
 
-  depends_on = [module.all_users.snowflake_user]
+  depends_on = [module.all_service_accounts.snowflake_user]
 }
 
 module "entechlog_kafka_role" {
   source       = "./roles"
-  count        = local.enable_resource_flag
-  role_name    = "ENTECHLOG_KAFKA_ROLE"
-  role_comment = "Snowflake role used by Kafka"
+  role_name    = "${upper(var.env_code)}_ENTECHLOG_KAFKA_ROLE"
+  role_comment = "Snowflake role used by Kafka in ${var.env_code}"
 
   roles = ["SYSADMIN"]
-  users = ["entechlog_kafka_user"]
+  users = [upper("${var.env_code}_entechlog_kafka_user")]
 
-  depends_on = [module.all_users.snowflake_user]
+  depends_on = [module.all_service_accounts.snowflake_user]
 }
+
+//***************************************************************************//
+// Create user roles using modules. We will have one user role for all enviroment with different level of access
+//***************************************************************************//
 
 module "entechlog_analyst_role" {
   source       = "./roles"
-  count        = local.enable_resource_flag
+  count        = local.enable_user_flag
   role_name    = "ENTECHLOG_ANALYST_ROLE"
   role_comment = "Snowflake role used by Analyst"
 
   roles = ["SYSADMIN"]
-  users = ["admin@entechlog.com"]
+  users = [upper("admin@entechlog.com")]
 
-  depends_on = [module.all_users.snowflake_user]
+  depends_on = [module.all_user_accounts.snowflake_user]
 }
 
 //***************************************************************************//
@@ -114,7 +139,7 @@ module "entechlog_dbt_wh_xs" {
   warehouse_size = "XSMALL"
   warehouse_grant_roles = {
     "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [upper("entechlog_dbt_role")]
+    "USAGE"     = [upper("${var.env_code}_entechlog_dbt_role")]
   }
 
   depends_on = [module.entechlog_dbt_role.snowflake_role]
@@ -133,25 +158,25 @@ module "entechlog_raw_db" {
 
   db_grant_roles = {
     "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [upper("entechlog_dbt_role")]
+    "USAGE"     = [upper("${var.env_code}_entechlog_dbt_role")]
     "USAGE"     = ["SYSADMIN"]
   }
 
   schemas = ["FACEBOOK", "GOOGLE", "COMPLIANCE"]
   schema_grant = {
-    "FACEBOOK OWNERSHIP"    = { "roles" = [upper("entechlog_dbt_role")] },
-    "GOOGLE OWNERSHIP"      = { "roles" = [upper("entechlog_dbt_role")] },
-    "FACEBOOK USAGE"        = { "roles" = [upper("entechlog_dbt_role"), upper("entechlog_atlan_role"), upper("entechlog_kafka_role")] },
-    "GOOGLE USAGE"          = { "roles" = [upper("entechlog_dbt_role"), upper("entechlog_atlan_role"), upper("entechlog_kafka_role")] },
-    "FACEBOOK CREATE TABLE" = { "roles" = [upper("entechlog_dbt_role")] },
-    "FACEBOOK CREATE VIEW"  = { "roles" = [upper("entechlog_dbt_role")] },
-    "GOOGLE CREATE TABLE"   = { "roles" = [upper("entechlog_dbt_role")] },
-    "GOOGLE CREATE VIEW"    = { "roles" = [upper("entechlog_dbt_role")] }
+    "FACEBOOK OWNERSHIP"    = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
+    "GOOGLE OWNERSHIP"      = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
+    "FACEBOOK USAGE"        = { "roles" = [upper("${var.env_code}_entechlog_dbt_role"), upper("${var.env_code}_entechlog_atlan_role"), upper("${var.env_code}_entechlog_kafka_role")] },
+    "GOOGLE USAGE"          = { "roles" = [upper("${var.env_code}_entechlog_dbt_role"), upper("${var.env_code}_entechlog_atlan_role"), upper("${var.env_code}_entechlog_kafka_role")] },
+    "FACEBOOK CREATE TABLE" = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
+    "FACEBOOK CREATE VIEW"  = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
+    "GOOGLE CREATE TABLE"   = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
+    "GOOGLE CREATE VIEW"    = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] }
   }
 
   table_grant = {
-    "FACEBOOK SELECT" = { "roles" = [upper("entechlog_atlan_role")] },
-    "GOOGLE SELECT"   = { "roles" = [upper("entechlog_atlan_role")] }
+    "FACEBOOK SELECT" = { "roles" = [upper("${var.env_code}_entechlog_atlan_role")] },
+    "GOOGLE SELECT"   = { "roles" = [upper("${var.env_code}_entechlog_atlan_role")] }
   }
 
   depends_on = [module.entechlog_dbt_role.snowflake_role, module.entechlog_atlan_role.snowflake_role, module.entechlog_kafka_role.snowflake_role]
@@ -163,7 +188,7 @@ module "entechlog_raw_db" {
 
 module "mp_encrypt_email" {
   source                   = "./masking-policy"
-  count                    = local.enable_resource_flag
+  count                    = local.enable_schema_objects_flag
   masking_policy_name      = "MP_ENCRYPT_EMAIL"
   masking_policy_database  = module.entechlog_raw_db.database.name
   masking_policy_schema    = module.entechlog_raw_db.schema["COMPLIANCE"].name
@@ -173,7 +198,7 @@ module "mp_encrypt_email" {
 
   masking_grants = {
     "OWNERSHIP" = [var.snowflake_role]
-    "APPLY"     = [upper("entechlog_dbt_role")]
+    "APPLY"     = [upper("${var.env_code}_entechlog_dbt_role")]
   }
 
 }
@@ -184,7 +209,7 @@ module "mp_encrypt_email" {
 
 module "entechlog_str_s3_intg" {
   source                    = "./storage-integration"
-  count                     = local.enable_resource_flag
+  count                     = local.enable_schema_objects_flag
   name                      = "ENTECHLOG_STR_S3_INTG"
   comment                   = ""
   storage_provider          = "S3"
@@ -192,7 +217,7 @@ module "entechlog_str_s3_intg" {
   storage_allowed_locations = ["s3://entechlog-demo/kafka-snowpipe-demo/"]
   storage_blocked_locations = ["s3://entechlog-demo/secure/"]
   storage_aws_role_arn      = "arn:aws:iam::001234567890:role/myrole"
-  roles                     = [upper("entechlog_dbt_role")]
+  roles                     = [upper("${var.env_code}_entechlog_dbt_role")]
 }
 
 // Output block starts here

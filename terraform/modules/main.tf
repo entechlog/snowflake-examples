@@ -88,7 +88,7 @@ module "entechlog_dbt_role" {
   roles = ["SYSADMIN"]
   users = [upper("${var.env_code}_entechlog_dbt_user")]
 
-  depends_on = [module.all_service_accounts.snowflake_user]
+  depends_on = [module.all_service_accounts]
 }
 
 module "entechlog_atlan_role" {
@@ -99,7 +99,7 @@ module "entechlog_atlan_role" {
   roles = ["SYSADMIN"]
   users = [upper("${var.env_code}_entechlog_atlan_user")]
 
-  depends_on = [module.all_service_accounts.snowflake_user]
+  depends_on = [module.all_service_accounts]
 }
 
 module "entechlog_kafka_role" {
@@ -110,7 +110,7 @@ module "entechlog_kafka_role" {
   roles = ["SYSADMIN"]
   users = [upper("${var.env_code}_entechlog_kafka_user")]
 
-  depends_on = [module.all_service_accounts.snowflake_user]
+  depends_on = [module.all_service_accounts]
 }
 
 //***************************************************************************//
@@ -126,7 +126,7 @@ module "entechlog_analyst_role" {
   roles = ["SYSADMIN"]
   users = [upper("admin@entechlog.com")]
 
-  depends_on = [module.all_user_accounts.snowflake_user]
+  depends_on = [module.all_user_accounts]
 }
 
 //***************************************************************************//
@@ -138,12 +138,9 @@ module "entechlog_dbt_wh_xs" {
   warehouse_name = "${upper(var.env_code)}_ENTECHLOG_DBT_WH_XS"
   warehouse_size = "XSMALL"
   warehouse_grant_roles = {
-    "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [upper("${var.env_code}_entechlog_dbt_role")]
+    "OWNERSHIP" = ["SYSADMIN"]
+    "USAGE"     = [module.entechlog_dbt_role.role.name]
   }
-
-  depends_on = [module.entechlog_dbt_role.snowflake_role]
-
 }
 
 //***************************************************************************//
@@ -157,29 +154,28 @@ module "entechlog_raw_db" {
   db_comment = "Database to store the ingested RAW data"
 
   db_grant_roles = {
-    "OWNERSHIP" = [var.snowflake_role]
-    "USAGE"     = [upper("${var.env_code}_entechlog_dbt_role")]
-    "USAGE"     = ["SYSADMIN"]
+    "OWNERSHIP" = ["SYSADMIN"]
+    "USAGE"     = [module.entechlog_dbt_role.role.name]
   }
 
   schemas = ["FACEBOOK", "GOOGLE", "COMPLIANCE"]
   schema_grant = {
-    "FACEBOOK OWNERSHIP"    = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
-    "GOOGLE OWNERSHIP"      = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
-    "FACEBOOK USAGE"        = { "roles" = [upper("${var.env_code}_entechlog_dbt_role"), upper("${var.env_code}_entechlog_atlan_role"), upper("${var.env_code}_entechlog_kafka_role")] },
-    "GOOGLE USAGE"          = { "roles" = [upper("${var.env_code}_entechlog_dbt_role"), upper("${var.env_code}_entechlog_atlan_role"), upper("${var.env_code}_entechlog_kafka_role")] },
-    "FACEBOOK CREATE TABLE" = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
-    "FACEBOOK CREATE VIEW"  = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
-    "GOOGLE CREATE TABLE"   = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] },
-    "GOOGLE CREATE VIEW"    = { "roles" = [upper("${var.env_code}_entechlog_dbt_role")] }
+    "FACEBOOK OWNERSHIP"    = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "GOOGLE OWNERSHIP"      = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
+    "GOOGLE USAGE"          = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
+    "FACEBOOK CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "FACEBOOK CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "GOOGLE CREATE TABLE"   = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "GOOGLE CREATE VIEW"    = { "roles" = [module.entechlog_dbt_role.role.name] }
   }
 
   table_grant = {
-    "FACEBOOK SELECT" = { "roles" = [upper("${var.env_code}_entechlog_atlan_role")] },
-    "GOOGLE SELECT"   = { "roles" = [upper("${var.env_code}_entechlog_atlan_role")] }
+    "FACEBOOK SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] },
+    "GOOGLE SELECT"   = { "roles" = [module.entechlog_atlan_role.role.name] }
   }
 
-  depends_on = [module.entechlog_dbt_role.snowflake_role, module.entechlog_atlan_role.snowflake_role, module.entechlog_kafka_role.snowflake_role]
+  depends_on = [module.entechlog_dbt_role.role, module.entechlog_atlan_role.snowflake_role, module.entechlog_kafka_role.snowflake_role]
 }
 
 //***************************************************************************//
@@ -197,8 +193,8 @@ module "mp_encrypt_email" {
   masking_return_data_type = "VARCHAR(16777216)"
 
   masking_grants = {
-    "OWNERSHIP" = [var.snowflake_role]
-    "APPLY"     = [upper("${var.env_code}_entechlog_dbt_role")]
+    "OWNERSHIP" = ["SYSADMIN"]
+    "APPLY"     = [module.entechlog_dbt_role.role.name]
   }
 
 }
@@ -217,7 +213,7 @@ module "entechlog_str_s3_intg" {
   storage_allowed_locations = ["s3://entechlog-demo/kafka-snowpipe-demo/"]
   storage_blocked_locations = ["s3://entechlog-demo/secure/"]
   storage_aws_role_arn      = "arn:aws:iam::001234567890:role/myrole"
-  roles                     = [upper("${var.env_code}_entechlog_dbt_role")]
+  roles                     = [module.entechlog_dbt_role.role.name]
 }
 
 // Output block starts here

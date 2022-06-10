@@ -8,20 +8,20 @@ terraform {
 }
 
 locals {
-  create_user_map = {
+  create_in_dev_map = {
     snowflake-dev = 1
     snowflake-stg = 0
     snowflake-prd = 0
   }
 
-  create_schema_objects_map = {
+  create_in_prod_map = {
     snowflake-dev = 0
     snowflake-stg = 0
     snowflake-prd = 1
   }
 
-  enable_user_flag           = local.create_user_map[terraform.workspace]
-  enable_schema_objects_flag = local.create_schema_objects_map[terraform.workspace]
+  enable_in_dev_flag  = local.create_in_dev_map[terraform.workspace]
+  enable_in_prod_flag = local.create_in_prod_map[terraform.workspace]
 }
 
 terraform {
@@ -65,7 +65,7 @@ output "all_service_accounts" {
 
 module "all_user_accounts" {
   source = "./user"
-  count  = local.enable_user_flag
+  count  = local.enable_in_dev_flag
   user_map = {
     "admin@entechlog.com" : { "first_name" = "Siva", "last_name" = "Nadesan", "email" = "admin@entechlog.com" }
   }
@@ -119,7 +119,7 @@ module "entechlog_kafka_role" {
 
 module "entechlog_analyst_role" {
   source       = "./roles"
-  count        = local.enable_user_flag
+  count        = local.enable_in_dev_flag
   role_name    = "ENTECHLOG_ANALYST_ROLE"
   role_comment = "Snowflake role used by Analyst"
 
@@ -140,6 +140,17 @@ module "entechlog_dbt_wh_xs" {
   warehouse_grant_roles = {
     "OWNERSHIP" = ["SYSADMIN"]
     "USAGE"     = [module.entechlog_dbt_role.role.name]
+  }
+}
+
+module "entechlog_query_wh_xs" {
+  source         = "./warehouse"
+  count          = local.enable_in_dev_flag
+  warehouse_name = "ALL_ENTECHLOG_QUERY_WH_XS"
+  warehouse_size = "XSMALL"
+  warehouse_grant_roles = {
+    "OWNERSHIP" = ["SYSADMIN"]
+    "USAGE"     = [module.entechlog_analyst_role[0].role.name]
   }
 }
 
@@ -184,7 +195,7 @@ module "entechlog_raw_db" {
 
 module "mp_encrypt_email" {
   source                   = "./masking-policy"
-  count                    = local.enable_schema_objects_flag
+  count                    = local.enable_in_prod_flag
   masking_policy_name      = "MP_ENCRYPT_EMAIL"
   masking_policy_database  = module.entechlog_raw_db.database.name
   masking_policy_schema    = module.entechlog_raw_db.schema["COMPLIANCE"].name
@@ -205,7 +216,7 @@ module "mp_encrypt_email" {
 
 module "entechlog_str_s3_intg" {
   source                    = "./storage-integration"
-  count                     = local.enable_schema_objects_flag
+  count                     = local.enable_in_prod_flag
   name                      = "ENTECHLOG_STR_S3_INTG"
   comment                   = ""
   storage_provider          = "S3"

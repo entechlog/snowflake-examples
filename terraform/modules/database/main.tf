@@ -20,14 +20,16 @@ resource "snowflake_database_grant" "database_grant" {
   privilege         = each.key
   roles             = each.value
   with_grant_option = false
+  depends_on        = [snowflake_database.database]
 }
 
 resource "snowflake_schema" "schema" {
 
   for_each = toset(var.schemas)
 
-  database = snowflake_database.database.name
-  name     = each.key
+  database   = snowflake_database.database.name
+  name       = each.key
+  depends_on = [snowflake_database_grant.database_grant]
 }
 
 resource "snowflake_schema_grant" "schema_grant" {

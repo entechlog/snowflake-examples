@@ -122,7 +122,7 @@ module "entechlog_dw_db" {
   db_grant_roles = {
     "OWNERSHIP"     = ["SYSADMIN"]
     "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_dbt_role.role.name]
-    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
+    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"]
   }
 
   schemas = ["DIM", "FACT", "UTILS"]

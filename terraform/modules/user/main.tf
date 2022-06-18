@@ -15,15 +15,15 @@ resource "snowflake_user" "user" {
 
   for_each = var.user_map
 
-  name         = upper(each.key)
-  login_name   = upper(each.key)
+  name         = lower(each.key)
+  login_name   = lower(each.key)
   disabled     = false
   display_name = "${title(each.value.first_name)} ${title(each.value.last_name)}"
-  email        = each.value.email
+  email        = lookup(each.value, "email", "NONE") == "NONE" ? "" : each.value.email
   first_name   = title(each.value.first_name)
   last_name    = title(each.value.last_name)
 
-  default_warehouse = lookup(each.value, "default_warehouse", "NONE") == "NONE" ? "ALL_ENTECHLOG_QUERY_WH_XS" : each.value.default_warehouse
+  default_warehouse = lookup(each.value, "default_warehouse", "NONE") == "NONE" ? "" : each.value.default_warehouse
   default_role      = "PUBLIC"
 
   must_change_password = false

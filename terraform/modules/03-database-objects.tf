@@ -10,7 +10,8 @@ module "entechlog_dbt_wh_xs" {
   warehouse_grant_roles = {
     "OWNERSHIP" = ["SYSADMIN"]
     "MODIFY"    = [var.snowflake_role]
-    "USAGE"     = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
+    "USAGE"     = (upper(var.env_code) == "DEV" ? [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] : [module.entechlog_dbt_role.role.name])
+    "MONITOR"   = [module.entechlog_dbt_role.role.name]
   }
 
   depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]
@@ -26,6 +27,7 @@ module "entechlog_query_wh_xs" {
     "OWNERSHIP" = ["SYSADMIN"]
     "MODIFY"    = [var.snowflake_role]
     "USAGE"     = [module.entechlog_analyst_role[0].role.name, module.entechlog_developer_role[0].role.name]
+    "MONITOR"   = [module.entechlog_dbt_role.role.name]
   }
 
   depends_on = [module.entechlog_analyst_role.role, module.entechlog_developer_role.role]
@@ -46,13 +48,13 @@ module "entechlog_raw_db" {
   db_grant_roles = {
     "OWNERSHIP"     = ["SYSADMIN"]
     "CREATE SCHEMA" = [var.snowflake_role]
-    "USAGE"         = [module.entechlog_dbt_role.role.name]
+    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
   }
 
   schemas = ["FACEBOOK", "GOOGLE"]
   schema_grant = {
     "FACEBOOK OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-    "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
+    "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
     "FACEBOOK CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
     "FACEBOOK CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
     "GOOGLE OWNERSHIP"      = { "roles" = ["SYSADMIN"] },
@@ -62,8 +64,8 @@ module "entechlog_raw_db" {
   }
 
   table_grant = {
-    "FACEBOOK SELECT" = { "roles" = [module.entechlog_atlan_role.role.name] },
-    "GOOGLE SELECT"   = { "roles" = [module.entechlog_atlan_role.role.name] }
+    "FACEBOOK SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
+    "GOOGLE SELECT"   = { "roles" = [module.entechlog_atlan_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
   }
 
   depends_on = [module.entechlog_dbt_role.role, module.entechlog_atlan_role.role, module.entechlog_kafka_role.role]

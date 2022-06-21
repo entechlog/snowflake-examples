@@ -166,3 +166,11 @@ module "entechlog_dw_db" {
 output "entechlog_raw_db" {
   value = module.entechlog_raw_db
 }
+
+output "entechlog_staging_db" {
+  value = module.entechlog_staging_db
+}
+
+output "entechlog_dw_db" {
+  value = module.entechlog_dw_db
+}

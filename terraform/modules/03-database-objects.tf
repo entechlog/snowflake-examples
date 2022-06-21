@@ -127,7 +127,7 @@ module "entechlog_dw_db" {
     "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"]
   }
 
-  schemas = ["DIM", "FACT", "UTILS"]
+  schemas = ["DIM", "FACT", "UTILS", "COMPLIANCE"]
 
   schema_grant = {
     "DIM OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
@@ -144,12 +144,18 @@ module "entechlog_dw_db" {
     "UTILS USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
     "UTILS CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
     "UTILS CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
+
+    "COMPLIANCE OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
+    "COMPLIANCE USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "COMPLIANCE CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
+    "COMPLIANCE CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
   }
 
   table_grant = {
-    "DIM SELECT"   = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-    "FACT SELECT"  = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-    "UTILS SELECT" = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] }
+    "DIM SELECT"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
+    "FACT SELECT"       = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
+    "UTILS SELECT"      = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
+    "COMPLIANCE SELECT" = { "roles" = [module.entechlog_dbt_role.role.name] }
   }
 
   depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]

@@ -7,7 +7,7 @@ module "all_service_accounts" {
   user_map = {
     "${lower(var.env_code)}_entechlog_dbt_user" : { "first_name" = "dbt", "last_name" = "User" },
     "${lower(var.env_code)}_entechlog_atlan_user" : { "first_name" = "Atlan", "last_name" = "User" },
-    "${lower(var.env_code)}_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User" }
+    "${lower(var.env_code)}_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", default_role = "${upper(var.env_code)}_ENTECHLOG_KAFKA_ROLE" }
   }
 }
 

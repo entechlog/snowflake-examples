@@ -47,8 +47,8 @@ module "entechlog_raw_db" {
 
   db_grant_roles = {
     "OWNERSHIP"     = ["SYSADMIN"]
-    "CREATE SCHEMA" = [var.snowflake_role]
-    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
+    "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_kafka_role.role.name]
+    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", module.entechlog_kafka_role.role.name]
   }
 
   schemas = ["FACEBOOK", "GOOGLE"]

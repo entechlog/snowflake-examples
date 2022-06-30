@@ -51,21 +51,16 @@ module "entechlog_raw_db" {
     "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", module.entechlog_kafka_role.role.name]
   }
 
-  schemas = ["FACEBOOK", "GOOGLE"]
+  schemas = ["DATAGEN"]
   schema_grant = {
-    "FACEBOOK OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-    "FACEBOOK USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-    "FACEBOOK CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-    "FACEBOOK CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
-    "GOOGLE OWNERSHIP"      = { "roles" = ["SYSADMIN"] },
-    "GOOGLE USAGE"          = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name] },
-    "GOOGLE CREATE TABLE"   = { "roles" = [module.entechlog_dbt_role.role.name] },
-    "GOOGLE CREATE VIEW"    = { "roles" = [module.entechlog_dbt_role.role.name] }
+    "DATAGEN OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
+    "DATAGEN USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
+    "DATAGEN CREATE TABLE" = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE VIEW"  = { "roles" = [module.entechlog_kafka_role.role.name] }
   }
 
   table_grant = {
-    "FACEBOOK SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-    "GOOGLE SELECT"   = { "roles" = [module.entechlog_atlan_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
+    "DATAGEN SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
   }
 
   depends_on = [module.entechlog_dbt_role.role, module.entechlog_atlan_role.role, module.entechlog_kafka_role.role]

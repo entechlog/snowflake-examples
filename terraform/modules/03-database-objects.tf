@@ -59,7 +59,8 @@ module "entechlog_raw_db" {
     "DATAGEN USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
     "DATAGEN CREATE TABLE" = { "roles" = [module.entechlog_kafka_role.role.name] },
     "DATAGEN CREATE VIEW"  = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE STAGE" = { "roles" = [module.entechlog_kafka_role.role.name] }
+    "DATAGEN CREATE STAGE" = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE PIPE"  = { "roles" = [module.entechlog_kafka_role.role.name] }
   }
 
   table_grant = {

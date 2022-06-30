@@ -24,7 +24,7 @@ resource "snowflake_user" "user" {
   last_name    = title(each.value.last_name)
 
   default_warehouse = lookup(each.value, "default_warehouse", "NONE") == "NONE" ? "" : each.value.default_warehouse
-  default_role      = "PUBLIC"
+  default_role      = lookup(each.value, "default_role", "NONE") == "NONE" ? "PUBLIC" : each.value.default_role
 
   must_change_password = false
 }

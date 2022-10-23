@@ -77,7 +77,7 @@ module "entechlog_raw_db" {
     "DATAGEN CREATE VIEW"     = { "roles" = [module.entechlog_kafka_role.role.name] },
     "DATAGEN CREATE STAGE"    = { "roles" = [module.entechlog_kafka_role.role.name] },
     "DATAGEN CREATE PIPE"     = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE FUNCTION" = { "roles" = [module.entechlog_demo_role[0].role.name] },
+    "DATAGEN CREATE FUNCTION" = { "roles" = [var.snowflake_role, module.entechlog_demo_role[0].role.name] },
   }
 
   table_grant = {

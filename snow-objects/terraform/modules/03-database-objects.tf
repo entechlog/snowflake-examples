@@ -63,7 +63,7 @@ module "entechlog_raw_db" {
   db_grant_roles = {
     "OWNERSHIP"          = ["SYSADMIN"]
     "CREATE SCHEMA"      = [var.snowflake_role, module.entechlog_kafka_role.role.name]
-    "CREATE INTEGRATION" = [var.snowflake_role, module.entechlog_demo_role[0].role.name]
+    # "CREATE INTEGRATION" = [var.snowflake_role, module.entechlog_demo_role[0].role.name]
     "USAGE"              = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", module.entechlog_kafka_role.role.name]
   }
 

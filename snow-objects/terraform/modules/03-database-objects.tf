@@ -41,8 +41,8 @@ module "entechlog_demo_wh_xs" {
   warehouse_grant_roles = {
     "OWNERSHIP" = ["SYSADMIN"]
     "MODIFY"    = [var.snowflake_role]
-    "USAGE"     = [module.entechlog_demo_role.role.name]
-    "MONITOR"   = [module.entechlog_demo_role.role.name]
+    "USAGE"     = [module.entechlog_demo_role[0].role.name]
+    "MONITOR"   = [module.entechlog_demo_role[0].role.name]
   }
 
   depends_on = [module.entechlog_demo_role.role]
@@ -76,7 +76,7 @@ module "entechlog_raw_db" {
     "DATAGEN CREATE VIEW"              = { "roles" = [module.entechlog_kafka_role.role.name] },
     "DATAGEN CREATE STAGE"             = { "roles" = [module.entechlog_kafka_role.role.name] },
     "DATAGEN CREATE PIPE"              = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE EXTERNAL FUNCTION" = { "roles" = [module.entechlog_demo_role.role.name] }
+    "DATAGEN CREATE EXTERNAL FUNCTION" = { "roles" = [module.entechlog_demo_role[0].role.name] },
   }
 
   table_grant = {

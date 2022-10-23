@@ -5,6 +5,7 @@
 module "all_service_accounts" {
   source = "./user"
   user_map = {
+    "${lower(var.env_code)}_entechlog_demo_user" : { "first_name" = "Demo", "last_name" = "User" },
     "${lower(var.env_code)}_entechlog_dbt_user" : { "first_name" = "dbt", "last_name" = "User" },
     "${lower(var.env_code)}_entechlog_atlan_user" : { "first_name" = "Atlan", "last_name" = "User" },
     "${lower(var.env_code)}_entechlog_kafka_user" : { "first_name" = "Kafka", "last_name" = "User", default_role = "${upper(var.env_code)}_ENTECHLOG_KAFKA_ROLE" }
@@ -86,6 +87,18 @@ module "entechlog_developer_role" {
   users = [lower("admin@entechlog.com")]
 
   depends_on = [module.all_user_accounts]
+}
+
+module "entechlog_demo_role" {
+  source       = "./roles"
+  count        = local.enable_in_dev_flag
+  role_name    = "${upper(var.env_code)}_ENTECHLOG_DEMO_ROLE"
+  role_comment = "Snowflake role used by demo user in ${var.env_code}"
+
+  roles = ["SYSADMIN"]
+  users = [lower("${var.env_code}_entechlog_demo_user")]
+
+  depends_on = [module.all_service_accounts]
 }
 
 // Output block starts here

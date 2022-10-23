@@ -24,7 +24,7 @@ provider "snowflake" {
 // https://docs.snowflake.com/en/user-guide/scim.html
 
 resource "snowflake_user" "demo_user" {
-  name         = "Demo User"
+  name         = lower("DEMO_USER")
   login_name   = "DEMO_USER"
   comment      = "Snowflake user account for demo"
   password     = "demouser"

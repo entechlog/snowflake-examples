@@ -61,22 +61,23 @@ module "entechlog_raw_db" {
   db_comment = "Database to store the ingested RAW data"
 
   db_grant_roles = {
-    "OWNERSHIP"     = ["SYSADMIN"]
-    "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_kafka_role.role.name]
-    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", module.entechlog_kafka_role.role.name]
+    "OWNERSHIP"          = ["SYSADMIN"]
+    "CREATE SCHEMA"      = [var.snowflake_role, module.entechlog_kafka_role.role.name]
+    "CREATE INTEGRATION" = [var.snowflake_role, module.entechlog_demo_role[0].role.name]
+    "USAGE"              = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", module.entechlog_kafka_role.role.name]
   }
 
   schemas = ["DATAGEN"]
 
   /* https://docs.snowflake.com/en/user-guide/security-access-control-privileges.html#schema-privileges */
   schema_grant = {
-    "DATAGEN OWNERSHIP"                = { "roles" = ["SYSADMIN"] },
-    "DATAGEN USAGE"                    = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-    "DATAGEN CREATE TABLE"             = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE VIEW"              = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE STAGE"             = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE PIPE"              = { "roles" = [module.entechlog_kafka_role.role.name] },
-    "DATAGEN CREATE EXTERNAL FUNCTION" = { "roles" = [module.entechlog_demo_role[0].role.name] },
+    "DATAGEN OWNERSHIP"       = { "roles" = ["SYSADMIN"] },
+    "DATAGEN USAGE"           = { "roles" = [module.entechlog_dbt_role.role.name, module.entechlog_atlan_role.role.name, module.entechlog_kafka_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
+    "DATAGEN CREATE TABLE"    = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE VIEW"     = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE STAGE"    = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE PIPE"     = { "roles" = [module.entechlog_kafka_role.role.name] },
+    "DATAGEN CREATE FUNCTION" = { "roles" = [module.entechlog_demo_role[0].role.name] },
   }
 
   table_grant = {

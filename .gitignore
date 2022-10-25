@@ -43,3 +43,6 @@ terraform.rc
 
 # Other Terraform files
 .terraform.lock.hcl
+
+# Lambda
+target/

@@ -46,3 +46,4 @@ terraform.rc
 
 # Lambda
 target/
+*.zip

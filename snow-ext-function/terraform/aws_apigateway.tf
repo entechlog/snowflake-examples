@@ -31,6 +31,7 @@ resource "aws_api_gateway_deployment" "lambda_proxy" {
   stage_name  = lower(var.env_code)
 
   depends_on = [aws_api_gateway_integration.lambda_proxy]
+
 }
 
 resource "aws_api_gateway_rest_api_policy" "lambda_proxy" {

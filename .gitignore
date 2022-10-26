@@ -45,4 +45,5 @@ terraform.rc
 .terraform.lock.hcl
 
 # Lambda
-target/
+**/target*
+*.zip

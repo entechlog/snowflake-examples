@@ -1,7 +1,36 @@
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Instructions](#instructions)
+  - [Blog](#blog)
+  - [Terraform commands](#terraform-commands)
+- [Reference](#reference)
+- [Testing](#testing)
+  - [Commands](#commands)
+  - [Payload](#payload)
+    - [Lambda](#lambda)
+    - [API Gateway](#api-gateway)
+- [Tracking Worksheet](#tracking-worksheet)
+  - [Step 1: Information about the Lambda Function (remote service)](#step-1-information-about-the-lambda-function-remote-service)
+  - [Step 2: Information about the API Gateway (proxy Service)](#step-2-information-about-the-api-gateway-proxy-service)
+  - [Step 3: Information about the API Integration and External Function](#step-3-information-about-the-api-integration-and-external-function)
+- [Validate results](#validate-results)
+- [Future Enhancements](#future-enhancements)
+  
 # Overview
 This repo contains code to create Snowflake External function in AWS using Terraform.
 
+# Architecture
+See below diagram for high level architecture
+
+<p align="center">
+  <img src="./assets/Snowflake%20external%20function.png" alt="Overview" width="738">
+</p>
+
 # Instructions
+## Blog
+See this blog for more details
+
+## Terraform commands
 
 ```bash
 # install custom modules
@@ -40,18 +69,23 @@ terraform state list
 for i in $(terraform state list); do terraform state rm $i; done
 ```
 
-# Design
-
 # Reference 
 - https://www.youtube.com/watch?v=qangh4oM_zs
 - https://docs.snowflake.com/en/sql-reference/external-functions-creating-aws.html
 - https://interworks.com/blog/2020/08/14/zero-to-snowflake-setting-up-snowflake-external-functions-with-aws-lambda/
 - https://www.startdataengineering.com/post/pull-data-from-api-using-lambda-s3/
+- https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
+- https://github.com/public-apis/public-apis
 
 
-# Test Payload
+# Testing
+## Commands
 
-## Lambda
+Test the python module locally using `python-lambda-local -f lambda_handler get_weather.py events/example_02.json`
+
+## Payload
+
+### Lambda
 ```json
 {
   "body":
@@ -59,7 +93,7 @@ for i in $(terraform state list); do terraform state rm $i; done
 }
 ```
 
-## API Gateway
+### API Gateway
 ```json
 {
     "data":
@@ -70,7 +104,7 @@ for i in $(terraform state list); do terraform state rm $i; done
 }
 ```
 
-# Tracking Worksheet: AWS Management Console
+# Tracking Worksheet
 
 ## Step 1: Information about the Lambda Function (remote service)
 
@@ -100,3 +134,23 @@ for i in $(terraform state list); do terraform state rm $i; done
 | API_AWS_IAM_USER_ARN   | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
 | API_AWS_EXTERNAL_ID    | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
 | External Function Name | Name of external function in Snowflake                                    |                      |
+
+# Validate results
+
+```sql
+USE DATABASE <database-name>;
+USE SCHEMA <schema-name>;
+
+select demo('100') as demo_result;
+select get_weather('kansas'):TEMPERATURE::varchar as current_temperature;
+```
+
+# Future Enhancements
+- Currently, the module does a force deployment of API gateway using timestamp as trigger. This will end up showing terraform changes on 4 modules all the time. Should find work around to resolve this issue
+  ```
+    triggers = {
+    build_number = timestamp()
+  }
+  ```
+
+- Add support for external functions with multiple arguments

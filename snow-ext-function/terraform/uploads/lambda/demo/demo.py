@@ -29,13 +29,10 @@ def lambda_handler(event, context):
             # a JSON structure.
             input_value_1 = row[1]
 
-            # Read the second input parameter's value.
-            input_value_2 = row[2]
-
             # Compose the output based on the input. This simple example
             # merely echoes the input by collecting the values into an array that
             # will be treated as a single VARIANT value.
-            output_value = ["Echoing inputs:", input_value_1, input_value_2]
+            output_value = ["Echoing inputs:", input_value_1]
 
             # Put the returned row number and the returned value into an array.
             row_to_return = [row_number, output_value]

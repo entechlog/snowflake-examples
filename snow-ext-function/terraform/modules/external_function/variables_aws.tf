@@ -37,19 +37,3 @@ variable "snowflake_api_aws_external_id" {
   description = "The AWS external ID from Snowflake"
   default     = "12345"
 }
-
-variable "resource_name_prefix" {
-  type = string
-}
-
-variable "iam_role_arn_snow_ext_function" {
-  type = string
-}
-
-variable "iam_role_name_snow_ext_function" {
-  type = string
-}
-
-variable "iam_role_arn_lambda_exec" {
-  type = string
-}

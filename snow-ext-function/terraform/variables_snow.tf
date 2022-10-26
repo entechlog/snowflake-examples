@@ -30,3 +30,7 @@ variable "snowflake_database_name" {
 variable "snowflake_schema_name" {
   type = string
 }
+
+variable "snowflake_api_integration_name" {
+  type = string
+}

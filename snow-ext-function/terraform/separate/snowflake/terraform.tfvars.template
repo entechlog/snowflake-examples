@@ -1,0 +1,14 @@
+# Variables for snowflake connection
+snowflake_account  = ""
+snowflake_region   = ""
+snowflake_user     = ""
+snowflake_password = ""
+snowflake_role     = ""
+
+# Variables for external function
+snowflake_database_name = ""
+snowflake_schema_name   = ""
+snowflake_api_integration_name = ""
+
+aws_api_gateway_deployment__invoke_url = ""
+aws_api_gateway_deployment__url_of_proxy_and_resource = ""

@@ -38,7 +38,7 @@ output "aws_api_gateway_rest_api__name" {
 
 output "aws_api_gateway_deployment__invoke_url" {
   description = "The invoke url of the API Gateway endpoint"
-  value       = join(", ", values(aws_api_gateway_deployment.lambda_proxy).*.invoke_url)
+  value       = local.aws_api_gateway_deployment__invoke_url
 }
 
 output "aws_api_gateway_deployment__url_of_proxy_and_resource" {

@@ -33,7 +33,7 @@ resource "aws_iam_role" "snow_ext_function" {
           "Effect" : "Allow",
           "Action" : "sts:AssumeRole",
           "Principal" : {
-            "AWS" : "${local.arn}"
+            "AWS" : "${local.api_aws_iam_user_arn}"
           },
           "Condition" : {
             "StringEquals" : {

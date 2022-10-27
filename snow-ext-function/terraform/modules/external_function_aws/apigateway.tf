@@ -46,7 +46,7 @@ resource "aws_api_gateway_deployment" "lambda_proxy" {
   stage_name  = lower(var.env_code)
 
   triggers = {
-    build_number = timestamp()
+    build_number = "${md5(var.snowflake_api_aws_external_id)}"
   }
 
   depends_on = [aws_api_gateway_integration.lambda_proxy]

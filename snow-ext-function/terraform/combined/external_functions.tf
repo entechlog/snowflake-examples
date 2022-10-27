@@ -1,5 +1,6 @@
 module "external_function" {
-  source = "./modules/external_function"
+  # combined module with code to create resources in aws and snowflake
+  source = "../modules/external_function_combined"
 
   snowflake_account       = var.snowflake_account
   snowflake_region        = var.snowflake_region

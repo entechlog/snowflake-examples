@@ -1,6 +1,8 @@
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Instructions](#instructions)
+  - [Combined module for AWS and Snowflake](#combined-module-for-aws-and-snowflake)
+  - [Separate module for AWS and Snowflake](#separate-module-for-aws-and-snowflake)
   - [Blog](#blog)
   - [Terraform commands](#terraform-commands)
 - [Reference](#reference)
@@ -27,6 +29,50 @@ See below diagram for high level architecture
 </p>
 
 # Instructions
+## Combined module for AWS and Snowflake
+Combined Terraform module for AWS and Snowflake can be used when you have both Terraform providers configured and supported by a single Terraform backend.
+
+- cd into `terraform\combined`
+- Create a copy of `terraform.tfvars.template` as `terraform.tfvar` and update the same with values for all required parameters. It's okay to not set `snowflake_api_aws_iam_user_arn` and `snowflake_api_aws_external_id` in the first run. This will be obtained from snowflake integration terraform output
+- Create the resource by running following commands
+  ```bash
+  terraform init
+  terraform plan
+  terraform apply
+  ```
+- Update `terraform.tfvar` to add `snowflake_api_aws_iam_user_arn` and `snowflake_api_aws_external_id` from the previous run
+- Update the resource by running following commands
+  ```bash
+  terraform apply
+  ```
+- This should create and configure all resources in Snowflake and AWS required for external function
+
+## Separate module for AWS and Snowflake
+
+- cd into `terraform\separate\aws`
+- Create a copy of `terraform.tfvars.template` as `terraform.tfvar` and update the same with values for all required parameters. It's okay to not set `snowflake_api_aws_iam_user_arn` and `snowflake_api_aws_external_id` in the first run. This will be obtained from snowflake integration terraform output
+- Create the resource by running following commands
+  ```bash
+  terraform init
+  terraform plan
+  terraform apply
+  ```
+- cd into `terraform\separate\snowflake`
+- Create a copy of `terraform.tfvars.template` as `terraform.tfvar` and update the same with values for all required parameters
+- Create the resource by running following commands
+  ```bash
+  terraform init
+  terraform plan
+  terraform apply
+  ```
+- cd into `terraform\separate\aws`
+- Update `terraform.tfvar` to add `snowflake_api_aws_iam_user_arn` and `snowflake_api_aws_external_id` from the previous run
+- Update the resource by running following commands
+  ```bash
+  terraform apply
+  ```
+- This should create and configure all resources in Snowflake and AWS required for external function
+
 ## Blog
 See this blog for more details
 
@@ -111,20 +157,20 @@ Test the python module locally using `python-lambda-local -f lambda_handler get_
 | Name                 | How to get the details ?                                                                                                                          | Value |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
 | AWS Account ID       | Login to your AWS account to get the account ID. See [here](https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html) for more details |       |
-| Lambda Function Name | Collect this from lambda_function_name of the Terraform output                                                                                    |       |
+| Lambda Function Name | Collect this from aws_lambda_function__function_name of the Terraform output                                                                                    |       |
 
 ## Step 2: Information about the API Gateway (proxy Service)
 
 | Name                        | How to get the details ?                                                                                     | Value |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------ | ----- |
-| IAM Role Name               | Collect this from iam_role_name of Terraform output                                                          |       |
-| IAM Role ARN                | Collect this from iam_role_arn of Terraform output                                                           |       |
+| IAM Role Name               | Collect this from aws_iam_role__name of Terraform output                                                          |       |
+| IAM Role ARN                | Collect this from aws_iam_role__arn of Terraform output                                                           |       |
 | Snowflake Region            | Run the query `select CURRENT_REGION() as current_region` in Snowflake as ACCOUNTADMIN                       |       |
 | Snowflake VPC ID (optional) | Run the query `select system$get_snowflake_platform_info() as snowflake_vpc_id` in Snowflake as ACCOUNTADMIN |       |
 | API Name                    | Collect this from api_gateway_name of the Terraform output                                                   |       |
-| API Gateway Resource Name   |                                                                                                              |       |
-| Resource Invocation URL     | Collect this from aws_api_gateway_deployment_invoke_url of Terraform output                                  |       |
-| Method Request ARN          | Collect this from api_gateway_execution_arn of the Terraform output                                          |       |
+| API Gateway Resource Name   | Collect this from aws_api_gateway_deployment__url_of_proxy_and_resource of the Terraform output                                                                                                          |       |
+| Resource Invocation URL     | Collect this from aws_api_gateway_deployment__invoke_url of the Terraform output                                  |       |
+| Method Request ARN          | Collect this from aws_api_gateway_deployment__invoke_url of the Terraform output                                          |       |
 
 ## Step 3: Information about the API Integration and External Function
 
@@ -146,11 +192,8 @@ select get_weather('kansas'):TEMPERATURE::varchar as current_temperature;
 ```
 
 # Future Enhancements
-- Currently, the module does a force deployment of API gateway using timestamp as trigger. This will end up showing terraform changes on 4 modules all the time. Should find work around to resolve this issue
-  ```
-    triggers = {
-    build_number = timestamp()
-  }
-  ```
 
-- Add support for external functions with multiple arguments
+| Feature                                                                                                                                                                                                      | Status |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| Currently, the module does a force deployment of API gateway using timestamp as trigger. This will end up showing terraform changes on 4 modules all the time. Should find work around to resolve this issue | ✔️      |
+| Add support for external functions with multiple arguments                                                                                                                                                   | ❌      |

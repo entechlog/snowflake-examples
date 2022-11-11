@@ -5,5 +5,7 @@ module "external_function" {
   snowflake_api_aws_iam_user_arn = var.snowflake_api_aws_iam_user_arn
   snowflake_api_aws_external_id  = var.snowflake_api_aws_external_id
 
-  snowflake_ext_function_name = ["demo", "get_weather"]
+  open_weather_api_key = var.open_weather_api_key
+
+  snowflake_ext_function_name = ["demo", "get_weather", "get_weather_open"]
 }

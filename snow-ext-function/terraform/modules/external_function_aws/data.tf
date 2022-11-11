@@ -5,10 +5,15 @@ data "aws_iam_policy_document" "lambda_exec_policy" {
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+      "kms:Decrypt"
     ]
     resources = [
-      "arn:aws:logs:*:*:*"
+      "arn:aws:logs:*:*:*",
+      "arn:aws:secretsmanager:*",
+      "arn:aws:kms:*"
     ]
   }
 }
@@ -18,18 +23,16 @@ resource "null_resource" "copy_files" {
   for_each = toset(var.snowflake_ext_function_name)
 
   provisioner "local-exec" {
-    command = <<EOT
-    rm -rf ../../uploads/lambda/${lower(each.key)}/target
-    mkdir ../../uploads/lambda/${lower(each.key)}/target
-    cp ../../uploads/lambda/${lower(each.key)}/${lower(each.key)}.py -t ../../uploads/lambda/${lower(each.key)}/target
-    cp ../../uploads/lambda/${lower(each.key)}/requirements.txt -t ../../uploads/lambda/${lower(each.key)}/target
-    EOT
+    command = "rm -rf ../../uploads/lambda/${lower(each.key)}/target && mkdir ../../uploads/lambda/${lower(each.key)}/target && cp ../../uploads/lambda/${lower(each.key)}/${lower(each.key)}.py -t ../../uploads/lambda/${lower(each.key)}/target/ && cp ../../uploads/lambda/${lower(each.key)}/requirements.txt -t ../../uploads/lambda/${lower(each.key)}/target/"
   }
 
   triggers = {
     dependencies_versions = filemd5("../../uploads/lambda/${lower(each.key)}/requirements.txt")
     source_versions       = filemd5("../../uploads/lambda/${lower(each.key)}/${lower(each.key)}.py")
   }
+  # triggers = {
+  #   build_number = timestamp()
+  # }
 }
 
 resource "null_resource" "install_dependencies" {
@@ -37,9 +40,7 @@ resource "null_resource" "install_dependencies" {
   for_each = toset(var.snowflake_ext_function_name)
 
   provisioner "local-exec" {
-    command = <<EOT
-    pip install -r ../../uploads/lambda/${lower(each.key)}/target/requirements.txt -t ../../uploads/lambda/${lower(each.key)}/target
-    EOT
+    command = "pip install -r ../../uploads/lambda/${lower(each.key)}/target/requirements.txt -t ../../uploads/lambda/${lower(each.key)}/target"
   }
 
   triggers = {

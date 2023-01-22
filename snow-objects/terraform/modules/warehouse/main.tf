@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "Snowflake-Labs/snowflake"
-      version = "0.47.0"
-    }
-  }
-}
-
 //***************************************************************************//
 // Create Snowflake warehouse
 //***************************************************************************//
@@ -49,10 +40,3 @@ resource "snowflake_warehouse_grant" "warehouse_grant" {
 #   suspend_triggers           = var.resource_monitor_suspend_triggers
 #   suspend_immediate_triggers = var.resource_monitor_suspend_immediate_triggers
 # }
-
-//***************************************************************************//
-// Output block
-//***************************************************************************//
-output "warehouse" {
-  value = snowflake_warehouse.warehouse
-}

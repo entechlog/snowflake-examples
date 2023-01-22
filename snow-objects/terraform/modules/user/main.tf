@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "Snowflake-Labs/snowflake"
-      version = "0.47.0"
-    }
-  }
-}
-
 //***************************************************************************//
 // Create Snowflake User
 //***************************************************************************//
@@ -27,10 +18,4 @@ resource "snowflake_user" "user" {
   default_role      = lookup(each.value, "default_role", "NONE") == "NONE" ? "PUBLIC" : each.value.default_role
 
   must_change_password = false
-}
-
-// Output block starts here
-
-output "user" {
-  value = snowflake_user.user
 }

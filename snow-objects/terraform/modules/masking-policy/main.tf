@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "Snowflake-Labs/snowflake"
-      version = "0.47.0"
-    }
-  }
-}
-
 resource "snowflake_masking_policy" "masking_policy" {
   name               = var.masking_policy_name
   database           = var.masking_policy_database
@@ -23,8 +14,4 @@ resource "snowflake_masking_policy_grant" "masking_policy_grant" {
   masking_policy_name = snowflake_masking_policy.masking_policy.name
   privilege           = each.key
   roles               = each.value
-}
-
-output "masking_policy" {
-  value = snowflake_masking_policy.masking_policy
 }

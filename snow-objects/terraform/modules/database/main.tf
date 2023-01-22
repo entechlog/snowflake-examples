@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "Snowflake-Labs/snowflake"
-      version = "0.47.0"
-    }
-  }
-}
-
 resource "snowflake_database" "database" {
   name    = var.db_name
   comment = var.db_comment
@@ -56,14 +47,4 @@ resource "snowflake_table_grant" "table_grant" {
   on_future         = true
   with_grant_option = false
   depends_on        = [snowflake_schema.schema]
-}
-
-// Output block starts here
-
-output "database" {
-  value = snowflake_database.database
-}
-
-output "schema" {
-  value = snowflake_schema.schema
 }

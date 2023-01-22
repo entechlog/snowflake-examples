@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "Snowflake-Labs/snowflake"
-      version = "0.47.0"
-    }
-  }
-}
-
 resource "snowflake_storage_integration" "storage_integration" {
   name                      = var.name
   comment                   = var.comment
@@ -24,10 +15,4 @@ resource "snowflake_integration_grant" "integration_grant" {
   roles            = var.roles
 
   with_grant_option = false
-}
-
-// Output block starts here
-
-output "storage_integration" {
-  value = snowflake_storage_integration.storage_integration
 }

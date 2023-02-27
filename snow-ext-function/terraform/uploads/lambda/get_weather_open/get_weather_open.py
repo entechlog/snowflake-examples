@@ -1,6 +1,8 @@
 import requests
 import json
-
+import botocore 
+import botocore.session 
+from aws_secretsmanager_caching import SecretCache, SecretCacheConfig 
 
 def lambda_handler(event, context):
 
@@ -24,17 +26,31 @@ def lambda_handler(event, context):
 
         # For each input row in the JSON object...
         for row in rows:
+
+            # Initialize response
+            response_json = {}
+
             # Read the input row number (the output row number will be the same).
             row_number = row[0]
 
             # Read the first input parameter's value.
-            location_code = row[1]
+            location_name = row[1]
 
             # api-endpoint
-            URL = 'https://weatherdbi.herokuapp.com/data/weather/' + location_code
+            URL = "https://api.openweathermap.org/data/2.5/weather"
+            ### set up Secrets Manager
+            client = botocore.session.get_session().create_client('secretsmanager')
+            cache_config = SecretCacheConfig()
+            cache = SecretCache( config = cache_config, client = client)
+            secret = cache.get_secret_string('/lambda/external_function/open_weather_conn')
 
-            # defining a params dict for the parameters to be sent to the API
-            PARAMS = {}
+            OPEN_WEATHER_API_KEY = json.loads(secret)['api_key']
+
+            # Prepare inputs for weather api call
+            units = "imperial"    
+    
+            # defining a params dict for the parameters to be sent to the API 
+            PARAMS = {'q':location_name,'APPID':OPEN_WEATHER_API_KEY}
 
             # sending get request and saving the response as response object
             try:
@@ -50,7 +66,7 @@ def lambda_handler(event, context):
             except requests.exceptions.RequestException as err:
                 print("Something Else: ", err)
 
-            response_parsed = response_json['currentConditions']
+            response_parsed = response_json
             print("response_parsed : ", response_parsed)
 
             # Compose the output

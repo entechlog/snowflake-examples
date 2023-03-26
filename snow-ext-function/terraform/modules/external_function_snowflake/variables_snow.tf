@@ -34,3 +34,7 @@ variable "snowflake_schema_name" {
 variable "snowflake_api_integration_name" {
   type = string
 }
+
+variable "snowflake_function_grant__roles" {
+  type = list(string)
+}

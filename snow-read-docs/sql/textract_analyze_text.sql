@@ -1,3 +1,5 @@
+-- Read RAW response from textract 
+
 WITH col_key
 AS (
 	SELECT DISTINCT src.metadata$filename AS file_name,

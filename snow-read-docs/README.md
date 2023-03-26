@@ -5,9 +5,6 @@
   - [Blog](#blog)
   - [Terraform commands](#terraform-commands)
 - [Reference](#reference)
-- [Testing](#testing)
-  - [Commands](#commands)
-  - [Payload](#payload)
 - [Validate results](#validate-results)
 - [Future Enhancements](#future-enhancements)
   
@@ -18,7 +15,7 @@ This repo contains code to create resources required to parse document in AWS s3
 See below diagram for high level architecture
 
 <p align="center">
-  <img src="" alt="Overview" width="738">
+  <img src="./assets/overview.jpeg" alt="Overview" width="738">
 </p>
 
 # Instructions
@@ -94,17 +91,6 @@ for i in $(terraform state list); do terraform state rm $i; done
 # Reference 
 - https://github.com/aws-samples/amazon-textract-code-samples
 
-
-# Testing
-## Commands
-
-Test the python module locally using `python-lambda-local -f lambda_handler get_weather.py events/example_02.json`
-
-## Payload
-
-```json
-```
-
 # Validate results
 
 ```sql
@@ -130,4 +116,3 @@ FROM @DEMO_S3_STG(pattern => '.*_detect_doc_response.json');
 | Feature/Issues                                                                                          | Status |
 | ------------------------------------------------------------------------------------------------------- | ------ |
 | BucketNotEmpty: The bucket you tried to delete is not empty. You must delete all versions in the bucket | ✔️      |
-|                                                                                                         | ❌      |

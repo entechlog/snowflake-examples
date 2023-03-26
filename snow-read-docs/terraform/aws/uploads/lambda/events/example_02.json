@@ -1,0 +1,3 @@
+{
+    "body": "{ \"s3_bucket_region\": \"us-west-2\", \"s3_bucket_name\": \"entechlog-demo\", \"s3_object_name\": \"snowflake-pdf-demo/invoice1.pdf\"}"
+}

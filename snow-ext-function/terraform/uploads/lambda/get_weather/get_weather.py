@@ -31,7 +31,7 @@ def lambda_handler(event, context):
             location_code = row[1]
 
             # api-endpoint
-            URL = 'https://api.oceandrivers.com:443/v1.0/getWeatherDisplay/' + location_code + '/?period=latestdata'
+            URL = 'https://goweather.herokuapp.com/weather/' + location_code.lower()
 
             # defining a params dict for the parameters to be sent to the API
             PARAMS = {}

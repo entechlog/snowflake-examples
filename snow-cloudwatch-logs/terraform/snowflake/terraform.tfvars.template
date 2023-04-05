@@ -1,0 +1,9 @@
+# Variables for snowflake connection
+snowflake_account  = ""
+snowflake_region   = ""
+snowflake_user     = ""
+snowflake_password = ""
+snowflake_role     = ""
+
+snowflake_storage_integration__storage_allowed_locations = ["s3://<bucket-name>"]
+snowflake_storage_integration__storage_aws_role_arn      = ""

@@ -1,0 +1,3 @@
+# Variables for external function
+snowflake_storage__aws_iam_user_arn = ""
+snowflake_storage__aws_external_id  = ""

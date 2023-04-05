@@ -10,6 +10,7 @@ This repository contains Snowflake examples running in docker for quick demo.
 
 ## Blog with Demo
 - [Snowflake - Tools Docker container](./snow-tools/README.md)
-- [Snowflake - Terraform Examples](./terraform/README.md)
-  
+- [Snowflake - Create Snowflake resources using Terraform](https://www.entechlog.com/blog/data/how-to-create-snowflake-resources-using-terraform/)
+- [Snowflake - Analyze documents in Snowflake](https://www.entechlog.com/blog/data/analyzing-documents-in-snowflake/)
+- [Snowflake - External functions](./snow-ext-function/README.md)  
 ## References

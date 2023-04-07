@@ -1,10 +1,12 @@
 USE DATABASE <database-name>;
 USE SCHEMA <schema-name>;
 
+-- validate stages
 SHOW STAGES;
 DESC STAGE <stage-name>;
 LIST @<stage-name>;
 
+-- validate data in stage
 SELECT src.metadata$filename AS file_name,
 	src.metadata$file_row_number AS file_row_number,
 	src.metadata$file_content_key AS file_content_key,

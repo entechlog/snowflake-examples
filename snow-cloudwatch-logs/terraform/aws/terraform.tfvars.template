@@ -1,3 +1,4 @@
 # Variables for external function
-snowflake_storage__aws_iam_user_arn = ""
+snowflake__aws_iam_user_arn = ""
 snowflake_storage__aws_external_id  = ""
+snowflake_pipe__notification_channel = ""

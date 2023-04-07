@@ -44,7 +44,7 @@ variable "use_env_code" {
 # These two values are obtained by running the query `DESCRIBE integration <integration-name>;`
 # Initially resources should be created with default values only
 
-variable "snowflake_storage__aws_iam_user_arn" {
+variable "snowflake__aws_iam_user_arn" {
   type        = string
   description = "The AWS IAM user arn from Snowflake"
   default     = null
@@ -54,4 +54,10 @@ variable "snowflake_storage__aws_external_id" {
   type        = string
   description = "The AWS external ID from Snowflake"
   default     = "12345"
+}
+
+variable "snowflake_pipe__notification_channel" {
+  type        = string
+  description = "The sqs channel for snowpipe notification"
+  default     = null
 }

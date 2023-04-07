@@ -4,6 +4,14 @@ resource "aws_s3_bucket" "cloudwatch_logs" {
   bucket        = "${local.resource_name_prefix}-cloudwatch-logs"
   force_destroy = true
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
 }
 
 # Enable versioning in s3
@@ -52,4 +60,15 @@ resource "aws_s3_bucket_policy" "cloudwatch_logs" {
   bucket = aws_s3_bucket.cloudwatch_logs.id
   policy = data.aws_iam_policy_document.s3_read_only_policy_document.json
 
+}
+
+# Resource to notify sqs queue for object created event 
+resource "aws_s3_bucket_notification" "cloudwatch_logs" {
+  bucket = aws_s3_bucket.cloudwatch_logs.id
+
+  queue {
+    queue_arn     = local.snowflake_pipe__notification_channel
+    events        = ["s3:ObjectCreated:*"]
+    filter_prefix = "data/"
+  }
 }

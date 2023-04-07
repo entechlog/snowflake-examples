@@ -20,7 +20,7 @@ See below diagram for high level architecture
 
 # Instructions
 - cd into `terraform\aws`
-- Create a copy of `terraform.tfvars.template` as `terraform.tfvar` and update the same with values for all required parameters. It's okay to not set `snowflake_api_aws_iam_user_arn` and `snowflake_api_aws_external_id` in the first run. This will be obtained from snowflake integration terraform output
+- Create a copy of `terraform.tfvars.template` as `terraform.tfvar` and update the same with values for all required parameters. It's okay to not set `snowflake__aws_iam_user_arn`, `snowflake_storage__aws_external_id` and `snowflake_pipe__notification_channel` in the first run. This will be obtained from snowflake integration terraform output. Idea to keep terraform for AWS and Snowflake seperate is to avoid any circular dependency
 - Create the resource by running following commands
   ```bash
   terraform init
@@ -36,12 +36,12 @@ See below diagram for high level architecture
   terraform apply
   ```
 - cd into `terraform\aws`
-- Update `terraform.tfvar` to add `snowflake_storage_integration__storage_aws_iam_user_arn` and `snowflake_storage_integration__storage_aws_external_id` from the previous run
+- Update `terraform.tfvar` to add `snowflake__aws_iam_user_arn`, `snowflake_storage__aws_external_id` and `snowflake_pipe__notification_channel` from the previous run
 - Update the resource by running following commands
   ```bash
   terraform apply
   ```
-- This should create and configure all resources in Snowflake and AWS required for external function
+- This should create and configure all resources in Snowflake and AWS required for ingesting data from CloudWatch to Snowflake
 
 ## Blog
 See this blog for more details

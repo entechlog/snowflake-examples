@@ -10,6 +10,6 @@ output "aws_s3_bucket__cloudwatch_logs__id" {
   value = aws_s3_bucket.cloudwatch_logs.id
 }
 
-output "aws_iam_role__snow_s3_intg__arn" {
-  value = aws_iam_role.snow_s3_intg.arn
+output "aws_iam_role__s3_to_snowflake_delivery_role__arn" {
+  value = aws_iam_role.s3_to_snowflake_delivery_role.arn
 }

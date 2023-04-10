@@ -64,14 +64,6 @@ variable "snowflake_storage_integration__storage_allowed_locations" {
   type = list(string)
 }
 
-variable "snowflake_storage_integration__storage_aws_role_arn" {
-  type = string
-}
-
-variable "snowflake_notification_integration__aws_sqs_role_arn" {
-  type = string
-}
-
-variable "snowflake_notification_integration__aws_sqs_arn" {
+variable "snowflake__aws_role_arn" {
   type = string
 }

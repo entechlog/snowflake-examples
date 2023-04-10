@@ -12,3 +12,11 @@ FROM TABLE(information_schema.copy_history(TABLE_NAME=>'<database-name>.<schema-
 
 -- validate data in final table
 SELECT * FROM <database-name>.<schema-name>.<table-name>;
+
+SELECT 
+VALUE:timestamp::VARCHAR AS timestamp, 
+VALUE:id::VARCHAR AS id, 
+VALUE:message::VARCHAR AS message
+FROM <database-name>.<schema-name>.<table-name>,
+lateral flatten( input => "cloudwatch_log":logEvents)
+ORDER BY timestamp DESC;

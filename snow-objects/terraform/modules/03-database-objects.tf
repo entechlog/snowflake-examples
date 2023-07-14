@@ -92,6 +92,8 @@ module "entechlog_raw_db" {
 
   table_grant = {
     "DATAGEN SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
+    "SEED SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
+    "YELLOW_TAXI SELECT" = { "roles" = [module.entechlog_atlan_role.role.name, module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
   }
 
   depends_on = [module.entechlog_dbt_role.role, module.entechlog_atlan_role.role, module.entechlog_kafka_role.role]

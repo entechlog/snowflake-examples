@@ -47,3 +47,14 @@ terraform.rc
 # Lambda
 **/target*
 *.zip
+
+# Streamlit
+secrets.toml
+
+# dbt
+target/
+dbt_modules/
+logs/
+#profiles.yml
+dbt_packages/
+.user.yml

@@ -1,0 +1,34 @@
+---
+version: '3'
+
+services:
+  miniconda:
+    image: continuumio/miniconda3
+    container_name: streamlit
+    ports:
+      - "8501-8520:8501-8520" # streamlit
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - ./streamlit/src/:/snow-chat
+    environment:
+      TZ: US/Pacific
+    command:
+      - bash
+      - -c
+      - |
+        #
+        echo "===> Installing snowpark, openai and streamlit"
+        conda create --name snowpark-snow-chat --override-channels -c https://repo.anaconda.com/pkgs/snowflake python=3.10 numpy pandas -y --quiet
+        conda activate snowpark-snow-chat
+        conda install -c https://repo.anaconda.com/pkgs/snowflake snowflake-snowpark-python openai -y --quiet
+        pip install streamlit
+        #
+        echo "===> Setup streamlit app"
+        cd snow-chat
+        ls -ltra
+        streamlit run 💻_Snow_Chat.py
+        #
+        echo "===> sleep infinity to leave the containter running until stopped manually"
+        sleep infinity

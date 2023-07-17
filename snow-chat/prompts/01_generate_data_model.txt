@@ -1,0 +1,8 @@
+- I have following attributes "VendorID,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,pickup_longitude,pickup_latitude,RateCodeID,store_and_fwd_flag,dropoff_longitude,dropoff_latitude,payment_type,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount" in a incoming feed and I want to store this data in a data warehouse with dimensions and fact tables. 
+- Ensure that all attribute names are transformed to lower snake case.
+- Follow Snowflake's data type standards for the attributes.
+- Define the primary key as the _id column and the natural key as the _code column in all dimensions.
+- For example, in the dim_rate table, rate_id is the surrogate key, rate_code is the natural key, and rate_name is the actual value.
+- Include the required attributes in the date dimension: date_id, date, year, month, day, day_name, month_name, day_of_week, day_of_year, is_weekend, and is_holiday. date_id to use the date itself in YYYYMMDD format 
+- Location should be be its own dimension with latitude and longitude, which will have distinct pickup_latitude, dropoff_latitude, pickup_longitude, dropoff_longitude
+- Date ID in fact is based on pickup timestamp and should retain the pick and drop of timestamp also as separate columns

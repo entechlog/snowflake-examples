@@ -3,7 +3,7 @@ import re
 import streamlit as st
 
 # Configure the list of valid schemas
-schemas = ["dev_entechlog_dw_db.dim","dev_entechlog_dw_db.fact"]
+schemas = ["tst_entechlog_dw_db.dim","tst_entechlog_dw_db.fact"]
 
 st.title("💻 Snow Chat")
 

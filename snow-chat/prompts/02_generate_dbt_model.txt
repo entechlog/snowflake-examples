@@ -1,8 +1,92 @@
-- Write SQL statements to load the DW models from the staging tables.
-- Follow the naming conventions: use stg__ as the prefix for staging layer models and dw__ as the prefix for data warehouse layer models.
+- Can you use this model and help me create the sql required for dbt models ?
+- For the dbt models, Here are the rules that should be followed
+- All tables should have a stage layer model and a dw layer model
+- Follow the naming conventions: use stg__ as the prefix for staging layer models and dw__ as the prefix for data warehouse layer models
+- alias should not have stg__dim_, stg__fact_, dw__dim_, dw__fact_ prefixes
+- Date dimension should have logic to load dates from 1900 to 2100
+- The stage layer model is a view and should have a config block like the below example for dim_date
+ 
+    {{ config(
+    alias = 'date',
+    materialized = 'view',
+    tags=["stage","dim"]
+    ) }}
 
-- Include the necessary JOIN conditions to connect the fact table with the dimension tables.
-- Use COALESCE logic to handle default values for foreign key columns in the DW fact table.
-- Ensure that the union_with_defaults CTE in dimension models has all four union statements.
-- Apply the mapping rules for _id values: 0 maps to 'Unknown', 1 maps to 'Not Applicable', and 2 maps to 'All'.
-- Validate the SQL syntax for compatibility with Snowflake database.
+- The stage layer model should have all data cleansing and data standardization logic, Here is an example for stg__dim_vendor 
+
+    {{ config(
+    alias = 'vendor',
+    materialized = 'view',
+    tags=["stage","dim"]
+    ) }}
+
+    WITH source
+    AS (
+    SELECT DISTINCT vendor_code, vendor_name
+    FROM {{ ref('ref__vendor') }}
+    ),
+
+    union_with_defaults
+    AS (
+    SELECT {{ dbt_utils.generate_surrogate_key('vendor_code') }} AS vendor_id,
+    vendor_code::VARCHAR(128) AS vendor_code,
+    vendor_name::VARCHAR(128) AS vendor_name
+    FROM get_player_banned_type_name
+
+    UNION
+
+    SELECT '0' AS vendor_id,
+    'Unknown'::VARCHAR(128) AS vendor_code,
+    'Unknown'::VARCHAR(100) AS vendor_name
+
+    UNION
+
+    SELECT '1' AS vendor_id,
+    'Not Applicable'::VARCHAR(128) AS vendor_code,
+    'Not Applicable'::VARCHAR(100) AS vendor_name
+
+    UNION
+
+    SELECT '2' AS vendor_id,
+    'All'::VARCHAR(128) AS vendor_code,
+    'All'::VARCHAR(100) AS vendor_name
+    ),
+
+    deduplicated
+    AS (
+    SELECT *
+    FROM union_with_defaults qualify row_number() OVER (
+    PARTITION BY vendor_code,
+    ORDER BY vendor_id,
+    vendor_name DESC
+    ) = 1
+    )
+
+    SELECT *
+    FROM deduplicated
+
+- The dw layer model is a table and should have a config block like the below example for dw__dim_date
+
+    {{ config(
+    alias = 'date',
+    materialized = 'table',
+    transient=false,
+    tags=["dw","dim"]
+    ) }}
+
+- The dw layer model is a select star for most part, this layer is primarily used to control access and to materialize the final data. The only exception to this would fact tables, fact tables should have logic to join to respective dimensions to pull the value for _id column. Here is an example for dw__dim_vendor
+
+    {{ config(
+    alias = 'vendor',
+    materialized = 'table',
+    transient=false,
+    tags=["dw","dim"]
+    ) }}
+
+    SELECT {{ dbt_utils.star(ref('stg__dim_vendor')) }}
+    FROM {{ ref('stg__dim_vendor') }}
+
+- When loading the fact dw layer, include the necessary JOIN conditions to connect the fact table with the dimension tables to get the value for _id columns 
+- When loading the fact dw layer, use COALESCE logic to handle default values for foreign key columns in the DW fact table
+- Ensure that the union_with_defaults CTE in dimension models has all four union statements, this is to handle the defaults dimensions, for _id values: 0 maps to 'Unknown', 1 maps to 'Not Applicable', and 2 maps to 'All'.
+- Validate the SQL syntax for compatibility with Snowflake database

@@ -1,0 +1,7 @@
+- Create a schema.yml file for each DW model to provide documentation.
+- Include a description for each table and its purpose.
+- Specify the columns in each table with their descriptions and any necessary tests.
+- Follow the naming conventions: use dw__ as the prefix for table names in the schema.yml file.
+- Ensure proper alignment and indentation in the YAML file.
+- Use the correct column names and data types as defined in the DW models.
+- Document any additional information or considerations for each table and column.

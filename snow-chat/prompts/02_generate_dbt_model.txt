@@ -1,0 +1,8 @@
+- Write SQL statements to load the DW models from the staging tables.
+- Follow the naming conventions: use stg__ as the prefix for staging layer models and dw__ as the prefix for data warehouse layer models.
+
+- Include the necessary JOIN conditions to connect the fact table with the dimension tables.
+- Use COALESCE logic to handle default values for foreign key columns in the DW fact table.
+- Ensure that the union_with_defaults CTE in dimension models has all four union statements.
+- Apply the mapping rules for _id values: 0 maps to 'Unknown', 1 maps to 'Not Applicable', and 2 maps to 'All'.
+- Validate the SQL syntax for compatibility with Snowflake database.

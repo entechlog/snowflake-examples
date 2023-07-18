@@ -67,3 +67,5 @@ models:
         schema: fact
         materialized: table
 
+on-run-end:
+  - "{{ grant_select_on_schemas([[env_var('ENV_CODE')~'_'~env_var('PROJ_CODE')~'_RAW_DB' | trim, 'YELLOW_TAXI'], [env_var('ENV_CODE')~'_'~env_var('PROJ_CODE')~'_DW_DB' | trim, 'DIM'], [env_var('ENV_CODE')~'_'~env_var('PROJ_CODE')~'_DW_DB' | trim, 'FACT']], env_var('ENV_CODE')~'_'~env_var('PROJ_CODE')~'_STREAMLIT_ROLE') }}"

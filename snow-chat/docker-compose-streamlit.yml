@@ -23,7 +23,7 @@ services:
         conda create --name snowpark-snow-chat --override-channels -c https://repo.anaconda.com/pkgs/snowflake python=3.10 numpy pandas -y --quiet
         conda activate snowpark-snow-chat
         conda install -c https://repo.anaconda.com/pkgs/snowflake snowflake-snowpark-python openai -y --quiet
-        pip install streamlit
+        pip install pyyaml streamlit
         #
         echo "===> Setup streamlit app"
         cd snow-chat

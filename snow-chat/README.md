@@ -88,13 +88,15 @@ Refer to [this blog](https://www.entechlog.com/blog/data/chat-with-data-in-snowf
 - https://github.com/darshilparmar/uber-etl-pipeline-data-engineering-project
 - https://github.com/fivethirtyeight/data
 - https://pythonspeed.com/articles/activate-conda-dockerfile/
+- https://github.com/mydgd/snowflake-table-catalog/tree/main
+- https://quickstarts.snowflake.com/guide/frosty_llm_chatbot_on_streamlit_snowflake/
   
 # Known Issues and Solution
 
 | Error                                                                                                                                                                                                                                                             | Solution                                                                                                              |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | When testing on a schema with a few hundred tables and columns, the following error occurred: InvalidRequestError: This model's maximum context length is 4097 tokens. However, your messages resulted in 22564 tokens. Please reduce the length of the messages. | You must use a different model which supports more tokens, or logically reduce the tokens before making the API call. |
-
+| SnowparkSQLException: (1304): 390114 (08001): Authentication token has expired. The user must authenticate again. | |
 
 # Future Enhancements
 

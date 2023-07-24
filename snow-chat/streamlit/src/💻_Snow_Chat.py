@@ -1,11 +1,38 @@
 import openai
 import re
 import streamlit as st
+import yaml
 
-# Configure the list of valid schemas
-schemas = ["tst_entechlog_dw_db.dim","tst_entechlog_dw_db.fact"]
+# get the list of schemas from config file
+with open("config.yml", 'r') as stream:
+    config = yaml.safe_load(stream)
 
-st.title("💻 Snow Chat")
+schemas = []
+for database in config['databases']:
+    for schema in database['schemas']:
+        schemas.append(f"{database['name']}.{schema}")
+
+# streamlit styling
+
+# Layout
+st.set_page_config(page_title="💻 Snow Chat", page_icon="❄️", layout="centered")
+
+# Logo
+st.image('img/logo.png')
+
+# Header
+st.markdown("""
+    # 💻 Snow Chat
+    Welcome to Snow Chat! You can use this app to interact with our database. Just type your questions in the chat box below.
+    """,
+    unsafe_allow_html=True)
+
+# Sidebar
+with st.sidebar:
+    st.markdown(
+        '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/entechlog">@entechlog</a></h6>',
+        unsafe_allow_html=True,
+    )
 
 # Initialize the chat messages history
 openai.api_key = st.secrets.OPENAI_API_KEY

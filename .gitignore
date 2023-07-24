@@ -58,3 +58,10 @@ logs/
 #profiles.yml
 dbt_packages/
 .user.yml
+
+#mage
+*.db
+*.cache
+**/.file_versions*
+**/data_exporters*
+**/data_loaders*

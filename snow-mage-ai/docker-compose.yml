@@ -1,0 +1,44 @@
+---
+version: '3'
+
+services:
+  mage-ai:
+    image: mageai/mageai${MAGE_DOCKER_VERSION_TAG}
+    container_name: mage-ai
+    command: 
+      - bash 
+      - -c 
+      - |
+        echo "Launching mage-ai"
+        mage init ${MAGE_PROJECT_NAME}
+        pip install -r ${MAGE_PROJECT_NAME}/requirements.txt
+        mage start ${MAGE_PROJECT_NAME}
+    restart: unless-stopped
+    stdin_open: true # used for interactive debugging
+    tty: true # used for interactive debugging
+    ports:
+      - "6789-6799:6789-6799" # streamlit
+    volumes:
+      - type: bind
+        source: /C
+        target: /C
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - ./mage/${MAGE_PROJECT_NAME}/:/home/src/${MAGE_PROJECT_NAME} # config and code
+    environment:
+      - TZ=US/Pacific
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - ENV_CODE=${ENV_CODE}
+      - PROJ_CODE=${PROJ_CODE}
+      - SNOWSQL_ACCOUNT=${SNOWSQL_ACCOUNT}
+      - SNOWSQL_PWD=${SNOWSQL_PWD}
+      - BUCKET_NAME_DW_INPUT=${BUCKET_NAME_DW_INPUT}
+      - URL_CRICSHEET_ALL_MATCH_DATA=${URL_CRICSHEET_ALL_MATCH_DATA}
+    deploy:
+      resources:
+        limits:
+          memory: 2048m

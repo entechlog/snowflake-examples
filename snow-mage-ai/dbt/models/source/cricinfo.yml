@@ -1,0 +1,21 @@
+version: 2
+sources:
+- name: cricinfo
+  database: "{{ env_var('ENV_CODE') | trim | upper }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+  schema: "CRICSHEET"
+  loader: S3
+  tables:
+    - name: all_player_details
+      ext_full_refresh: true
+      external:
+        location: "@{{ env_var('ENV_CODE') | trim | upper }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB.CRICSHEET.TST_ENTECHLOG_CRICSHEET_S3_STG/cricinfo/"  # required: S3 file path, GCS file path, Snowflake stage, Synapse data source 
+        file_format: >
+          (TYPE = JSON)
+        partitions:
+          - name: file_name
+            data_type: varchar
+            expression: metadata$filename
+            
+        columns:
+          - name: player_data
+            data_type: varchar 

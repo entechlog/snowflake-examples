@@ -1,0 +1,3 @@
+terraform import module.developer_role[0].snowflake_role.role ENTECHLOG_DEVELOPER_ROLE
+terraform import module.analyst_role[0].snowflake_role.role ENTECHLOG_ANALYST_ROLE
+terraform import module.query_wh_xs[0].snowflake_warehouse.warehouse ALL_ENTECHLOG_QUERY_WH_XS

@@ -1,0 +1,4 @@
+# DBT
+dbt-core==1.6.0
+dbt-snowflake
+loguru

@@ -1,0 +1,85 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'cricket'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'cricket'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+# Dynamic paths to support parallel runs
+# log-path: "logs/{{ run_started_at.strftime('%Y%m%d_%H%M%S') }}_{{ invocation_id }}"
+# target-path: "target/{{ run_started_at.strftime('%Y%m%d_%H%M%S') }}_{{ invocation_id }}"
+
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+  - "logs"
+
+vars:
+  # Databases used in the project
+  raw_db: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+  prep_db: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_PREP_DB"
+  dw_db: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_DW_DB"
+
+  # Other variables
+  #s3_bucket: "{{ env_var('ENV_CODE') | trim }}-{{ env_var('PROJ_CODE') | trim | lower }}-cricket"
+  s3_bucket: "dev-{{ env_var('PROJ_CODE') | trim | lower }}-cricket"
+
+# Configuring seeds
+seeds:
+  cricket:
+    reference:
+      database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+      schema: seed
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models:
+  cricket:
+    materialized: table
+    +persist_docs:
+      relation: true
+      columns: true
+
+    source:
+      cricsheet:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+        schema: cricsheet
+        materialized: table
+      cricinfo:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+        schema: cricinfo
+        materialized: table
+
+    stage:
+      dim:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_PREP_DB"
+        schema: dim
+        materialized: view
+      fact:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_PREP_DB"
+        schema: fact
+        materialized: view
+
+    dw:
+      dim:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_DW_DB"
+        schema: dim
+        materialized: table
+      fact:
+        database: "{{ env_var('ENV_CODE') | trim }}_{{ env_var('PROJ_CODE') | trim | upper }}_DW_DB"
+        schema: fact
+        materialized: table

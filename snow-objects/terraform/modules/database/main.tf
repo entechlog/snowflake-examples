@@ -48,3 +48,17 @@ resource "snowflake_table_grant" "table_grant" {
   with_grant_option = false
   depends_on        = [snowflake_schema.schema]
 }
+
+resource "snowflake_grant_privileges_to_role" "schema_privileges_to_role" {
+
+  for_each = var.schema_privileges_to_role
+
+  on_schema {
+    schema_name = "${snowflake_database.database.name}.${split(" ", each.key)[0]}"
+  }
+
+  privileges         = each.value.privileges
+  role_name             = each.value.role_name
+  with_grant_option = false
+  depends_on        = [snowflake_schema.schema]
+}

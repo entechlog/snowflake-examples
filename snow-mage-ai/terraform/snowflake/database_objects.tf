@@ -110,6 +110,12 @@ module "prep_db" {
     "UTIL CREATE VIEW"  = { "roles" = [module.dbt_role.role.name] }
   }
 
+  schema_privileges_to_role = {
+    "DIM 01" = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "DIM 02" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "DIM 03" = { "role_name" = "${upper(local.resource_prefix_without_env)}_DEVELOPER_ROLE", "privileges" = ["USAGE", ""] }
+  }
+
   table_grant = {
     "DIM SELECT"  = { "roles" = [module.dbt_role.role.name, "${upper(local.resource_prefix_without_env)}_DEVELOPER_ROLE"] },
     "FACT SELECT" = { "roles" = [module.dbt_role.role.name, "${upper(local.resource_prefix_without_env)}_DEVELOPER_ROLE"] },

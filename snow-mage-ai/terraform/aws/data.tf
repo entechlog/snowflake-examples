@@ -36,6 +36,20 @@ data "aws_iam_policy_document" "s3_write_access" {
 
 }
 
+data "aws_iam_policy_document" "s3_delete_access" {
+
+  statement {
+    sid = "AllowDeleteAccessToS3Bucket"
+    actions = ["s3:DeleteObject"
+    ]
+    resources = [
+      "${aws_s3_bucket.app.arn}",
+      "${aws_s3_bucket.app.arn}/*"
+    ]
+  }
+
+}
+
 data "aws_iam_policy_document" "s3_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -60,6 +74,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
       "s3:Put*",
       "s3:Get*",
       "s3:List*",
+      "s3:Delete*",
     ]
 
     resources = [

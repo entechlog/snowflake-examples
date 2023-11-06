@@ -25,6 +25,17 @@ resource "aws_iam_role_policy_attachment" "mage_role_s3_read_attach" {
   role       = aws_iam_role.mage_role.name
 }
 
+resource "aws_iam_policy" "mage_role_s3_delete" {
+  name        = "${local.resource_name_prefix}-mage-role-s3-delete-policy"
+  description = "S3 delete policy for mage role"
+  policy      = data.aws_iam_policy_document.s3_delete_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "mage_role_s3_delete_attach" {
+  policy_arn = aws_iam_policy.mage_role_s3_delete.arn
+  role       = aws_iam_role.mage_role.name
+}
+
 resource "aws_iam_user" "mage_user" {
   name = "${local.resource_name_prefix}-mage-user"
 }

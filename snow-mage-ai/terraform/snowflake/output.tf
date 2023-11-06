@@ -11,11 +11,11 @@ output "dbt_role_name" {
 }
 
 output "analyst_role_name" {
-  value = module.analyst_role[0].role.name
+  value = module.da_role[0].role.name
 }
 
 output "developer_role_name" {
-  value = module.developer_role[0].role.name
+  value = module.de_role[0].role.name
 }
 
 output "dbt_wh_xs_name" {

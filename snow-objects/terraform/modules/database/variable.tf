@@ -16,15 +16,19 @@ variable "schemas" {
 
 variable "schema_grant" {
   type = map(any)
-  default = {}
 }
 
 variable "table_grant" {
-  type = map(any)
+  type    = map(any)
   default = {}
 }
 
-variable "schema_privileges_to_role" {
-  type = map(any)
+variable "stage_grant" {
+  type    = map(any)
+  default = {}
+}
+
+variable "pipe_grant" {
+  type    = map(any)
   default = {}
 }

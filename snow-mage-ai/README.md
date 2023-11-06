@@ -16,6 +16,21 @@ docker-compose up --remove-orphans -d --build
 
 - You can access the Mage UI by visiting http://localhost:6789, and the Mage Terminal is accessible at http://localhost:6789/terminal.
 
+- Start and ssh into the dev-tools container
+  
+  ```bash
+  docker exec -it developer-tools /bin/bash
+  ```
+
+- Create the dbt models by running
+  ```
+  dbt run --select tag:source
+  dbt run --select tag:dw
+  dbt run-operation delete_orphaned_tables 
+--args "{databases_list: ['TST_ENTECHLOG_PREP_DB', 'TST_ENTECHLOG_DW_DB'], dry_run: False}"
+  ```
+
+
 
 ## Clean Resources
 

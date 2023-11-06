@@ -1,0 +1,5 @@
+databases:
+- database_name: snowflake-db
+  extra: '{"metadata_params":{},"engine_params":{},"metadata_cache_timeout":{},"schemas_allowed_for_csv_upload":[]}'
+  sqlalchemy_uri: snowflake://{user}:{password}@{account}.{region}/{database}
+  tables: []

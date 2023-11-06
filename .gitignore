@@ -65,3 +65,4 @@ dbt_packages/
 **/.file_versions*
 **/data_exporters*
 **/data_loaders*
+**/charts*

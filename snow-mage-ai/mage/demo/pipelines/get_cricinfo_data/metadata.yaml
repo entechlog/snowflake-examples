@@ -2,7 +2,8 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks: []
+  downstream_blocks:
+  - get_player_metrics
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -10,12 +11,30 @@ blocks:
   name: get_player_details
   retry_config: null
   status: executed
+  timeout: null
   type: custom
   upstream_blocks: []
   uuid: get_player_details
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: get_player_metrics
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - get_player_details
+  uuid: get_player_metrics
 callbacks: []
 concurrency_config: {}
 conditionals: []
+created_at: null
 data_integration: null
 description: null
 executor_config: {}
@@ -25,9 +44,10 @@ extensions: {}
 name: get_cricinfo_data
 notification_config: {}
 retry_config: {}
+run_pipeline_in_one_process: false
 spark_config: {}
 tags: []
 type: python
-updated_at: '2023-08-24 23:39:23'
+updated_at: '2023-10-18 09:14:12'
 uuid: get_cricinfo_data
 widgets: []

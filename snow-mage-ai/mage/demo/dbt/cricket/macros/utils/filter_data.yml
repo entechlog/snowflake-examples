@@ -6,7 +6,7 @@ macros:
       A DBT macro for filtering data in different modes based on run_type.
 
       ```
-      Sample Usage: {{ filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )}}
+      Sample Usage: filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )
       ```
 
     docs:

@@ -6,7 +6,7 @@ macros:
       A DBT macro for deleting records from a table based on specified conditions.
       
       ```
-      Sample Usage : pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}"
+      Sample Usage : delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this)
       ```
       
     docs:

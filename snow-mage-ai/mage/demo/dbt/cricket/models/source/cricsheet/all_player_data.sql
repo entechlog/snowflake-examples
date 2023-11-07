@@ -7,7 +7,7 @@
         file_format="(TYPE = CSV SKIP_HEADER = 1 TRIM_SPACE = TRUE ESCAPE_UNENCLOSED_FIELD = NONE)",
         mode="INSERT",
         tags=["source", "cricsheet"],
-        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_date'), this) }}",
+        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}",
     )
 }}
 
@@ -39,6 +39,4 @@ select
     $12 as namekey_cricketarchive,
     $13 as namekey_cricketarch
 from {{ external_stage() }}
-{% if not var("is_full_refresh") %}
-    where date(file_last_modified_dt) = {{ "'" ~ var("batch_date") ~ "'" }}
-{% endif %}
+{{ filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )}}

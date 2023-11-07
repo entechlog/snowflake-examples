@@ -1,0 +1,29 @@
+version: 2
+
+macros:
+  - name: delete_data
+    description: |-
+      A DBT macro for deleting records from a table based on specified conditions.
+      
+      ```
+      Sample Usage : pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}"
+      ```
+      
+    docs:
+      show: true
+    arguments:
+      - name: del_key
+        type: varchar
+        description: The column to use as the filter key for record deletion.
+      - name: del_value
+        type: varchar
+        description: The value to filter records by for deletion.
+      - name: database
+        type: varchar
+        description: The name of the database where the table is located.
+      - name: schema
+        type: varchar
+        description: The name of the schema where the table is located.
+      - name: table
+        type: varchar
+        description: The name of the table from which records will be deleted.

@@ -8,7 +8,7 @@
         file_format="(type = JSON)",
         mode="INSERT",
         tags=["source", "cricinfo"],
-        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_date'), this) }}",
+        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}",
     )
 }}
 
@@ -31,6 +31,4 @@ select
     $1:odis::variant as odi_summary,
     $1:t20s::variant as t20_summary
 from {{ external_stage() }}  (PATTERN => '.*[.]json')
-{% if not var("is_full_refresh") %}
-    where date(file_last_modified_dt) = {{ "'" ~ var("batch_date") ~ "'" }}
-{% endif %}
+{{ filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )}}

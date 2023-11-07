@@ -39,8 +39,10 @@ vars:
   s3_bucket: "dev-{{ env_var('PROJ_CODE') | trim | lower }}-cricket"
 
   # dbt model variables
-  batch_date: "2023-01-01"
-  is_full_refresh: False
+  run_type: "daily"
+  batch_cycle_date: "2023-01-01"
+  backfill_start_date: "2023-01-01"
+  backfill_end_date: "2023-12-31"
 
 # Configuring seeds
 seeds:

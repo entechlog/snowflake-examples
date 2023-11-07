@@ -5,7 +5,7 @@
         file_format="(type = JSON)",
         mode="COPY",
         tags=["source", "cricsheet"],
-        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_date'), this) }}",
+        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}",
     )
 }}
 
@@ -25,6 +25,4 @@ select
     regexp_substr(metadata$filename, 'stream=([^/]+)', 1, 1, 'e') as event_name,
     $1 as match_data
 from {{ external_stage() }}
-{% if not var("is_full_refresh") %}
-    where date(file_last_modified_dt) = {{ "'" ~ var("batch_date") ~ "'" }}
-{% endif %}
+{{ filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )}}

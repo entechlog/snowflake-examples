@@ -7,7 +7,7 @@
         file_format="(type = JSON)",
         mode="INSERT",
         tags=["source", "cricinfo"],
-        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_date'), this) }}",
+        pre_hook="{{ delete_data('FILE_LAST_MODIFIED_DT', var('batch_cycle_date'), this) }}",
     )
 }}
 
@@ -32,6 +32,4 @@ select
     pd.$1:playing_role::varchar as playing_role,
     pd.$1:teams::variant as teams
 from {{ external_stage() }} pd
-{% if not var("is_full_refresh") %}
-    where date(file_last_modified_dt) = {{ "'" ~ var("batch_date") ~ "'" }}
-{% endif %}
+{{ filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )}}

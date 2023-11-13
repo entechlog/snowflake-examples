@@ -210,7 +210,7 @@ def fetch_and_save_player_metrics_to_s3(*args, **kwargs):
             return f"Error while emptying the directory in S3 bucket: {e}"
 
     # Now, within ThreadPoolExecutor:
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=32) as executor:
         for player in players:
             player_code, player_id, player_name = player
             try:

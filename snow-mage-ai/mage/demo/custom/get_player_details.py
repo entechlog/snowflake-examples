@@ -109,7 +109,7 @@ def fetch_and_save_player_details_to_s3(*args, **kwargs):
     additional_details = []
 
     # Multi-threading setup for scraping player details
-    with ThreadPoolExecutor(max_workers=25) as executor:
+    with ThreadPoolExecutor(max_workers=32) as executor:
         future_to_url = {executor.submit(get_player_details_from_cricinfo, f"https://www.espncricinfo.com/player/{'-'.join(player[2].lower().split())}-{player[1]}"): player for player in players}
         for future in future_to_url:
             player_code, player_id, player_name = future_to_url[future]

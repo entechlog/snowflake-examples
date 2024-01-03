@@ -1,0 +1,11 @@
+triggers:
+- envs: []
+  name: get_all_match_data
+  pipeline_uuid: get_cricsheet_data
+  schedule_interval: '@hourly'
+  schedule_type: time
+  settings: {}
+  sla: null
+  start_time: 2023-08-11 23:00:00
+  status: inactive
+  variables: null

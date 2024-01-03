@@ -17,26 +17,30 @@ resource "snowflake_warehouse" "warehouse" {
 //***************************************************************************//
 // Create Snowflake warehouse grants
 //***************************************************************************//
+resource "snowflake_grant_privileges_to_role" "ownership_warehouse_grant" {
+  for_each = { for k, v in var.warehouse_grant : k => v if v.privileges[0] == "OWNERSHIP" }
 
-resource "snowflake_warehouse_grant" "warehouse_grant" {
-  for_each = var.warehouse_grant_roles
+  on_account_object {
+    object_type = "WAREHOUSE"
+    object_name = snowflake_warehouse.warehouse.name
+  }
 
-  warehouse_name    = snowflake_warehouse.warehouse.name
-  privilege         = each.key
-  roles             = each.value
-  with_grant_option = var.warehouse_grant_with_grant_option
+  privileges        = each.value.privileges
+  role_name         = each.value.role_name
+  with_grant_option = true
+  depends_on        = [snowflake_warehouse.warehouse]
 }
 
-//***************************************************************************//
-// Create Snowflake resource monitor
-//***************************************************************************//
+resource "snowflake_grant_privileges_to_role" "warehouse_grant" {
+  for_each = { for k, v in var.warehouse_grant : k => v if v.privileges[0] != "OWNERSHIP" }
 
-# resource "snowflake_resource_monitor" "resource_monitor" {
-#   name                       = snowflake_warehouse.warehouse.name
-#   credit_quota               = var.resource_monitor_credit_quota
-#   frequency                  = var.resource_monitor_frequency
-#   start_timestamp            = var.resource_monitor_start_timestamp
-#   notify_triggers            = var.resource_monitor_notify_triggers
-#   suspend_triggers           = var.resource_monitor_suspend_triggers
-#   suspend_immediate_triggers = var.resource_monitor_suspend_immediate_triggers
-# }
+  on_account_object {
+    object_type = "WAREHOUSE"
+    object_name = snowflake_warehouse.warehouse.name
+  }
+
+  privileges = each.value.privileges
+  role_name  = each.value.role_name
+
+  depends_on = [snowflake_warehouse.warehouse, snowflake_grant_privileges_to_role.ownership_warehouse_grant]
+}

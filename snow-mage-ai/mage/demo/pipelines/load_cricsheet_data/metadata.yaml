@@ -1,0 +1,93 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    dbt:
+      command: --version
+    dbt_profile_target: null
+    dbt_project_name: cricket
+    export_write_policy: append
+    use_raw_sql: false
+  downstream_blocks:
+  - verify_dbt_connection
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: yaml
+  name: verify_dbt_version
+  retry_config: null
+  status: failed
+  timeout: null
+  type: dbt
+  upstream_blocks: []
+  uuid: verify_dbt_version
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    dbt:
+      command: debug
+    dbt_profile_target: ''
+    dbt_project_name: cricket
+    export_write_policy: append
+    use_raw_sql: false
+  downstream_blocks:
+  - load_sources_cricsheet
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: yaml
+  name: verify_dbt_connection
+  retry_config: null
+  status: failed
+  timeout: null
+  type: dbt
+  upstream_blocks:
+  - verify_dbt_version
+  uuid: verify_dbt_connection
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    dbt:
+      command: run
+    dbt_profile_target: ''
+    dbt_project_name: cricket
+    export_write_policy: append
+    use_raw_sql: false
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: yaml
+  name: load_sources_cricsheet
+  retry_config: null
+  status: executed
+  timeout: null
+  type: dbt
+  upstream_blocks:
+  - verify_dbt_connection
+  uuid: load_sources_cricsheet
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2023-10-21 16:42:25.492548+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: load_cricsheet_data
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+updated_at: '2024-01-02 15:53:19'
+uuid: load_cricsheet_data
+variables_dir: /home/src/mage_data/demo
+widgets: []

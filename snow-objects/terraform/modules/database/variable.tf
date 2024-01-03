@@ -19,5 +19,16 @@ variable "schema_grant" {
 }
 
 variable "table_grant" {
-  type = map(any)
+  type    = map(any)
+  default = {}
+}
+
+variable "stage_grant" {
+  type    = map(any)
+  default = {}
+}
+
+variable "pipe_grant" {
+  type    = map(any)
+  default = {}
 }

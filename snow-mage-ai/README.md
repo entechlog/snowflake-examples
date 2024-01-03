@@ -1,26 +1,8 @@
 - [Overview](#overview)
-  - [Instructions](#instructions)
-  - [Clean Resources](#clean-resources)
   - [Reference](#reference)
 
 # Overview
 Demo project to load data from s3 bucket to Snowflake using dbt, mage ai. See the [blog](https://www.entechlog.com/data/cricket-analysis-using-mage-ai/) for detailed instructions
-
-## Instructions
-
-- Start the container by running
-  
-```bash
-docker-compose up --remove-orphans -d --build
-```
-
-- You can access the Mage UI by visiting [http://localhost:6789](http://localhost:6789), and the Mage Terminal is accessible at http://localhost:6789/terminal.
-
-## Clean Resources
-
-```bash
-docker-compose down --volumes 
-```
 
 ## Reference
 

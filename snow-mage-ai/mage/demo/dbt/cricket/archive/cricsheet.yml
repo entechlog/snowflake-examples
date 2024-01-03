@@ -1,0 +1,78 @@
+version: 2
+sources:
+- name: cricsheet
+  database: "{{ env_var('ENV_CODE') | trim | upper }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB"
+  schema: "CRICSHEET"
+  loader: S3
+  tables:
+    - name: all_player_data
+      ext_full_refresh: true
+      external:
+        location: "@{{ env_var('ENV_CODE') | trim | upper }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB.CRICSHEET.TST_ENTECHLOG_CRICSHEET_S3_STG/cricsheet/all_player_data"  # required: S3 file path, GCS file path, Snowflake stage, Synapse data source 
+        file_format: >
+          (TYPE = CSV SKIP_HEADER = 1 TRIM_SPACE = TRUE ESCAPE_UNENCLOSED_FIELD = NONE)
+        partitions:
+          - name: file_name
+            data_type: varchar
+            expression: metadata$filename
+          # - name: file_row_number
+          #   data_type: int
+          #   expression: metadata$file_row_number
+          # - name: file_content_key
+          #   data_type: varchar
+          #   expression: metadata$file_content_key
+          # - name: file_last_modified
+          #   data_type: timestamp
+          #   expression: metadata$file_last_modified
+          # - name: start_scan_time
+          #   data_type: timestamp
+          #   expression: metadata$start_scan_time
+
+      columns:
+        - name: identifier
+          data_type: varchar 
+        - name: name
+          data_type: varchar
+        - name: unique_name
+          data_type: varchar 
+        - name: key_bcci
+          data_type: varchar 
+        - name: key_bcci_2
+          data_type: varchar 
+        - name: key_bigbash
+          data_type: varchar 
+        - name: key_cricbuzz
+          data_type: varchar 
+        - name: namekey_crichq
+          data_type: varchar 
+        - name: namekey_cricinfo
+          data_type: varchar 
+        - name: namekey_cricinfo_2
+          data_type: varchar 
+        - name: namekey_cricingif
+          data_type: varchar 
+        - name: namekey_cricketarchive
+          data_type: varchar 
+        - name: namekey_cricketarch
+          data_type: varchar 
+
+    - name: all_match_data
+      ext_full_refresh: true
+      external:
+        location: "@{{ env_var('ENV_CODE') | trim | upper }}_{{ env_var('PROJ_CODE') | trim | upper }}_RAW_DB.CRICSHEET.TST_ENTECHLOG_CRICSHEET_S3_STG/cricsheet/all_match_data"  # required: S3 file path, GCS file path, Snowflake stage, Synapse data source 
+        file_format: >
+          (TYPE = JSON)
+        partitions:
+          - name: file_name
+            data_type: varchar
+            expression: metadata$filename
+          - name: unique_id
+            data_type: varchar
+            expression: metadata$filename
+          - name: unique_id
+            data_type: varchar
+            expression: metadata$filename
+
+        columns:
+          - name: match_data
+            data_type: varchar 

@@ -1,0 +1,6 @@
+required_env_code     = "dev"
+required_project_code = "entechlog"
+required_app_code     = "cricket"
+optional_aws_region   = "us-east-1"
+optional_snowflake__storage_aws_external_id = ""
+optional_snowflake__aws_iam_user_arn        = ""

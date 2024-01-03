@@ -1,0 +1,23 @@
+version: 2
+
+macros:
+  - name: filter_data
+    description: |
+      A DBT macro for filtering data in different modes based on run_type.
+
+      ```
+      Sample Usage: filter_data(src_column_key = 'DATE(FILE_LAST_MODIFIED_DT)',src_operator='=',src_column_val="'" ~ var("batch_cycle_date") ~ "'" )
+      ```
+
+    docs:
+      show: true
+    arguments:
+      - name: src_column_key
+        type: varchar
+        description: Column name or expression for filtering data.
+      - name: src_column_val
+        type: varchar
+        description: Optional value to compare with the column.
+      - name: src_operator
+        type: varchar
+        description: Operator for condition checks. Default is "=".

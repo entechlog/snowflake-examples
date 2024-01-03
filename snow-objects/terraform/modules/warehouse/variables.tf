@@ -42,8 +42,9 @@ variable "warehouse_scaling_policy" {
   default = "ECONOMY"
 }
 
-variable "warehouse_grant_roles" {
-  type = map(any)
+variable "warehouse_grant" {
+  type    = map(any)
+  default = {}
 }
 
 variable "warehouse_grant_with_grant_option" {

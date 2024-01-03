@@ -3,48 +3,48 @@ blocks:
   color: null
   configuration:
     dbt:
-      command: --version
+      command: run
     dbt_profile_target: null
     dbt_project_name: cricket
     export_write_policy: append
     use_raw_sql: false
   downstream_blocks:
-  - verify_dbt_connection
+  - load_facts
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: yaml
-  name: verify_dbt_version
+  name: load_dims
   retry_config: null
-  status: failed
+  status: executed
   timeout: null
   type: dbt
   upstream_blocks: []
-  uuid: verify_dbt_version
-- all_upstream_blocks_executed: false
+  uuid: load_dims
+- all_upstream_blocks_executed: true
   color: null
   configuration:
     dbt:
-      command: debug
+      command: run
     dbt_profile_target: ''
     dbt_project_name: cricket
     export_write_policy: append
     use_raw_sql: false
   downstream_blocks:
-  - load_sources_cricsheet
+  - load_bi_datasets
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: yaml
-  name: verify_dbt_connection
+  name: load_facts
   retry_config: null
   status: executed
   timeout: null
   type: dbt
   upstream_blocks:
-  - verify_dbt_version
-  uuid: verify_dbt_connection
-- all_upstream_blocks_executed: false
+  - load_dims
+  uuid: load_facts
+- all_upstream_blocks_executed: true
   color: null
   configuration:
     dbt:
@@ -58,14 +58,15 @@ blocks:
   executor_type: local_python
   has_callback: false
   language: yaml
-  name: load_sources_cricsheet
+  name: load_bi_datasets
   retry_config: null
   status: executed
   timeout: null
   type: dbt
   upstream_blocks:
-  - verify_dbt_connection
-  uuid: load_sources_cricsheet
+  - load_facts
+  uuid: load_bi_datasets
+cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
@@ -76,13 +77,17 @@ executor_config: {}
 executor_count: 1
 executor_type: null
 extensions: {}
-name: dbt_daily_load
+name: load_dw_layer
 notification_config: {}
+remote_variables_dir: null
 retry_config: {}
 run_pipeline_in_one_process: false
+settings:
+  triggers: null
 spark_config: {}
 tags: []
 type: python
-updated_at: '2023-10-21 18:19:57'
-uuid: dbt_daily_load
+updated_at: '2024-01-01 08:32:48'
+uuid: load_dw_layer
+variables_dir: /home/src/mage_data/demo
 widgets: []

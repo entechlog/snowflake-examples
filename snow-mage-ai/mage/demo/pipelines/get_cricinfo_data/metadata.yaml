@@ -25,12 +25,13 @@ blocks:
   language: python
   name: get_player_metrics
   retry_config: null
-  status: executed
+  status: updated
   timeout: null
   type: custom
   upstream_blocks:
   - get_player_details
   uuid: get_player_metrics
+cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
@@ -43,11 +44,15 @@ executor_type: null
 extensions: {}
 name: get_cricinfo_data
 notification_config: {}
+remote_variables_dir: null
 retry_config: {}
 run_pipeline_in_one_process: false
+settings:
+  triggers: null
 spark_config: {}
 tags: []
 type: python
-updated_at: '2023-10-18 09:14:12'
+updated_at: '2024-01-03 02:40:40'
 uuid: get_cricinfo_data
+variables_dir: /home/src/mage_data/demo
 widgets: []

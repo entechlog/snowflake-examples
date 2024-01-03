@@ -1,0 +1,12 @@
+env_code     = "dev"
+project_code = "entechlog"
+app_code     = "cricket"
+
+snowflake_account  = ""
+snowflake_user     = ""
+snowflake_password = ""
+snowflake_role     = ""
+
+snowflake_storage_integration__storage_allowed_locations = [""]
+snowflake_storage_integration__storage_blocked_locations = []
+snowflake__aws_role_arn                                  = ""

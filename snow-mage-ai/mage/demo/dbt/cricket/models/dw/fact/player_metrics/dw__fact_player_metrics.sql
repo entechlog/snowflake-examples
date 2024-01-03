@@ -2,6 +2,7 @@
     config(
         alias="player_metrics",
         materialized="incremental",
+        unique_key='player_id',
         transient=false,
         tags=["dw", "fact"],
         on_schema_change="sync_all_columns",
@@ -15,7 +16,7 @@ with
     )
 
 select
-    {{ dbt_utils.generate_surrogate_key(["PLAYER_CODE"]) }} as player_id,
+    {{ dbt_utils.generate_surrogate_key(["player_cricinfo_key"]) }} as player_id,
     odi_batting_balls_faced,
     odi_batting_average,
     odi_batting_strike_rate,

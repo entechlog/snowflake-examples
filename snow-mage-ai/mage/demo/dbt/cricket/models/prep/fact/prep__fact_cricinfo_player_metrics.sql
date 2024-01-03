@@ -9,8 +9,8 @@
 with
     source as (
         select
-            player_id,
-            player_code,
+            player_id as player_cricinfo_key,
+            player_code as player_cricsheet_key,
             player_name,
             -- Batting Metrics for ODI
             TRY_TO_NUMBER(odi_summary:batting:balls_faced::varchar) as odi_batting_balls_faced,

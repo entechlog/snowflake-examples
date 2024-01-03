@@ -11,7 +11,7 @@ module "dbt_wh_xs" {
     "sysadmin_role"      = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "snowflake_role"     = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["MODIFY"] },
     "dbt_role"           = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
-    "data_engineer_role" = { "role_name" = "${upper(local.resource_prefix_without_env)}_DATA_ENGINEER_ROLE", "privileges" = ["USAGE"] },
+    "data_engineer_role" = { "role_name" = "${upper(local.resource_prefix_without_env)}_DE_ROLE", "privileges" = ["USAGE"] },
   }
 
   depends_on = [module.dbt_role.role, module.de_role.role]

@@ -1,3 +1,12 @@
+-- To run on the default target database:
+-- dbt run-operation delete_orphaned_tables --args "{dry_run: False}"
+
+-- To run on a list of databases, for instance 'DATABASE1' and 'DATABASE2':
+-- dbt run-operation delete_orphaned_tables --args "{databases_list: ['DATABASE1', 'DATABASE2'], dry_run: False}"
+
+-- To run in dry run mode (it will not delete but will log tables and views that would be deleted) on a list of databases:
+-- dbt run-operation delete_orphaned_tables --args "{databases_list: ['DATABASE1', 'DATABASE2'], dry_run: True}"
+
 {% macro delete_orphaned_tables(databases_list=[target.database], dry_run=False) %}
   
   {% do log("", True) %}

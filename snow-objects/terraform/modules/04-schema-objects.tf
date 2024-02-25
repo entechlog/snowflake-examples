@@ -2,22 +2,22 @@
 // Create masking policy using modules
 //***************************************************************************//
 
-module "mp_encrypt_email" {
-  source                   = "./masking-policy"
-  count                    = local.enable_in_prod_flag
-  masking_policy_name      = "MP_ENCRYPT_EMAIL"
-  masking_policy_database  = module.entechlog_dw_db.database.name
-  masking_policy_schema    = module.entechlog_dw_db.schema["COMPLIANCE"].name
-  masking_value_data_type  = "VARCHAR"
-  masking_expression       = "CASE WHEN CURRENT_ROLE() IN ('SYSADMIN') THEN val ELSE '**********' END"
-  masking_return_data_type = "VARCHAR(16777216)"
+# module "mp_encrypt_email" {
+#   source                   = "./masking-policy"
+#   count                    = local.enable_in_prod_flag
+#   masking_policy_name      = "MP_ENCRYPT_EMAIL"
+#   masking_policy_database  = module.entechlog_dw_db.database.name
+#   masking_policy_schema    = module.entechlog_dw_db.schema["COMPLIANCE"].name
+#   masking_value_data_type  = "VARCHAR"
+#   masking_expression       = "CASE WHEN CURRENT_ROLE() IN ('SYSADMIN') THEN val ELSE '**********' END"
+#   masking_return_data_type = "VARCHAR(16777216)"
 
-  masking_grants = {
-    "OWNERSHIP" = ["SYSADMIN"]
-    "APPLY"     = [module.entechlog_dbt_role.role.name]
-  }
+#   masking_grants = {
+#     "OWNERSHIP" = ["SYSADMIN"]
+#     "APPLY"     = [module.entechlog_dbt_role.role.name]
+#   }
 
-}
+# }
 
 //***************************************************************************//
 // Create storage integration using modules

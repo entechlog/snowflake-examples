@@ -90,8 +90,8 @@ module "entechlog_developer_role" {
 }
 
 module "entechlog_demo_role" {
-  source       = "./roles"
-  count        = local.enable_in_dev_flag
+  source = "./roles"
+  # count        = local.enable_in_dev_flag
   role_name    = "${upper(var.env_code)}_ENTECHLOG_DEMO_ROLE"
   role_comment = "Snowflake role used by demo user in ${var.env_code}"
 

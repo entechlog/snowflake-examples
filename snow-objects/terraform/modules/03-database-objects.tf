@@ -43,7 +43,7 @@ module "entechlog_demo_wh_xs" {
   warehouse_grant = {
     "sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["MODIFY"] },
-    "demo_role"      = { "role_name" = "${module.entechlog_demo_role[0].role.name}", "privileges" = ["USAGE", "MONITOR"] },
+    "demo_role"      = { "role_name" = "${module.entechlog_demo_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
   }
 
   depends_on = [module.entechlog_demo_role.role]
@@ -107,104 +107,125 @@ module "entechlog_raw_db" {
 
 // Staging Layer, No user access other than dbt roles and developer role
 
-# module "entechlog_staging_db" {
-#   source = "./database"
+module "entechlog_staging_db" {
+  source = "./database"
 
-#   db_name    = "${upper(var.env_code)}_ENTECHLOG_STAGING_DB"
-#   db_comment = "Database to store the standardized data"
+  db_name    = "${upper(var.env_code)}_ENTECHLOG_STAGING_DB"
+  db_comment = "Database to store the standardized data"
 
-#   db_grant_roles = {
-#     "OWNERSHIP"     = ["SYSADMIN"]
-#     "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_dbt_role.role.name]
-#     "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
-#   }
+  db_grant_roles = {
+    "OWNERSHIP"     = ["SYSADMIN"]
+    "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_dbt_role.role.name]
+    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"]
+  }
 
-#   schemas = ["DIM", "FACT", "UTIL"]
+  schemas = ["DIM", "FACT", "UTIL"]
 
-#   schema_grant = {
-#     "DIM OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "DIM USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-#     "DIM CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "DIM CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
+  schema_grant = {
+    "DIM sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "DIM snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "DIM dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "DIM developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
 
-#     "FACT OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "FACT USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-#     "FACT CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "FACT CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
+    "FACT sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "FACT snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "FACT dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "FACT developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
 
-#     "UTIL OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "UTIL USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-#     "UTIL CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "UTIL CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
-#   }
+    "UTIL sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "UTIL snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "UTIL dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "UTIL developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
 
-#   table_grant = {
-#     "DIM SELECT"  = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-#     "FACT SELECT" = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] },
-#     "UTIL SELECT" = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE"] }
-#   }
+  }
 
-#   depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]
-# }
+  table_grant = {
+    "DIM dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "DIM developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
 
-# // DW Layer, This is the only layer an end user should have access
+    "FACT dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "FACT developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
 
-# module "entechlog_dw_db" {
-#   source = "./database"
+    "UTIL dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "UTIL developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
+  }
 
-#   db_name    = "${upper(var.env_code)}_ENTECHLOG_DW_DB"
-#   db_comment = "Database to store the DW data"
+  depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]
+}
 
-#   db_grant_roles = {
-#     "OWNERSHIP"     = ["SYSADMIN"]
-#     "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_dbt_role.role.name]
-#     "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"]
-#   }
+// DW Layer, This is the only layer an end user should have access
 
-#   schemas = ["DIM", "FACT", "UTIL", "COMPLIANCE"]
+module "entechlog_dw_db" {
+  source = "./database"
 
-#   schema_grant = {
-#     "DIM OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "DIM USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "DIM CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "DIM CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] },
+  db_name    = "${upper(var.env_code)}_ENTECHLOG_DW_DB"
+  db_comment = "Database to store the DW data"
 
-#     "FACT OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "FACT USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "FACT CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "FACT CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
+  db_grant_roles = {
+    "OWNERSHIP"     = ["SYSADMIN"]
+    "CREATE SCHEMA" = [var.snowflake_role, module.entechlog_dbt_role.role.name]
+    "USAGE"         = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"]
+  }
 
-#     "UTIL OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "UTIL USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "UTIL CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "UTIL CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
+  schemas = ["DIM", "FACT", "UTIL", "COMPLIANCE"]
 
-#     "COMPLIANCE OWNERSHIP"    = { "roles" = ["SYSADMIN"] },
-#     "COMPLIANCE USAGE"        = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "COMPLIANCE CREATE TABLE" = { "roles" = [module.entechlog_dbt_role.role.name] },
-#     "COMPLIANCE CREATE VIEW"  = { "roles" = [module.entechlog_dbt_role.role.name] }
-#   }
+  schema_grant = {
+    "DIM sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "DIM snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "DIM dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "DIM developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
+    "DIM analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["USAGE"] },
 
-#   table_grant = {
-#     "DIM SELECT"        = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "FACT SELECT"       = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "UTIL SELECT"       = { "roles" = [module.entechlog_dbt_role.role.name, "ENTECHLOG_DEVELOPER_ROLE", "ENTECHLOG_ANALYST_ROLE"] },
-#     "COMPLIANCE SELECT" = { "roles" = [module.entechlog_dbt_role.role.name] }
-#   }
+    "FACT sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "FACT snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "FACT dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "FACT developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
+    "FACT analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["USAGE"] },
 
-#   depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]
-# }
+    "UTIL sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "UTIL snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "UTIL dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "UTIL developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
+    "UTIL analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["USAGE"] },
 
-# // Output block starts here
+    "COMPLIANCE sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "COMPLIANCE snowflake_role" = { "role_name" = "${upper(var.snowflake_role)}", "privileges" = ["USAGE"] },
+    "COMPLIANCE dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "COMPLIANCE developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
+    "COMPLIANCE analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["USAGE"] },
+  }
 
-# output "entechlog_raw_db" {
-#   value = module.entechlog_raw_db
-# }
+  table_grant = {
+    "DIM dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "DIM developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
+    "DIM analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["SELECT"] },
 
-# output "entechlog_staging_db" {
-#   value = module.entechlog_staging_db
-# }
+    "FACT dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "FACT developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
+    "FACT analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["SELECT"] },
 
-# output "entechlog_dw_db" {
-#   value = module.entechlog_dw_db
-# }
+    "UTIL dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "UTIL developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
+    "UTIL analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["SELECT"] },
+
+    "COMPLIANCE dbt_role"       = { "role_name" = "${module.entechlog_dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "COMPLIANCE developer_role" = { "role_name" = "ENTECHLOG_DEVELOPER_ROLE", "privileges" = ["SELECT"] },
+    "COMPLIANCE analyst_role"   = { "role_name" = "ENTECHLOG_ANALYST_ROLE", "privileges" = ["SELECT"] },
+  }
+
+  depends_on = [module.entechlog_dbt_role.role, module.entechlog_developer_role.role]
+}
+
+// Output block starts here
+
+output "entechlog_raw_db" {
+  value = module.entechlog_raw_db
+}
+
+output "entechlog_staging_db" {
+  value = module.entechlog_staging_db
+}
+
+output "entechlog_dw_db" {
+  value = module.entechlog_dw_db
+}

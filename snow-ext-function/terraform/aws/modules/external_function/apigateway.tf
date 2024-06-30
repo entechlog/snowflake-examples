@@ -1,48 +1,33 @@
-resource "aws_api_gateway_rest_api" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  name        = replace("${var.resource_name_prefix}-${lower(each.key)}-api", "_", "-")
+resource "aws_api_gateway_rest_api" "external_function_api" {
+  name        = replace("${var.resource_name_prefix}-${lower(var.snowflake_ext_function_name)}-api", "_", "-")
   description = "Proxy AWS Gateway API to AWS Lambda"
 }
 
-resource "aws_api_gateway_resource" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id = aws_api_gateway_rest_api.lambda_proxy[each.key].id
-  parent_id   = aws_api_gateway_rest_api.lambda_proxy[each.key].root_resource_id
-  path_part   = lower(each.key)
+resource "aws_api_gateway_resource" "external_function_api_resource" {
+  rest_api_id = aws_api_gateway_rest_api.external_function_api.id
+  parent_id   = aws_api_gateway_rest_api.external_function_api.root_resource_id
+  path_part   = lower(var.snowflake_ext_function_name)
 }
 
-resource "aws_api_gateway_method" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id   = aws_api_gateway_rest_api.lambda_proxy[each.key].id
-  resource_id   = aws_api_gateway_resource.lambda_proxy[each.key].id
+resource "aws_api_gateway_method" "external_function_api_method" {
+  rest_api_id   = aws_api_gateway_rest_api.external_function_api.id
+  resource_id   = aws_api_gateway_resource.external_function_api_resource.id
   http_method   = "POST"
   authorization = "AWS_IAM"
 }
 
-resource "aws_api_gateway_integration" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id = aws_api_gateway_rest_api.lambda_proxy[each.key].id
-  resource_id = aws_api_gateway_method.lambda_proxy[each.key].resource_id
-  http_method = aws_api_gateway_method.lambda_proxy[each.key].http_method
+resource "aws_api_gateway_integration" "external_function_api_integration" {
+  rest_api_id = aws_api_gateway_rest_api.external_function_api.id
+  resource_id = aws_api_gateway_method.external_function_api_method.resource_id
+  http_method = aws_api_gateway_method.external_function_api_method.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.snow_ext_function[each.key].invoke_arn
+  uri                     = aws_lambda_function.external_function_lambda.invoke_arn
 }
 
-resource "aws_api_gateway_deployment" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id = aws_api_gateway_rest_api.lambda_proxy[each.key].id
+resource "aws_api_gateway_deployment" "external_function_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   stage_name  = lower(var.env_code)
 
   triggers = {
@@ -53,27 +38,21 @@ resource "aws_api_gateway_deployment" "lambda_proxy" {
     create_before_destroy = true
   }
 
-  depends_on = [aws_api_gateway_integration.lambda_proxy]
+  depends_on = [aws_api_gateway_integration.external_function_api_integration]
 }
 
-resource "aws_api_gateway_rest_api_policy" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id = aws_api_gateway_rest_api.lambda_proxy[each.key].id
-  policy      = data.aws_iam_policy_document.api_gateway_resource_policy[each.key].json
-  depends_on  = [aws_api_gateway_deployment.lambda_proxy, aws_api_gateway_rest_api.lambda_proxy]
+resource "aws_api_gateway_rest_api_policy" "external_function_api_policy" {
+  rest_api_id = aws_api_gateway_rest_api.external_function_api.id
+  policy      = data.aws_iam_policy_document.external_function_api_gateway_resource_policy.json
+  depends_on  = [aws_api_gateway_deployment.external_function_api_deployment, aws_api_gateway_rest_api.external_function_api]
 }
 
-resource "aws_api_gateway_account" "lambda_proxy" {
-  cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
+resource "aws_api_gateway_account" "external_function_api_account" {
+  cloudwatch_role_arn = var.cloudwatch_role_arn
 }
 
-resource "aws_api_gateway_method_settings" "lambda_proxy" {
-
-  for_each = toset(var.snowflake_ext_function_name)
-
-  rest_api_id = aws_api_gateway_rest_api.lambda_proxy[each.key].id
+resource "aws_api_gateway_method_settings" "external_function_api_method_settings" {
+  rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   stage_name  = lower(var.env_code)
   method_path = "*/*"
 
@@ -88,5 +67,5 @@ resource "aws_api_gateway_method_settings" "lambda_proxy" {
     throttling_burst_limit = 500
   }
 
-  depends_on = [aws_api_gateway_deployment.lambda_proxy, aws_api_gateway_rest_api.lambda_proxy, aws_cloudwatch_log_group.snow_ext_function_api_gateway]
+  depends_on = [aws_api_gateway_deployment.external_function_api_deployment, aws_api_gateway_rest_api.external_function_api, aws_cloudwatch_log_group.external_function_api_gateway_log_group]
 }

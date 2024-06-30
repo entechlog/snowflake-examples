@@ -2,7 +2,7 @@
 ## ENVIRONMENT VARIABLES
 ## Define these secrets as environment variables
 ## Example : TF_VAR_master_password
-## Snowflake variables required by snowflake provider
+## Snowflake variables required by Snowflake provider
 ## ---------------------------------------------------------------------------------------------------------------------
 
 variable "snowflake_account" {
@@ -17,17 +17,17 @@ variable "snowflake_region" {
 
 variable "snowflake_user" {
   type        = string
-  description = "The username for the snowflake user"
+  description = "The username for the Snowflake user"
 }
 
 variable "snowflake_password" {
   type        = string
-  description = "The password for the snowflake user"
+  description = "The password for the Snowflake user"
 }
 
 variable "snowflake_role" {
   type        = string
-  description = "The role for the snowflake user"
+  description = "The role for the Snowflake user"
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
@@ -42,24 +42,16 @@ variable "env_code" {
   default     = "dev"
 }
 
-## ---------------------------------------------------------------------------------------------------------------------
-## Snowflake variables required to create an external function
-## ---------------------------------------------------------------------------------------------------------------------
-
-variable "snowflake_ext_function_name" {
-  default = "demo"
-}
-
 variable "project_code" {
   type        = string
-  description = "Project code which will be used as prefix when naming resources"
+  description = "Project code which will be used as a prefix when naming resources"
   default     = "entechlog"
 }
 
 # boolean variable
 variable "use_env_code" {
   type        = bool
-  description = "toggle on/off the env code in the resource names"
+  description = "Toggle on/off the env code in the resource names"
   default     = true
 }
 
@@ -68,14 +60,23 @@ variable "use_env_code" {
 ## These values are obtained from the AWS module output
 ## ---------------------------------------------------------------------------------------------------------------------
 
-variable "aws_api_gateway_deployment__invoke_url" {
-  type = list(string)
+variable "aws_iam_role_arn" {
+  description = "The ARN of the AWS IAM role"
+  type        = string
 }
 
-variable "aws_api_gateway_deployment__url_of_proxy_and_resource" {
-  type = map(any)
+variable "api_integration_enabled" {
+  description = "Whether the Snowflake API integration is enabled"
+  type        = bool
+  default     = true
 }
 
-variable "aws_iam_role__arn" {
-  type = string
+variable "aws_api_gateway_deployment_invoke_url" {
+  description = "Map of API Gateway deployment invoke URLs"
+  type        = map(string)
+}
+
+variable "external_function_api_gateway_url_of_proxy_and_resource" {
+  description = "Map of API Gateway deployment proxy and resource URLs"
+  type        = map(string)
 }

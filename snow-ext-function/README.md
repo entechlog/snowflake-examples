@@ -132,32 +132,27 @@ Test the python module locally using `python-lambda-local -f lambda_handler get_
 
 ## Step 1: Information about the Lambda Function (remote service)
 
-| Name                 | How to get the details ?                                                                                                                          | Value |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| AWS Account ID       | Login to your AWS account to get the account ID. See [here](https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html) for more details |       |
-| Lambda Function Name | Collect this from aws_lambda_function__function_name of the Terraform output                                                                      |       |
+| Name           | How to get the details ?                                                                                                                          | Value |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| AWS Account ID | Login to your AWS account to get the account ID. See [here](https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html) for more details |       |
 
 ## Step 2: Information about the API Gateway (proxy Service)
 
 | Name                        | How to get the details ?                                                                                     | Value |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------ | ----- |
-| IAM Role Name               | Collect this from aws_iam_role__name of Terraform output                                                     |       |
-| IAM Role ARN                | Collect this from aws_iam_role__arn of Terraform output                                                      |       |
+| IAM Role ARN                | Collect this from aws_iam_role_arn of Terraform output                                                       |       |
 | Snowflake Region            | Run the query `select CURRENT_REGION() as current_region` in Snowflake as ACCOUNTADMIN                       |       |
 | Snowflake VPC ID (optional) | Run the query `select system$get_snowflake_platform_info() as snowflake_vpc_id` in Snowflake as ACCOUNTADMIN |       |
-| API Name                    | Collect this from api_gateway_name of the Terraform output                                                   |       |
-| API Gateway Resource Name   | Collect this from aws_api_gateway_deployment__url_of_proxy_and_resource of the Terraform output              |       |
-| Resource Invocation URL     | Collect this from aws_api_gateway_deployment__invoke_url of the Terraform output                             |       |
-| Method Request ARN          | Collect this from aws_api_gateway_deployment__invoke_url of the Terraform output                             |       |
+| API Gateway Proxy URL       | Collect this from api_gateway_url_of_proxy_and_resource of the Terraform output                              |       |
+| API Gateway URL             | Collect this from external_function_api_gateway_urls of the Terraform output                                 |       |
 
 ## Step 3: Information about the API Integration and External Function
 
-| Name                   | How to get the details ?                                                  | Value                |
-| ---------------------- | ------------------------------------------------------------------------- | -------------------- |
-| API Integration Name   | Name of API Gateway integration in Snowflake                              | Example `aws_lambda` |
-| API_AWS_IAM_USER_ARN   | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
-| API_AWS_EXTERNAL_ID    | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
-| External Function Name | Name of external function in Snowflake                                    |                      |
+| Name                 | How to get the details ?                                                  | Value                |
+| -------------------- | ------------------------------------------------------------------------- | -------------------- |
+| API Integration Name | Name of API Gateway integration in Snowflake                              | Example `aws_lambda` |
+| API_AWS_IAM_USER_ARN | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
+| API_AWS_EXTERNAL_ID  | Run the query `DESCRIBE integration aws_lambda;` in Snowflake as SYSADMIN |                      |
 
 # Validate results
 

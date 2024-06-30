@@ -34,23 +34,23 @@ def lambda_handler(event, context):
             row_number = row[0]
 
             # Read the first input parameter's value.
-            location_name = row[1]
+            ip = row[1]
 
             # api-endpoint
-            URL = "https://api.openweathermap.org/data/2.5/weather"
+            URL = "https://api.ipgeolocation.io/ipgeo"
             ### set up Secrets Manager
             client = botocore.session.get_session().create_client('secretsmanager')
             cache_config = SecretCacheConfig()
             cache = SecretCache( config = cache_config, client = client)
-            secret_name = cache.get_secret_string('/lambda/external_function/openweather_api_key')
+            
+            secret_name = '/lambda/external_function/ipgeolocation_api_key'
             print(f"Attempting to read secret: {secret_name}")
-            OPEN_WEATHER_API_KEY = json.loads(secret_name)['openweather_api_key']
+            secret = cache.get_secret_string(secret_name)
 
-            # Prepare inputs for weather api call
-            units = "imperial"    
-    
-            # defining a params dict for the parameters to be sent to the API 
-            PARAMS = {'q':location_name,'APPID':OPEN_WEATHER_API_KEY}
+            IPGEOLOCATION_API_KEY = json.loads(secret)['ipgeolocation_api_key']
+
+            # Prepare inputs for geolocation api call
+            PARAMS = {'apiKey': IPGEOLOCATION_API_KEY, 'ip': ip}
 
             # sending get request and saving the response as response object
             try:

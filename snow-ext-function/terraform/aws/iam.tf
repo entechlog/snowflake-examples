@@ -1,6 +1,6 @@
-resource "aws_iam_role" "lambda_exec" {
-  name        = "${var.resource_name_prefix}-lambda-exec-role"
-  description = "IAM role used by AWS lambda to access other AWS services"
+resource "aws_iam_role" "external_function_lambda_exec_role" {
+  name        = "${local.resource_name_prefix}-lambda-exec-role"
+  description = "IAM role used by AWS Lambda to access other AWS services"
   assume_role_policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -17,13 +17,13 @@ resource "aws_iam_role" "lambda_exec" {
   )
 }
 
-resource "aws_iam_role_policy" "lambda_exec" {
-  role   = aws_iam_role.lambda_exec.id
-  policy = data.aws_iam_policy_document.lambda_exec_policy.json
+resource "aws_iam_role_policy" "external_function_lambda_exec_policy" {
+  role   = aws_iam_role.external_function_lambda_exec_role.id
+  policy = data.aws_iam_policy_document.external_function_lambda_execution_policy.json
 }
 
-resource "aws_iam_role" "snow_ext_function" {
-  name        = "${var.resource_name_prefix}-snow-ext-function-role"
+resource "aws_iam_role" "external_function_snowflake_role" {
+  name        = "${local.resource_name_prefix}-snowflake-ext-function-role"
   description = "IAM role used by Snowflake external function to make API Gateway/Lambda call"
   assume_role_policy = jsonencode(
     {
@@ -47,9 +47,9 @@ resource "aws_iam_role" "snow_ext_function" {
   managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"]
 }
 
-resource "aws_iam_role" "cloudwatch" {
-  name        = "${var.resource_name_prefix}-api-cloudwatch-role"
-  description = "IAM role used by API gateway to write logs to cloudwatch"
+resource "aws_iam_role" "external_function_cloudwatch_role" {
+  name        = "${local.resource_name_prefix}-api-cloudwatch-role"
+  description = "IAM role used by API Gateway to write logs to CloudWatch"
   assume_role_policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -67,7 +67,7 @@ resource "aws_iam_role" "cloudwatch" {
   )
 }
 
-resource "aws_iam_role_policy" "cloudwatch" {
-  role   = aws_iam_role.cloudwatch.id
-  policy = data.aws_iam_policy_document.cloudwatch.json
+resource "aws_iam_role_policy" "external_function_cloudwatch_policy" {
+  role   = aws_iam_role.external_function_cloudwatch_role.id
+  policy = data.aws_iam_policy_document.external_function_cloudwatch_policy.json
 }

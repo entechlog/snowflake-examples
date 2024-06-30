@@ -1,3 +1,7 @@
 # Variables for external function
 snowflake_api_aws_iam_user_arn = ""
 snowflake_api_aws_external_id  = ""
+api_keys = {
+  open_weather_api_key   = "",
+  ipgeolocation_api_key  = ""
+}

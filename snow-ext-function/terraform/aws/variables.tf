@@ -5,10 +5,16 @@
 ## ---------------------------------------------------------------------------------------------------------------------
 
 ## TF_VAR_master_password
-variable "TF_VAR_open_weather_api_key" {
-  type        = string
-  description = "The API key to access open weather api"
-  default     = "12345"
+variable "open_weather_secrets" {
+  type        = map(string)
+  description = "Map of different secrets"
+  default     = {}
+}
+
+variable "ipgeolocation_secrets" {
+  type        = map(string)
+  description = "Map of different secrets"
+  default     = {}
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------

@@ -4,10 +4,10 @@
 ## Example : TF_VAR_master_password
 ## ---------------------------------------------------------------------------------------------------------------------
 
-variable "open_weather_api_key" {
-  type        = string
-  description = "The API key to access Open Weather services"
-  default     = "12345"
+variable "secrets" {
+  type        = map(string)
+  description = "Map of different secrets"
+  default     = {}
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
@@ -35,6 +35,31 @@ variable "aws_lambda_function__environment_variables" {
   default = {
     "key" = "value"
   }
+}
+
+variable "lambda_exec_role_arn" {
+  description = "ARN of the Lambda execution IAM role"
+  type        = string
+}
+
+variable "lambda_exec_role_name" {
+  description = "Name of the Lambda execution IAM role"
+  type        = string
+}
+
+variable "snowflake_external_function_role_arn" {
+  description = "ARN of the Snowflake external function IAM role"
+  type        = string
+}
+
+variable "cloudwatch_role_arn" {
+  description = "ARN of the CloudWatch IAM role"
+  type        = string
+}
+
+variable "external_function_kms_key_id" {
+  description = "KMS key id for Snowflake external function"
+  type        = string
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------

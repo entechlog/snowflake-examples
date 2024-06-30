@@ -5,29 +5,35 @@
 ## ---------------------------------------------------------------------------------------------------------------------
 
 variable "env_code" {
-  default = "dev"
+  description = "The environment code (e.g., dev, stg, prd)"
+  default     = "dev"
 }
 
 # Snowflake variables required to create an external function
 
 variable "snowflake_database_name" {
-  type = string
+  description = "The name of the Snowflake database"
+  type        = string
 }
 
 variable "snowflake_schema_name" {
-  type = string
-}
-
-variable "snowflake_api_integration_name" {
-  type = string
+  description = "The name of the Snowflake schema"
+  type        = string
 }
 
 variable "snowflake_ext_function_name" {
-  default = "demo"
+  description = "The name of the Snowflake external function"
+  type        = string
 }
 
-variable "snowflake_function_grant__roles" {
-  type = list(string)
+variable "snowflake_api_integration_name" {
+  description = "The name of the Snowflake API integration"
+  type        = string
+}
+
+variable "snowflake_function_grant_roles" {
+  description = "List of roles to which the function grant should be applied"
+  type        = list(string)
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
@@ -35,14 +41,12 @@ variable "snowflake_function_grant__roles" {
 # These values are obtained from the AWS module output
 ## ---------------------------------------------------------------------------------------------------------------------
 
-variable "aws_api_gateway_deployment__invoke_url" {
-  type = list(string)
+variable "aws_iam_role_arn" {
+  description = "The ARN of the AWS IAM role"
+  type        = string
 }
 
-variable "aws_api_gateway_deployment__url_of_proxy_and_resource" {
-  type = map(any)
-}
-
-variable "aws_iam_role__arn" {
-  type = string
+variable "external_function_api_gateway_url_of_proxy_and_resource" {
+  description = "URL of the API Gateway deployment proxy and resource"
+  type        = string
 }

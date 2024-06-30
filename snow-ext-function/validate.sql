@@ -1,3 +1,8 @@
+DROP DATABASE <database-name>;
+
+CREATE OR REPLACE DATABASE <database-name>;
+CREATE OR REPLACE SCHEMA <database-name>.<schema-name>;
+
 USE SCHEMA <schema-name>;
 
 -- demo

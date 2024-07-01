@@ -1,3 +1,6 @@
+# -------------------------------------------------------------------------
+# Terraform configuration block to specify required providers
+# -------------------------------------------------------------------------
 terraform {
   required_providers {
     snowflake = {

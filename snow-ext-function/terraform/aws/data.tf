@@ -1,6 +1,16 @@
+# -------------------------------------------------------------------------
+# Data source to get the current AWS caller identity
+# -------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
+
+# -------------------------------------------------------------------------
+# Data source to get the current AWS region
+# -------------------------------------------------------------------------
 data "aws_region" "current" {}
 
+# -------------------------------------------------------------------------
+# IAM policy document for Lambda execution policy
+# -------------------------------------------------------------------------
 data "aws_iam_policy_document" "external_function_lambda_execution_policy" {
   statement {
     actions = [
@@ -19,6 +29,9 @@ data "aws_iam_policy_document" "external_function_lambda_execution_policy" {
   }
 }
 
+# -------------------------------------------------------------------------
+# IAM policy document for CloudWatch policy
+# -------------------------------------------------------------------------
 data "aws_iam_policy_document" "external_function_cloudwatch_policy" {
   statement {
     effect = "Allow"

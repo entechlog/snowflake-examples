@@ -1,3 +1,6 @@
+# -------------------------------------------------------------------------
+# External Function Demo Module
+# -------------------------------------------------------------------------
 module "external_function_demo" {
   source = "./modules/external_function"
 
@@ -15,6 +18,9 @@ module "external_function_demo" {
   depends_on = [snowflake_schema.this, snowflake_api_integration.external_function_api_integration]
 }
 
+# -------------------------------------------------------------------------
+# External Function Get Weather Module
+# -------------------------------------------------------------------------
 module "external_function_get_weather" {
   source = "./modules/external_function"
 
@@ -32,6 +38,9 @@ module "external_function_get_weather" {
   depends_on = [snowflake_schema.this, snowflake_api_integration.external_function_api_integration]
 }
 
+# -------------------------------------------------------------------------
+# External Function Get Weather Open Module
+# -------------------------------------------------------------------------
 module "external_function_get_weather_open" {
   source = "./modules/external_function"
 
@@ -49,6 +58,9 @@ module "external_function_get_weather_open" {
   depends_on = [snowflake_schema.this, snowflake_api_integration.external_function_api_integration]
 }
 
+# -------------------------------------------------------------------------
+# External Function Get IP Geolocation Module
+# -------------------------------------------------------------------------
 module "external_function_get_ip_geolocation" {
   source = "./modules/external_function"
 

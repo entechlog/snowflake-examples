@@ -4,16 +4,15 @@
 ## Example : TF_VAR_master_password
 ## ---------------------------------------------------------------------------------------------------------------------
 
-## TF_VAR_master_password
 variable "open_weather_secrets" {
   type        = map(string)
-  description = "Map of different secrets"
+  description = "Map of different secrets for Open Weather"
   default     = {}
 }
 
 variable "ipgeolocation_secrets" {
   type        = map(string)
-  description = "Map of different secrets"
+  description = "Map of different secrets for IP Geolocation"
   default     = {}
 }
 
@@ -24,30 +23,33 @@ variable "ipgeolocation_secrets" {
 ## ---------------------------------------------------------------------------------------------------------------------
 
 variable "env_code" {
-  default     = "dev"
   description = "Environmental code to identify the target environment"
+  type        = string
+  default     = "dev"
 }
 
 variable "project_code" {
-  type        = string
   description = "Project code which will be used as prefix when naming resources"
+  type        = string
   default     = "entechlog"
 }
 
 variable "aws_region" {
   description = "Primary region for all AWS resources"
+  type        = string
   default     = "us-east-1"
 }
 
-# boolean variable
 variable "use_env_code" {
+  description = "Toggle on/off the env code in the resource names"
   type        = bool
-  description = "toggle on/off the env code in the resource names"
   default     = false
 }
 
 variable "snowflake_ext_function_name" {
-  default = "demo"
+  description = "Name of the Snowflake external function"
+  type        = string
+  default     = "demo"
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
@@ -60,13 +62,13 @@ variable "snowflake_ext_function_name" {
 # Initially resources should be created with default values only
 
 variable "snowflake_api_aws_iam_user_arn" {
+  description = "The AWS IAM user ARN from Snowflake"
   type        = string
-  description = "The AWS IAM user arn from Snowflake"
   default     = null
 }
 
 variable "snowflake_api_aws_external_id" {
-  type        = string
   description = "The AWS external ID from Snowflake"
+  type        = string
   default     = "12345"
 }

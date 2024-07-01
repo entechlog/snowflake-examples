@@ -1,14 +1,23 @@
+# -------------------------------------------------------------------------
+# API Gateway REST API for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_rest_api" "external_function_api" {
   name        = replace("${var.resource_name_prefix}-${lower(var.snowflake_ext_function_name)}-api", "_", "-")
   description = "Proxy AWS Gateway API to AWS Lambda"
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Resource for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_resource" "external_function_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   parent_id   = aws_api_gateway_rest_api.external_function_api.root_resource_id
   path_part   = lower(var.snowflake_ext_function_name)
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Method for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_method" "external_function_api_method" {
   rest_api_id   = aws_api_gateway_rest_api.external_function_api.id
   resource_id   = aws_api_gateway_resource.external_function_api_resource.id
@@ -16,6 +25,9 @@ resource "aws_api_gateway_method" "external_function_api_method" {
   authorization = "AWS_IAM"
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Integration for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_integration" "external_function_api_integration" {
   rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   resource_id = aws_api_gateway_method.external_function_api_method.resource_id
@@ -26,6 +38,9 @@ resource "aws_api_gateway_integration" "external_function_api_integration" {
   uri                     = aws_lambda_function.external_function_lambda.invoke_arn
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Deployment for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_deployment" "external_function_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   stage_name  = lower(var.env_code)
@@ -41,16 +56,25 @@ resource "aws_api_gateway_deployment" "external_function_api_deployment" {
   depends_on = [aws_api_gateway_integration.external_function_api_integration]
 }
 
+# -------------------------------------------------------------------------
+# API Gateway REST API Policy for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_rest_api_policy" "external_function_api_policy" {
   rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   policy      = data.aws_iam_policy_document.external_function_api_gateway_resource_policy.json
   depends_on  = [aws_api_gateway_deployment.external_function_api_deployment, aws_api_gateway_rest_api.external_function_api]
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Account for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_account" "external_function_api_account" {
   cloudwatch_role_arn = var.cloudwatch_role_arn
 }
 
+# -------------------------------------------------------------------------
+# API Gateway Method Settings for the external function
+# -------------------------------------------------------------------------
 resource "aws_api_gateway_method_settings" "external_function_api_method_settings" {
   rest_api_id = aws_api_gateway_rest_api.external_function_api.id
   stage_name  = lower(var.env_code)

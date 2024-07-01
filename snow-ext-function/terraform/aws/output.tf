@@ -1,7 +1,13 @@
+# -------------------------------------------------------------------------
+# Output for the ARN of the Snowflake external function IAM role
+# -------------------------------------------------------------------------
 output "aws_iam_role_arn" {
   value = aws_iam_role.external_function_snowflake_role.arn
 }
 
+# -------------------------------------------------------------------------
+# Output for API Gateway invoke URLs
+# -------------------------------------------------------------------------
 output "external_function_api_gateway_urls" {
   description = "API Gateway invoke URLs"
   value = {
@@ -12,6 +18,9 @@ output "external_function_api_gateway_urls" {
   }
 }
 
+# -------------------------------------------------------------------------
+# Output for API Gateway URLs with proxy and resource
+# -------------------------------------------------------------------------
 output "external_function_api_gateway_url_of_proxy_and_resource" {
   description = "API Gateway URLs with proxy and resource"
   value = {
@@ -22,6 +31,11 @@ output "external_function_api_gateway_url_of_proxy_and_resource" {
   }
 }
 
+# Uncomment the following outputs if needed
+
+# -------------------------------------------------------------------------
+# Output for ARNs of the Lambda functions
+# -------------------------------------------------------------------------
 # output "external_function_arns" {
 #   description = "ARNs of the Lambda functions"
 #   value = {
@@ -32,6 +46,9 @@ output "external_function_api_gateway_url_of_proxy_and_resource" {
 #   }
 # }
 
+# -------------------------------------------------------------------------
+# Output for Invoke ARNs of the Lambda functions
+# -------------------------------------------------------------------------
 # output "external_function_invoke_arns" {
 #   description = "Invoke ARNs of the Lambda functions"
 #   value = {

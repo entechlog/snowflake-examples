@@ -4,13 +4,13 @@
 ## Example : required_var
 ## ---------------------------------------------------------------------------------------------------------------------
 
+# Environment code variable
 variable "env_code" {
   description = "The environment code (e.g., dev, stg, prd)"
   default     = "dev"
 }
 
 # Snowflake variables required to create an external function
-
 variable "snowflake_database_name" {
   description = "The name of the Snowflake database"
   type        = string
@@ -37,8 +37,8 @@ variable "snowflake_function_grant_roles" {
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
-# AWS variables required to create an external function
-# These values are obtained from the AWS module output
+## AWS variables required to create an external function
+## These values are obtained from the AWS module output
 ## ---------------------------------------------------------------------------------------------------------------------
 
 variable "aws_iam_role_arn" {

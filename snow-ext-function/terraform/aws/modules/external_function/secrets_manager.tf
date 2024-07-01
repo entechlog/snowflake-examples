@@ -1,3 +1,6 @@
+# -------------------------------------------------------------------------
+# Secrets Manager Secret for the external function
+# -------------------------------------------------------------------------
 resource "aws_secretsmanager_secret" "external_function_secret" {
   for_each = var.secrets
 
@@ -5,6 +8,9 @@ resource "aws_secretsmanager_secret" "external_function_secret" {
   kms_key_id = var.external_function_kms_key_id
 }
 
+# -------------------------------------------------------------------------
+# Secrets Manager Secret Version for the external function
+# -------------------------------------------------------------------------
 resource "aws_secretsmanager_secret_version" "external_function_secret_version" {
   for_each = var.secrets
 
@@ -12,6 +18,9 @@ resource "aws_secretsmanager_secret_version" "external_function_secret_version" 
   secret_string = jsonencode({ (each.key) = each.value })
 }
 
+# -------------------------------------------------------------------------
+# Secrets Manager Secret Policy for the external function
+# -------------------------------------------------------------------------
 resource "aws_secretsmanager_secret_policy" "external_function_secret_policy" {
   for_each = var.secrets
 

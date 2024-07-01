@@ -27,11 +27,14 @@ variable "resource_name_prefix" {
 }
 
 variable "snowflake_ext_function_name" {
-  default = "demo"
+  description = "Name of the Snowflake external function"
+  type        = string
+  default     = "demo"
 }
 
 variable "aws_lambda_function__environment_variables" {
-  type = map(any)
+  description = "Environment variables for the AWS Lambda function"
+  type        = map(any)
   default = {
     "key" = "value"
   }
@@ -58,7 +61,7 @@ variable "cloudwatch_role_arn" {
 }
 
 variable "external_function_kms_key_id" {
-  description = "KMS key id for Snowflake external function"
+  description = "KMS key ID for Snowflake external function"
   type        = string
 }
 
@@ -72,14 +75,13 @@ variable "external_function_kms_key_id" {
 # Initially resources should be created with default values only
 
 variable "snowflake_api_aws_iam_user_arn" {
+  description = "The AWS IAM user ARN from Snowflake"
   type        = string
-  description = "The AWS IAM user arn from Snowflake"
   default     = null
 }
 
 variable "snowflake_api_aws_external_id" {
-  type        = string
   description = "The AWS external ID from Snowflake"
+  type        = string
   default     = "12345"
 }
-

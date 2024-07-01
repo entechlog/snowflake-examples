@@ -1,3 +1,6 @@
+# -------------------------------------------------------------------------
+# Snowflake API Integration for External Function
+# -------------------------------------------------------------------------
 resource "snowflake_api_integration" "external_function_api_integration" {
   name                 = "${upper(var.env_code)}_${upper(var.project_code)}_DAT_AWS_API_INTG"
   api_provider         = "aws_api_gateway"

@@ -1,4 +1,6 @@
-
+# -------------------------------------------------------------------------
+# Terraform configuration block to specify required providers
+# -------------------------------------------------------------------------
 terraform {
   required_providers {
     snowflake = {
@@ -8,6 +10,9 @@ terraform {
   }
 }
 
+# -------------------------------------------------------------------------
+# Snowflake provider configuration
+# -------------------------------------------------------------------------
 provider "snowflake" {
   account  = var.snowflake_account
   region   = var.snowflake_region

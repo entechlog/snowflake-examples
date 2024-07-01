@@ -1,7 +1,7 @@
 ## ---------------------------------------------------------------------------------------------------------------------
 ## ENVIRONMENT VARIABLES
 ## Define these secrets as environment variables
-## Example : TF_VAR_master_password
+## Example: TF_VAR_master_password
 ## Snowflake variables required by Snowflake provider
 ## ---------------------------------------------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ variable "snowflake_account" {
 
 variable "snowflake_region" {
   type        = string
-  description = "The region name for Snowflake account"
+  description = "The region name for the Snowflake account"
 }
 
 variable "snowflake_user" {
@@ -33,7 +33,7 @@ variable "snowflake_role" {
 ## ---------------------------------------------------------------------------------------------------------------------
 ## MODULE PARAMETERS
 ## These variables are expected to be passed in by the operator
-## Example : required_var
+## Example: required_var
 ## ---------------------------------------------------------------------------------------------------------------------
 
 variable "env_code" {
@@ -48,7 +48,7 @@ variable "project_code" {
   default     = "entechlog"
 }
 
-# boolean variable
+# Boolean variable to toggle the inclusion of env code in resource names
 variable "use_env_code" {
   type        = bool
   description = "Toggle on/off the env code in the resource names"
@@ -56,7 +56,7 @@ variable "use_env_code" {
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
-## AWS variables required to create an external function
+## AWS VARIABLES REQUIRED TO CREATE AN EXTERNAL FUNCTION
 ## These values are obtained from the AWS module output
 ## ---------------------------------------------------------------------------------------------------------------------
 

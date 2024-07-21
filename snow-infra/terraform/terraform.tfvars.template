@@ -1,6 +1,5 @@
 snowflake_account=""
-snowflake_region=""
 snowflake_user=""
 snowflake_password=""
-snowflake_role=""
+terraform_role=""
 env_code="dev"

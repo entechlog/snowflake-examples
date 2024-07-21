@@ -83,6 +83,74 @@ resource "snowflake_grant_privileges_to_role" "table_grant_future" {
   depends_on        = [snowflake_schema.schema, snowflake_grant_privileges_to_role.table_grant_existing]
 }
 
+resource "snowflake_grant_privileges_to_role" "view_grant_existing" {
+
+  for_each = var.view_grant
+
+  on_schema_object {
+    all {
+      object_type_plural = "VIEWS"
+      in_schema          = "${snowflake_database.database.name}.${split(" ", each.key)[0]}"
+    }
+  }
+
+  privileges        = each.value.privileges
+  role_name         = each.value.role_name
+  with_grant_option = false
+  depends_on        = [snowflake_schema.schema]
+}
+
+resource "snowflake_grant_privileges_to_role" "view_grant_future" {
+
+  for_each = var.view_grant
+
+  on_schema_object {
+    future {
+      object_type_plural = "VIEWS"
+      in_schema          = "${snowflake_database.database.name}.${split(" ", each.key)[0]}"
+    }
+  }
+
+  privileges        = each.value.privileges
+  role_name         = each.value.role_name
+  with_grant_option = false
+  depends_on        = [snowflake_schema.schema, snowflake_grant_privileges_to_role.view_grant_existing]
+}
+
+resource "snowflake_grant_privileges_to_role" "materialized_view_grant_existing" {
+
+  for_each = var.view_grant
+
+  on_schema_object {
+    all {
+      object_type_plural = "MATERIALIZED VIEWS"
+      in_schema          = "${snowflake_database.database.name}.${split(" ", each.key)[0]}"
+    }
+  }
+
+  privileges        = each.value.privileges
+  role_name         = each.value.role_name
+  with_grant_option = false
+  depends_on        = [snowflake_schema.schema]
+}
+
+resource "snowflake_grant_privileges_to_role" "materialized_view_grant_future" {
+
+  for_each = var.view_grant
+
+  on_schema_object {
+    future {
+      object_type_plural = "MATERIALIZED VIEWS"
+      in_schema          = "${snowflake_database.database.name}.${split(" ", each.key)[0]}"
+    }
+  }
+
+  privileges        = each.value.privileges
+  role_name         = each.value.role_name
+  with_grant_option = false
+  depends_on        = [snowflake_schema.schema, snowflake_grant_privileges_to_role.materialized_view_grant_existing]
+}
+
 //***************************************************************************//
 // Create Snowflake stage grants
 //***************************************************************************//
@@ -125,22 +193,26 @@ resource "snowflake_grant_privileges_to_role" "stage_grant_future" {
 // Create Snowflake pipe grants
 //***************************************************************************//
 
-resource "snowflake_grant_privileges_to_role" "pipe_grant_existing" {
+// Commenting the existing pipe grant block because of below error
+// Error: error granting privileges to account role: 003111 (0A000): SQL compilation error:
+// Bulk grant on objects of type PIPE to ROLE is restricted.
 
-  for_each = var.pipe_grant
+# resource "snowflake_grant_privileges_to_role" "pipe_grant_existing" {
 
-  on_schema_object {
-    all {
-      object_type_plural = "PIPES"
-      in_schema          = "${var.db_name}.${split(" ", each.key)[0]}"
-    }
-  }
+#   for_each = var.pipe_grant
 
-  privileges        = each.value.privileges
-  role_name         = each.value.role_name
-  with_grant_option = false
-  depends_on        = [snowflake_grant_privileges_to_role.schema_grant]
-}
+#   on_schema_object {
+#     all {
+#       object_type_plural = "PIPES"
+#       in_schema          = "${var.db_name}.${split(" ", each.key)[0]}"
+#     }
+#   }
+
+#   privileges        = each.value.privileges
+#   role_name         = each.value.role_name
+#   with_grant_option = false
+#   depends_on        = [snowflake_grant_privileges_to_role.schema_grant]
+# }
 
 resource "snowflake_grant_privileges_to_role" "pipe_grant_future" {
 
@@ -156,5 +228,5 @@ resource "snowflake_grant_privileges_to_role" "pipe_grant_future" {
   privileges        = each.value.privileges
   role_name         = each.value.role_name
   with_grant_option = false
-  depends_on        = [snowflake_grant_privileges_to_role.schema_grant, snowflake_grant_privileges_to_role.pipe_grant_existing]
+  depends_on        = [snowflake_grant_privileges_to_role.schema_grant]
 }

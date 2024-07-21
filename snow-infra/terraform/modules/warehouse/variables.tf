@@ -29,7 +29,7 @@ variable "warehouse_initially_suspended" {
 
 variable "warehouse_max_cluster_count" {
   type    = number
-  default = 1
+  default = 3
 }
 
 variable "warehouse_min_cluster_count" {

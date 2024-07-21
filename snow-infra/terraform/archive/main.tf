@@ -18,7 +18,7 @@ resource "snowflake_user" "demo_user" {
   last_name    = "User"
 
   default_warehouse = snowflake_warehouse.dev_entechlog_demo_wh_s.name
-  default_role      = snowflake_role.entechlog_demo_role.name
+  default_role      = terraform_role.entechlog_demo_role.name
 
   must_change_password = false
 }
@@ -27,7 +27,7 @@ resource "snowflake_user" "demo_user" {
 // Create Snowflake role
 //***************************************************************************//
 
-resource "snowflake_role" "entechlog_demo_role" {
+resource "terraform_role" "entechlog_demo_role" {
   name    = "ENTECHLOG_DEMO_ROLE"
   comment = "Snowflake role used for demos"
 }
@@ -36,8 +36,8 @@ resource "snowflake_role" "entechlog_demo_role" {
 // Create Snowflake role grants
 //***************************************************************************//
 
-resource "snowflake_role_grants" "entechlog_demo_role_grant" {
-  role_name = snowflake_role.entechlog_demo_role.name
+resource "terraform_role_grants" "entechlog_demo_role_grant" {
+  role_name = terraform_role.entechlog_demo_role.name
   roles     = ["SYSADMIN"]
   users = [
     "${snowflake_user.demo_user.name}"
@@ -78,7 +78,7 @@ resource "snowflake_warehouse_grant" "dev_entechlog_demo_wh_s_grant" {
   privilege      = "USAGE"
 
   roles = [
-    "${snowflake_role.entechlog_demo_role.name}",
+    "${terraform_role.entechlog_demo_role.name}",
   ]
 
   with_grant_option = false

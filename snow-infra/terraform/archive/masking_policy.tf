@@ -6,15 +6,15 @@
 #   source                   = "./masking-policy"
 #   count                    = local.enable_in_prod_flag
 #   masking_policy_name      = "MP_ENCRYPT_EMAIL"
-#   masking_policy_database  = module.entechlog_dw_db.database.name
-#   masking_policy_schema    = module.entechlog_dw_db.schema["COMPLIANCE"].name
+#   masking_policy_database  = module.dw_db.database.name
+#   masking_policy_schema    = module.dw_db.schema["COMPLIANCE"].name
 #   masking_value_data_type  = "VARCHAR"
 #   masking_expression       = "CASE WHEN CURRENT_ROLE() IN ('SYSADMIN') THEN val ELSE '**********' END"
 #   masking_return_data_type = "VARCHAR(16777216)"
 
 #   masking_grants = {
 #     "OWNERSHIP" = ["SYSADMIN"]
-#     "APPLY"     = [module.entechlog_dbt_role.role.name]
+#     "APPLY"     = [module.dbt_role.role.name]
 #   }
 
 # }
@@ -33,5 +33,5 @@ module "entechlog_str_s3_intg" {
   storage_allowed_locations = ["s3://entechlog-demo/kafka-snowpipe-demo/"]
   storage_blocked_locations = ["s3://entechlog-demo/secure/"]
   storage_aws_role_arn      = "arn:aws:iam::001234567890:role/myrole"
-  roles                     = [module.entechlog_dbt_role.role.name]
+  roles                     = [module.dbt_role.role.name]
 }

@@ -32,3 +32,8 @@ variable "pipe_grant" {
   type    = map(any)
   default = {}
 }
+
+variable "view_grant" {
+  type    = map(any)
+  default = {}
+}

@@ -4,6 +4,13 @@ This repo contains Terraform modules to create some common database objects in S
 # Instructions
 
 ```bash
+
+# login
+terraform login
+
+# create workspace
+terraform workspace new snowflake-dev
+
 # install custom modules
 terraform init
 

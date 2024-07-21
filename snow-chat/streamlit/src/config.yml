@@ -1,5 +1,5 @@
 databases:
-  - name: tst_entechlog_dw_db
+  - name: tst_dw_db
     schemas:
       - dim
       - fact

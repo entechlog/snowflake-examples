@@ -6,7 +6,7 @@ variable "db_comment" {
   type = string
 }
 
-variable "db_grant_roles" {
+variable "db_grants" {
   type = map(any)
 }
 

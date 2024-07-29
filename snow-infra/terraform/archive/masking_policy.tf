@@ -23,10 +23,10 @@
 // Create storage integration using modules
 //***************************************************************************//
 
-module "entechlog_str_s3_intg" {
+module "str_s3_intg" {
   source                    = "./storage-integration"
   count                     = local.enable_in_prod_flag
-  name                      = "ENTECHLOG_STR_S3_INTG"
+  name                      = "${upper(var.project_code)}_STR_S3_INTG"
   comment                   = ""
   storage_provider          = "S3"
   enabled                   = true

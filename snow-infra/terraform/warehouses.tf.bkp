@@ -2,9 +2,9 @@
 // Create Snowflake warehouse using modules
 //***************************************************************************//
 
-module "entechlog_dbt_wh_xs" {
+module "dbt_wh_xs" {
   source                 = "./modules/warehouse"
-  warehouse_name         = "${upper(var.env_code)}_ENTECHLOG_DBT_WH_XS"
+  warehouse_name         = "${upper(local.resource_name_prefix)}_DBT_WH_XS"
   warehouse_size         = "XSMALL"
   warehouse_auto_suspend = 30
 
@@ -17,10 +17,10 @@ module "entechlog_dbt_wh_xs" {
   depends_on = [module.dbt_role.role, module.de_role.role]
 }
 
-module "entechlog_query_wh_xs" {
+module "query_wh_xs" {
   source                 = "./modules/warehouse"
   count                  = local.enable_in_dev_flag
-  warehouse_name         = "ALL_ENTECHLOG_QUERY_WH_XS"
+  warehouse_name         = "ALL_${upper(var.project_code)}_QUERY_WH_XS"
   warehouse_size         = "XSMALL"
   warehouse_auto_suspend = 30
 
@@ -34,17 +34,17 @@ module "entechlog_query_wh_xs" {
   depends_on = [module.da_role.role, module.de_role.role]
 }
 
-module "entechlog_demo_wh_xs" {
+module "demo_wh_xs" {
   source                 = "./modules/warehouse"
-  warehouse_name         = "${upper(var.env_code)}_ENTECHLOG_DEMO_WH_XS"
+  warehouse_name         = "${upper(local.resource_name_prefix)}_DEMO_WH_XS"
   warehouse_size         = "XSMALL"
   warehouse_auto_suspend = 30
 
   warehouse_grant = {
     "sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["MODIFY"] },
-    "demo_role"      = { "role_name" = "${module.entechlog_demo_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
+    "demo_role"      = { "role_name" = "${module.demo_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
   }
 
-  depends_on = [module.entechlog_demo_role.role]
+  depends_on = [module.demo_role.role]
 }

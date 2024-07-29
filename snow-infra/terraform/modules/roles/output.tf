@@ -1,3 +1,3 @@
 output "role" {
-  value = snowflake_role.role
+  value = snowflake_account_role.role
 }

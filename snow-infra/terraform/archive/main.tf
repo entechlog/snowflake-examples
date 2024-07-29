@@ -17,8 +17,8 @@ resource "snowflake_user" "demo_user" {
   first_name   = "Demo"
   last_name    = "User"
 
-  default_warehouse = snowflake_warehouse.dev_entechlog_demo_wh_s.name
-  default_role      = terraform_role.entechlog_demo_role.name
+  default_warehouse = snowflake_warehouse.demo_wh_s.name
+  default_role      = terraform_role.demo_role.name
 
   must_change_password = false
 }
@@ -27,8 +27,8 @@ resource "snowflake_user" "demo_user" {
 // Create Snowflake role
 //***************************************************************************//
 
-resource "terraform_role" "entechlog_demo_role" {
-  name    = "ENTECHLOG_DEMO_ROLE"
+resource "terraform_role" "demo_role" {
+  name    = "${upper(var.project_code)}_DEMO_ROLE"
   comment = "Snowflake role used for demos"
 }
 
@@ -36,8 +36,8 @@ resource "terraform_role" "entechlog_demo_role" {
 // Create Snowflake role grants
 //***************************************************************************//
 
-resource "terraform_role_grants" "entechlog_demo_role_grant" {
-  role_name = terraform_role.entechlog_demo_role.name
+resource "terraform_role_grants" "demo_role_grant" {
+  role_name = terraform_role.demo_role.name
   roles     = ["SYSADMIN"]
   users = [
     "${snowflake_user.demo_user.name}"
@@ -48,8 +48,8 @@ resource "terraform_role_grants" "entechlog_demo_role_grant" {
 // Create Snowflake database
 //***************************************************************************//
 
-resource "snowflake_database" "dev_entechlog_demo_db" {
-  name    = "DEV_ENTECHLOG_DEMO_DB"
+resource "snowflake_database" "demo_db" {
+  name    = "DEV_${upper(var.project_code)}_DEMO_DB"
   comment = "Database to store the demo data"
 }
 
@@ -57,8 +57,8 @@ resource "snowflake_database" "dev_entechlog_demo_db" {
 // Create Snowflake warehouse
 //***************************************************************************//
 
-resource "snowflake_warehouse" "dev_entechlog_demo_wh_s" {
-  name                = "DEV_ENTECHLOG_DEMO_WH_S"
+resource "snowflake_warehouse" "demo_wh_s" {
+  name                = "DEV_${upper(var.project_code)}_DEMO_WH_S"
   comment             = "Small warehouse used for demos"
   warehouse_size      = "small"
   auto_resume         = true
@@ -73,12 +73,12 @@ resource "snowflake_warehouse" "dev_entechlog_demo_wh_s" {
 // Create Snowflake warehouse grants
 //***************************************************************************//
 
-resource "snowflake_warehouse_grant" "dev_entechlog_demo_wh_s_grant" {
-  warehouse_name = snowflake_warehouse.dev_entechlog_demo_wh_s.name
+resource "snowflake_warehouse_grant" "demo_wh_s_grant" {
+  warehouse_name = snowflake_warehouse.demo_wh_s.name
   privilege      = "USAGE"
 
   roles = [
-    "${terraform_role.entechlog_demo_role.name}",
+    "${terraform_role.demo_role.name}",
   ]
 
   with_grant_option = false

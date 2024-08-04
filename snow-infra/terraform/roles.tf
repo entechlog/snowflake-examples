@@ -62,15 +62,3 @@ module "de_role" {
 
   depends_on = [module.all_user_accounts]
 }
-
-module "demo_role" {
-  source = "./modules/roles"
-  # count        = local.enable_in_dev_flag
-  role_name    = "${upper(local.resource_name_prefix)}_DEMO_ROLE"
-  role_comment = "Snowflake role used by demo user in ${var.env_code}"
-
-  roles = ["SYSADMIN"]
-  users = [lower("${var.env_code}_${lower(var.project_code)}_demo_user")]
-
-  depends_on = [module.all_service_accounts]
-}

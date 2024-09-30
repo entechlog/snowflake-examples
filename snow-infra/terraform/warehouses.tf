@@ -17,6 +17,21 @@ module "dbt_wh_xs" {
   depends_on = [module.dbt_role.role]
 }
 
+module "kafka_wh_xs" {
+  source                 = "./modules/warehouse"
+  warehouse_name         = "${upper(local.resource_name_prefix)}_KAFKA_WH_XS"
+  warehouse_size         = "XSMALL"
+  warehouse_auto_suspend = 30
+
+  warehouse_grant = {
+    "sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["MODIFY"] },
+    "kafka_role"     = { "role_name" = "${module.kafka_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
+  }
+
+  depends_on = [module.kafka_role.role]
+}
+
 module "query_wh_xs" {
   source                 = "./modules/warehouse"
   count                  = local.enable_in_dev_flag

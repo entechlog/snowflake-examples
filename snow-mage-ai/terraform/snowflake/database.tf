@@ -5,7 +5,7 @@
 // RAW Layer
 
 module "raw_db" {
-  source = "../../../snow-objects/terraform/modules/database"
+  source = "../../../snow-infra/terraform/modules/database"
 
   db_name    = "${upper(local.resource_prefix_with_env)}_RAW_DB"
   db_comment = "Database to store the ingested RAW data"
@@ -59,7 +59,7 @@ module "raw_db" {
 // Staging Layer, No user access other than dbt roles and developer role
 
 module "prep_db" {
-  source = "../../../snow-objects/terraform/modules/database"
+  source = "../../../snow-infra/terraform/modules/database"
 
   db_name    = "${upper(local.resource_prefix_with_env)}_PREP_DB"
   db_comment = "Database to store the standardized data"
@@ -106,7 +106,7 @@ module "prep_db" {
 // DW Layer, This is the only layer an end user should have access
 
 module "dw_db" {
-  source = "../../../snow-objects/terraform/modules/database"
+  source = "../../../snow-infra/terraform/modules/database"
 
   db_name    = "${upper(local.resource_prefix_with_env)}_DW_DB"
   db_comment = "Database to store the DW data"

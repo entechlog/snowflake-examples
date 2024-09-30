@@ -3,7 +3,7 @@
 //***************************************************************************//
 
 module "dbt_wh_xs" {
-  source                 = "../../../snow-objects/terraform/modules/warehouse"
+  source                 = "../../../snow-infra/terraform/modules/warehouse"
   warehouse_name         = "${upper(local.resource_prefix_with_env)}_DBT_WH_XS"
   warehouse_size         = "XSMALL"
   warehouse_auto_suspend = 30
@@ -18,7 +18,7 @@ module "dbt_wh_xs" {
 }
 
 module "query_wh_xs" {
-  source                 = "../../../snow-objects/terraform/modules/warehouse"
+  source                 = "../../../snow-infra/terraform/modules/warehouse"
   count                  = local.enable_in_dev_flag
   warehouse_name         = "ALL_${upper(local.resource_prefix_without_env)}_QUERY_WH_XS"
   warehouse_size         = "XSMALL"

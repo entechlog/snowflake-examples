@@ -13,17 +13,6 @@ module "dbt_role" {
   depends_on = [module.all_service_accounts]
 }
 
-module "atlan_role" {
-  source       = "./modules/roles"
-  role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_ATLAN_ROLE"
-  role_comment = "Snowflake role used by Atlan in ${var.env_code}"
-
-  roles = ["SYSADMIN"]
-  users = [lower("${var.env_code}_svc_${lower(var.project_code)}_snow_atlan_user")]
-
-  depends_on = [module.all_service_accounts]
-}
-
 module "kafka_role" {
   source       = "./modules/roles"
   role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_KAFKA_ROLE"

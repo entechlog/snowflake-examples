@@ -13,6 +13,17 @@ module "dbt_role" {
   depends_on = [module.all_service_accounts]
 }
 
+module "superset_role" {
+  source       = "./modules/roles"
+  role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_SUPERSET_ROLE"
+  role_comment = "Snowflake role used by Superset in ${var.env_code}"
+
+  roles = ["SYSADMIN"]
+  users = [lower("${var.env_code}_svc_${lower(var.project_code)}_snow_superset_user")]
+
+  depends_on = [module.all_service_accounts]
+}
+
 module "kafka_role" {
   source       = "./modules/roles"
   role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_KAFKA_ROLE"

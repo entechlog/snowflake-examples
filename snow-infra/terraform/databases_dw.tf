@@ -14,11 +14,12 @@ module "dw_db" {
     "sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["CREATE SCHEMA"] },
     "dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE SCHEMA"] },
+    "superset_role"  = { "role_name" = "${module.superset_role.role.name}", "privileges" = ["USAGE"] },
     "de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["USAGE"] },
     "da_role"        = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["USAGE"] },
   }
 
-  schemas = ["DIM", "FACT", "UTIL", "COMPLIANCE"]
+  schemas = ["DIM", "FACT", "OBT", "UTIL", "COMPLIANCE"]
 
   schema_grant = {
     "DIM sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
@@ -32,6 +33,13 @@ module "dw_db" {
     "FACT dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
     "FACT de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
     "FACT da_role"        = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["USAGE"] },
+
+    "OBT sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "OBT terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE"] },
+    "OBT dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
+    "OBT superset_role"  = { "role_name" = "${module.superset_role.role.name}", "privileges" = ["USAGE"] },
+    "OBT de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
+    "OBT da_role"        = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["USAGE"] },
 
     "UTIL sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "UTIL terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE"] },
@@ -55,6 +63,11 @@ module "dw_db" {
     "FACT de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
     "FACT da_role"  = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
 
+    "OBT dbt_role"      = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "OBT superset_role" = { "role_name" = "${module.superset_role.role.name}", "privileges" = ["SELECT"] },
+    "OBT de_role"       = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
+    "OBT da_role"       = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
+
     "UTIL dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
     "UTIL de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
     "UTIL da_role"  = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
@@ -64,6 +77,6 @@ module "dw_db" {
     "COMPLIANCE da_role"  = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
   }
 
-  depends_on = [module.dbt_role.role, module.de_role.role, module.da_role.role]
+  depends_on = [module.dbt_role.role, module.superset_role.role, module.de_role.role, module.da_role.role]
 }
 

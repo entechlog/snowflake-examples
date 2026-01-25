@@ -1,0 +1,38 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.backup
+terraform/.terraform.lock.hcl
+terraform/terraform.tfvars
+
+# Docker
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+venv/
+ENV/
+
+# Temporary Claude files
+tmpclaude-*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prometheus data (if using monitoring)
+prometheus/data/
+
+# Logs
+*.log

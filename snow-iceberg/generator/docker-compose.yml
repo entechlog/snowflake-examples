@@ -1,0 +1,52 @@
+services:
+  # Data generator - generates fake data and writes as Iceberg tables
+  generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data-generator
+    env_file:
+      - ../.env
+    environment:
+      # AWS credentials and configuration
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+      # Iceberg configuration
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-entechlog-raw-ext-volume}
+      - S3_WAREHOUSE_PATH=s3://${S3_BUCKET_NAME:-entechlog-raw-ext-volume}/warehouse
+      - GLUE_DATABASE=${GLUE_DATABASE:-faker}
+
+      # Schema configuration
+      - SCHEMA_FILE=schema.yaml
+      - ICEBERG_CONFIG_FILE=/app/config/iceberg_config.yaml
+
+      # Generation settings (optional - defaults from schema.yaml if not set)
+      - GENERATION_INTERVAL=${GENERATION_INTERVAL:-60}
+      - BATCH_SIZE=${BATCH_SIZE:-0}
+
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      # Mount schema.yaml for easy editing without rebuild
+      - ./schema.yaml:/app/schema.yaml:ro
+      # Mount shared iceberg config from ingestion folder
+      - ../ingestion/iceberg_config.yaml:/app/config/iceberg_config.yaml:ro
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: faker-generator-network

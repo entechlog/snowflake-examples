@@ -36,3 +36,9 @@ variable "use_env_code" {
   description = "Toggle on/off the env code in the resource names"
   default     = true
 }
+
+variable "storage_integration_aws_iam_role_arn" {
+  description = "Storage Integration external ID (from DESC STORAGE INTEGRATION)"
+  type        = string
+  default     = ""
+}

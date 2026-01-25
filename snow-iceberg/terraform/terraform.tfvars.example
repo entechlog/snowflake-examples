@@ -1,0 +1,57 @@
+# ==============================================================================
+# REQUIRED CONFIGURATION - Update these values before first apply
+# ==============================================================================
+
+# Environment Configuration
+env_code   = "dev"
+aws_region = "us-east-1"
+
+# Project Configuration
+project_code = "entechlog"
+use_env_code = false
+
+# Snowflake Configuration
+snowflake_organization_name = "your_org_name"
+snowflake_account_name      = "your_account_name"
+snowflake_username          = "your_username"
+snowflake_password          = "your_password"
+snowflake_role              = "ACCOUNTADMIN"
+snowflake_warehouse         = "COMPUTE_WH"
+
+# Iceberg Configuration
+glue_database_name    = "faker"
+create_iceberg_tables = false  # Set false for first apply, true after PyIceberg creates tables
+
+# ==============================================================================
+# IAM TRUST CONFIGURATION - Leave empty for first apply
+# Update after running DESC commands in Snowflake (second apply)
+# ==============================================================================
+
+# From DESC EXTERNAL VOLUME
+external_volume_snowflake_iam_user_arn = ""  # STORAGE_AWS_IAM_USER_ARN
+external_volume_aws_external_id        = ""  # STORAGE_AWS_EXTERNAL_ID
+
+# From DESC STORAGE INTEGRATION
+storage_integration_snowflake_iam_user_arn = ""  # STORAGE_AWS_IAM_USER_ARN
+storage_integration_aws_external_id        = ""  # STORAGE_AWS_EXTERNAL_ID
+
+# From DESC CATALOG INTEGRATION
+catalog_integration_snowflake_iam_user_arn = ""  # GLUE_AWS_IAM_USER_ARN
+catalog_integration_aws_external_id        = ""  # GLUE_AWS_EXTERNAL_ID
+
+# ==============================================================================
+# OPTIONAL CONFIGURATION - Uncomment and modify if needed
+# ==============================================================================
+
+# Customize Iceberg tables (default: faker with 4 tables)
+# Source naming: 'hubspot', 'salesforce', 'billing_db', 'customer_portal_db'
+# NOT: 'postgres', 'mysql', 'sales', 'marketing'
+# iceberg_tables = {
+#   faker = ["customers", "orders", "products", "event_logs"]
+# }
+
+# Customize S3 warehouse prefix (default: "warehouse")
+# s3_warehouse_prefix = "warehouse"
+
+# Customize wait time for resource creation (default: "30s")
+# resource_creation_wait_time = "30s"

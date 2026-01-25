@@ -62,3 +62,17 @@ module "de_role" {
 
   depends_on = [module.all_user_accounts]
 }
+
+module "pipe_admin_role" {
+  source       = "./modules/roles"
+  count        = local.enable_in_dev_flag
+  role_name    = "${upper(var.project_code)}_PIPE_ADMIN_ROLE"
+  role_comment = "Snowflake role used by Snowpipe Admins"
+
+  roles = ["SYSADMIN"]
+  users = [lower("admin@entechlog.com"),
+    lower("${var.env_code}_svc_${lower(var.project_code)}_snow_dbt_user")
+  ]
+
+  depends_on = [module.all_service_accounts]
+}

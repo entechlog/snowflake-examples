@@ -64,3 +64,18 @@ module "query_wh_xs" {
 
   depends_on = [module.dbt_role.role, module.da_role.role, module.de_role.role]
 }
+
+module "snowpipe_wh_xs" {
+  source                 = "./modules/warehouse"
+  warehouse_name         = "${upper(local.resource_name_prefix)}_SNOWPIPE_WH_XS"
+  warehouse_size         = "XSMALL"
+  warehouse_auto_suspend = 30
+
+  warehouse_grant = {
+    "sysadmin_role"   = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "terraform_role"  = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["MODIFY"] },
+    "pipe_admin_role" = { "role_name" = "${upper(var.project_code)}_PIPE_ADMIN_ROLE", "privileges" = ["USAGE", "MONITOR"] },
+  }
+
+  depends_on = [module.dbt_role.role]
+}

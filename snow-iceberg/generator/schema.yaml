@@ -1,0 +1,204 @@
+# Data Generation Schema Configuration
+# Define your tables and fields here using Faker method names
+
+tables:
+  customers:
+    description: "Customer master data"
+    batch_size: 100
+    fields:
+      - name: customer_id
+        faker_type: uuid4
+      - name: first_name
+        faker_type: first_name
+      - name: last_name
+        faker_type: last_name
+      - name: email
+        faker_type: email
+      - name: phone
+        faker_type: phone_number
+      - name: address
+        faker_type: street_address
+      - name: city
+        faker_type: city
+      - name: state
+        faker_type: state_abbr
+      - name: zip_code
+        faker_type: zipcode
+      - name: country
+        faker_type: country_code
+      - name: registration_date
+        faker_type: date_between
+        params:
+          start_date: "-2y"
+          end_date: "today"
+      - name: account_status
+        faker_type: random_element
+        params:
+          elements: ['active', 'inactive', 'suspended']
+      - name: created_at
+        faker_type: current_timestamp
+
+  orders:
+    description: "Order transactions"
+    batch_size: 200
+    fields:
+      - name: order_id
+        faker_type: uuid4
+      - name: customer_id
+        faker_type: uuid4
+      - name: order_date
+        faker_type: date_time_between
+        params:
+          start_date: "-1y"
+          end_date: "now"
+      - name: order_amount
+        faker_type: pyfloat
+        params:
+          left_digits: 4
+          right_digits: 2
+          positive: true
+          min_value: 10
+          max_value: 5000
+      - name: currency
+        faker_type: currency_code
+      - name: payment_method
+        faker_type: random_element
+        params:
+          elements: ['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'apple_pay']
+      - name: order_status
+        faker_type: random_element
+        params:
+          elements: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+      - name: shipping_address
+        faker_type: street_address
+      - name: shipping_city
+        faker_type: city
+      - name: shipping_state
+        faker_type: state_abbr
+      - name: shipping_zip
+        faker_type: zipcode
+      - name: items_count
+        faker_type: random_int
+        params:
+          min: 1
+          max: 10
+      - name: created_at
+        faker_type: current_timestamp
+
+  products:
+    description: "Product catalog"
+    batch_size: 50
+    fields:
+      - name: product_id
+        faker_type: uuid4
+      - name: product_name
+        faker_type: catch_phrase
+      - name: category
+        faker_type: random_element
+        params:
+          elements: ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books', 'Toys', 'Food & Beverage']
+      - name: brand
+        faker_type: company
+      - name: price
+        faker_type: pyfloat
+        params:
+          left_digits: 3
+          right_digits: 2
+          positive: true
+          min_value: 5
+          max_value: 1000
+      - name: cost
+        faker_type: pyfloat
+        params:
+          left_digits: 3
+          right_digits: 2
+          positive: true
+          min_value: 2
+          max_value: 500
+      - name: stock_quantity
+        faker_type: random_int
+        params:
+          min: 0
+          max: 1000
+      - name: sku
+        faker_type: bothify
+        params:
+          text: "???-########"
+      - name: weight_kg
+        faker_type: pyfloat
+        params:
+          left_digits: 2
+          right_digits: 2
+          positive: true
+          min_value: 0.1
+          max_value: 50
+      - name: dimensions
+        faker_type: bothify
+        params:
+          text: "##x##x##"
+      - name: rating
+        faker_type: pyfloat
+        params:
+          left_digits: 1
+          right_digits: 1
+          positive: true
+          min_value: 1
+          max_value: 5
+      - name: is_active
+        faker_type: boolean
+        params:
+          chance_of_getting_true: 80
+      - name: created_at
+        faker_type: current_timestamp
+
+  event_logs:
+    description: "Application event logs"
+    batch_size: 500
+    fields:
+      - name: event_id
+        faker_type: uuid4
+      - name: user_id
+        faker_type: uuid4
+      - name: session_id
+        faker_type: uuid4
+      - name: event_type
+        faker_type: random_element
+        params:
+          elements: ['page_view', 'button_click', 'form_submit', 'login', 'logout', 'purchase', 'search', 'add_to_cart']
+      - name: event_timestamp
+        faker_type: date_time_between
+        params:
+          start_date: "-7d"
+          end_date: "now"
+      - name: page_url
+        faker_type: uri
+      - name: user_agent
+        faker_type: user_agent
+      - name: ip_address
+        faker_type: ipv4
+      - name: country
+        faker_type: country_code
+      - name: device_type
+        faker_type: random_element
+        params:
+          elements: ['desktop', 'mobile', 'tablet']
+      - name: browser
+        faker_type: random_element
+        params:
+          elements: ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera']
+      - name: created_at
+        faker_type: current_timestamp
+
+# Global configuration
+config:
+  # Default batch size if not specified per table
+  default_batch_size: 100
+
+  # Generation interval in seconds
+  generation_interval: 60
+
+  # S3 configuration
+  s3:
+    compression: snappy
+    file_format: parquet
+    partition_keys: ['year', 'month', 'day', 'hour']

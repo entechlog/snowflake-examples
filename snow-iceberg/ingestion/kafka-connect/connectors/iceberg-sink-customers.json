@@ -1,0 +1,33 @@
+{
+  "name": "iceberg-sink-customers",
+  "config": {
+    "connector.class": "org.apache.iceberg.connect.IcebergSinkConnector",
+    "tasks.max": "1",
+    "topics": "datagen.customers",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+
+    "iceberg.tables": "datagen.customers",
+    "iceberg.tables.auto-create-enabled": "true",
+    "iceberg.tables.evolve-schema-enabled": "true",
+
+    "iceberg.catalog.type": "glue",
+    "iceberg.catalog.warehouse": "s3://${S3_BUCKET_NAME}",
+    "iceberg.catalog.io-impl": "org.apache.iceberg.aws.s3.S3FileIO",
+
+    "iceberg.tables.auto-create-props.location": "s3://${S3_BUCKET_NAME}/source=datagen/event=customers",
+    "iceberg.tables.auto-create-props.write.data.path": "s3://${S3_BUCKET_NAME}/source=datagen/event=customers/data",
+    "iceberg.tables.auto-create-props.write.metadata.path": "s3://${S3_BUCKET_NAME}/source=datagen/event=customers/metadata",
+
+    "transforms": "addEventDate",
+    "transforms.addEventDate.type": "org.apache.iceberg.connect.transforms.CopyValue",
+    "transforms.addEventDate.source.field": "registertime",
+    "transforms.addEventDate.target.field": "event_date",
+
+    "iceberg.table.datagen.customers.partition-by": "day(event_date)",
+
+    "iceberg.control.commit.interval-ms": "60000",
+    "iceberg.control.commit.timeout-ms": "300000"
+  }
+}

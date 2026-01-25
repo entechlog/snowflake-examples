@@ -1,0 +1,34 @@
+# =============================================================================
+# Iceberg Table Configuration (Python Generator)
+# =============================================================================
+# Used by the Python Faker generator to:
+#   1. Derive event_date from source_date_column
+#   2. Write to correct S3 path format
+#   3. Partition by event_date
+#
+# Note: Kafka Connect uses its own JSON config files, not this file.
+# =============================================================================
+
+defaults:
+  partition_column: event_date
+  enable_schema_evolution: true
+  file_format: parquet
+  compression: snappy
+
+namespaces:
+  faker:
+    base_path: s3://entechlog-raw-ext-volume
+    path_format: source={namespace}/event={table}
+    tables:
+      customers:
+        source_date_column: created_at
+        primary_key: customer_id
+      orders:
+        source_date_column: order_date
+        primary_key: order_id
+      products:
+        source_date_column: created_at
+        primary_key: product_id
+      event_logs:
+        source_date_column: event_timestamp
+        primary_key: event_id

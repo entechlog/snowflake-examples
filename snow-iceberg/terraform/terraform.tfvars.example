@@ -19,7 +19,6 @@ snowflake_role              = "ACCOUNTADMIN"
 snowflake_warehouse         = "COMPUTE_WH"
 
 # Iceberg Configuration
-glue_database_name    = "faker"
 create_iceberg_tables = false  # Set false for first apply, true after PyIceberg creates tables
 
 # ==============================================================================
@@ -43,15 +42,19 @@ catalog_integration_aws_external_id        = ""  # GLUE_AWS_EXTERNAL_ID
 # OPTIONAL CONFIGURATION - Uncomment and modify if needed
 # ==============================================================================
 
+# Default Glue catalog namespace for Snowflake catalog integration (default: "faker")
+# Must match a key in iceberg_tables
+# glue_default_catalog_namespace = "faker"
+
 # Customize Iceberg tables (default: faker with 4 tables)
 # Source naming: 'hubspot', 'salesforce', 'billing_db', 'customer_portal_db'
 # NOT: 'postgres', 'mysql', 'sales', 'marketing'
 # iceberg_tables = {
-#   faker = ["customers", "orders", "products", "event_logs"]
+#   faker    = ["customers", "orders", "products", "event_logs"]
+#   datagen  = ["customers"]
+#   # slingdata excluded - iceberg-go manifest incompatible with Snowflake (works with Athena)
+#   # slingdata = ["customers", "orders"]
 # }
-
-# Customize S3 warehouse prefix (default: "warehouse")
-# s3_warehouse_prefix = "warehouse"
 
 # Customize wait time for resource creation (default: "30s")
 # resource_creation_wait_time = "30s"

@@ -5,7 +5,7 @@ Supports config-driven standardized partitioning with event_date column.
 
 import pandas as pd
 import pyarrow as pa
-from pyiceberg.exceptions import NoSuchTableError
+from pyiceberg.exceptions import NoSuchTableError, NamespaceAlreadyExistsError
 from pyiceberg.schema import Schema
 from pyiceberg.partitioning import PartitionSpec, PartitionField
 from pyiceberg.transforms import DayTransform
@@ -22,7 +22,6 @@ from pyiceberg.types import (
 
 from .config import GLUE_DATABASE
 from .catalog import get_catalog
-from .s3_path import format_table_location
 from .logging_setup import get_logger
 from .iceberg_config_loader import (
     get_source_date_column,
@@ -157,7 +156,6 @@ def ensure_iceberg_table(table_name: str, df: pd.DataFrame, namespace: str = Non
     Ensure Iceberg table exists, create if not.
 
     Uses config-driven standardized partition column (event_date).
-    Uses custom S3 location based on S3_PATH_FORMAT configuration.
 
     Args:
         table_name: Name of the table to create/load.
@@ -177,6 +175,13 @@ def ensure_iceberg_table(table_name: str, df: pd.DataFrame, namespace: str = Non
     partition_column = get_partition_column()
 
     try:
+        # Ensure namespace (Glue database) exists
+        try:
+            catalog.create_namespace(namespace)
+            logger.info(f"Created namespace: {namespace}")
+        except NamespaceAlreadyExistsError:
+            pass
+
         table_identifier = f"{GLUE_DATABASE}.{table_name}"
 
         # Try to load existing table
@@ -208,16 +213,10 @@ def ensure_iceberg_table(table_name: str, df: pd.DataFrame, namespace: str = Non
                     f"Table will be created without partitioning."
                 )
 
-            # Generate custom location using S3 path format
-            location = format_table_location(GLUE_DATABASE, table_name)
-            logger.info(f"Creating table at custom location: {location}")
-
-            # Create table with custom location
             table = catalog.create_table(
                 identifier=table_identifier,
                 schema=iceberg_schema,
                 partition_spec=partition_spec,
-                location=location,
             )
             logger.info(f"Created Iceberg table: {table_identifier}")
             return table

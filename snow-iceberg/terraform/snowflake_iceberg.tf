@@ -1,12 +1,10 @@
-# Wait for AWS resources (IAM role, Glue database, and Lake Formation permissions)
+# Wait for AWS resources (IAM role and IAM user policy)
 resource "time_sleep" "wait_for_aws" {
   create_duration = var.resource_creation_wait_time
 
   depends_on = [
-    aws_glue_catalog_database.iceberg,
     aws_iam_role.external_volume_role,
-    aws_iam_user_policy_attachment.iceberg_generator_attachment,
-    aws_lakeformation_permissions.database
+    aws_iam_user_policy_attachment.iceberg_generator_attachment
   ]
 }
 
@@ -16,7 +14,7 @@ resource "snowflake_execute" "iceberg_catalog_integration" {
     CREATE OR REPLACE CATALOG INTEGRATION ${local.iceberg_catalog_integration_name}
       CATALOG_SOURCE = GLUE
       TABLE_FORMAT = ICEBERG
-      CATALOG_NAMESPACE = '${var.glue_database_name}'
+      CATALOG_NAMESPACE = '${var.glue_default_catalog_namespace}'
       GLUE_AWS_ROLE_ARN = '${aws_iam_role.external_volume_role.arn}'
       GLUE_CATALOG_ID = '${data.aws_caller_identity.current.account_id}'
       GLUE_REGION = '${var.aws_region}'
@@ -71,6 +69,7 @@ resource "snowflake_execute" "iceberg_tables" {
 
   depends_on = [
     time_sleep.wait_for_catalog_integration,
-    snowflake_external_volume.raw_data_volume
+    snowflake_external_volume.raw_data_volume,
+    aws_lakeformation_permissions.tables
   ]
 }

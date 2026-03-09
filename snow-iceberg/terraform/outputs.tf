@@ -45,12 +45,12 @@ output "iceberg_generator_secret_access_key" {
 
 output "iceberg_warehouse_path" {
   description = "S3 warehouse path for Iceberg tables"
-  value       = "s3://${module.external_volume_bucket.aws_s3_bucket__name[0]}/${var.s3_warehouse_prefix}"
+  value       = "s3://${module.external_volume_bucket.aws_s3_bucket__name[0]}"
 }
 
-output "glue_database_name" {
-  description = "Glue database name for Iceberg catalog"
-  value       = var.glue_database_name
+output "glue_database_names" {
+  description = "Glue database names for Iceberg catalog"
+  value       = keys(var.iceberg_tables)
 }
 
 output "manual_steps_iam_trust" {

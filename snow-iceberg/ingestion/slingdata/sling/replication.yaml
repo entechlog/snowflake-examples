@@ -1,0 +1,14 @@
+source: POSTGRES_SOURCE
+target: ICEBERG_TARGET
+
+defaults:
+  mode: full-refresh
+
+streams:
+  public.customers:
+    object: slingdata.customers
+    primary_key: [customer_id]
+
+  public.orders:
+    object: slingdata.orders
+    primary_key: [order_id]

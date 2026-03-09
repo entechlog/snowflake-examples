@@ -7,8 +7,6 @@ from flask import Flask, jsonify
 
 from .config import (
     AWS_REGION,
-    S3_BASE_PATH,
-    S3_PATH_FORMAT,
     S3_WAREHOUSE_PATH,
     GLUE_DATABASE,
     SCHEMA_FILE,
@@ -50,8 +48,6 @@ def create_flask_app(stats: Stats, generator=None) -> Flask:
         stats_dict = stats.to_dict()
         stats_dict["config"] = {
             "aws_region": AWS_REGION,
-            "s3_base_path": S3_BASE_PATH,
-            "s3_path_format": S3_PATH_FORMAT,
             "s3_warehouse_path": S3_WAREHOUSE_PATH,
             "glue_database": GLUE_DATABASE,
             "schema_file": SCHEMA_FILE,

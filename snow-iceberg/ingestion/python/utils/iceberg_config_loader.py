@@ -144,19 +144,3 @@ def get_base_path(namespace: str) -> Optional[str]:
     if ns_config is None:
         return None
     return ns_config.get("base_path")
-
-
-def get_path_format(namespace: str) -> Optional[str]:
-    """
-    Get the S3 path format template for a namespace.
-
-    Args:
-        namespace: Namespace name.
-
-    Returns:
-        Path format template or None if not configured.
-    """
-    ns_config = get_namespace_config(namespace)
-    if ns_config is None:
-        return None
-    return ns_config.get("path_format")

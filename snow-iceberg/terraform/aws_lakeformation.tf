@@ -8,9 +8,9 @@ resource "aws_lakeformation_data_lake_settings" "settings" {
 }
 
 # Lake Formation permissions for each Glue database in iceberg_tables
-# Grants Snowflake IAM role access to read Glue Catalog metadata
+# Only grant after ingestion methods have created the databases (controlled by create_iceberg_tables flag)
 resource "aws_lakeformation_permissions" "database" {
-  for_each = var.iceberg_tables
+  for_each = var.create_iceberg_tables ? var.iceberg_tables : {}
 
   principal   = aws_iam_role.external_volume_role.arn
   permissions = ["DESCRIBE"]

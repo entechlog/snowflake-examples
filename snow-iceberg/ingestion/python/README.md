@@ -6,13 +6,12 @@ Generates synthetic data using Faker and writes to S3 Iceberg tables.
 
 ```
 schema.yaml ──► Python Generator ──► S3 (Iceberg) + Glue Catalog
-                + iceberg_config      source=faker/event={table}/
+                + iceberg_config      faker.db/{table}/
 ```
 
 ## Quick Start
 
 ```bash
-cd ../../generator
 docker-compose up -d
 
 # Check health
@@ -27,7 +26,7 @@ curl http://localhost:8000/stats
 | File | Purpose |
 |------|---------|
 | `schema.yaml` | Faker field definitions and batch sizes |
-| `iceberg_config.yaml` | S3 paths and date column mappings |
+| `iceberg_config.yaml` | Date column mappings and table config |
 
 ## Event Date Mapping
 
@@ -43,9 +42,9 @@ The generator copies source timestamp columns to a standardized `event_date` for
 ## S3 Path Structure
 
 ```
-s3://bucket/source=faker/event=customers/
+s3://bucket/faker.db/customers/
 ├── data/
-│   └── created_at_day=YYYY-MM-DD/*.parquet
+│   └── event_date_day=YYYY-MM-DD/*.parquet
 └── metadata/
     └── *.metadata.json
 ```

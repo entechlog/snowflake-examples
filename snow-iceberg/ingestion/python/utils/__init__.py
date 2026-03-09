@@ -5,8 +5,6 @@ Utility modules for the YAML Schema-Based Data Generator with Apache Iceberg
 from .config import (
     AWS_REGION,
     S3_BUCKET,
-    S3_BASE_PATH,
-    S3_PATH_FORMAT,
     S3_WAREHOUSE_PATH,
     GLUE_DATABASE,
     SCHEMA_FILE,
@@ -25,11 +23,9 @@ from .iceberg_config_loader import (
     get_source_date_column,
     get_primary_key,
     get_base_path,
-    get_path_format,
 )
 from .logging_setup import setup_logging, get_logger
 from .stats import Stats
-from .s3_path import format_table_location
 from .catalog import init_catalog, get_catalog
 from .iceberg import (
     infer_iceberg_type,
@@ -47,8 +43,6 @@ __all__ = [
     # Config
     "AWS_REGION",
     "S3_BUCKET",
-    "S3_BASE_PATH",
-    "S3_PATH_FORMAT",
     "S3_WAREHOUSE_PATH",
     "GLUE_DATABASE",
     "SCHEMA_FILE",
@@ -66,14 +60,11 @@ __all__ = [
     "get_source_date_column",
     "get_primary_key",
     "get_base_path",
-    "get_path_format",
     # Logging
     "setup_logging",
     "get_logger",
     # Stats
     "Stats",
-    # S3 Path
-    "format_table_location",
     # Catalog
     "init_catalog",
     "get_catalog",

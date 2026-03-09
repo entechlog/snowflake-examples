@@ -6,7 +6,7 @@ Writes streaming data to S3 Iceberg tables using Kafka Connect.
 
 ```
 Datagen Source ──► Kafka Topic ──► Iceberg Sink ──► S3 (Iceberg) + Glue Catalog
-                   datagen.customers              source=datagen/event=customers/
+                   datagen.customers              datagen.db/customers/
 ```
 
 ## Components
@@ -52,10 +52,10 @@ open http://localhost:8080
 
 ## S3 Path Structure
 
-Data writes to custom paths via `write.data.path` and `write.metadata.path`:
+Iceberg manages paths natively under the warehouse root (`datagen.db/{table}/`):
 
 ```
-s3://bucket/source=datagen/event=customers/
+s3://bucket/datagen.db/customers/
 ├── data/
 │   └── *.parquet
 └── metadata/
@@ -79,8 +79,7 @@ s3://bucket/source=datagen/event=customers/
 Key settings:
 ```json
 {
-  "iceberg.tables.auto-create-props.write.data.path": "s3://bucket/source=datagen/event=customers/data",
-  "iceberg.tables.auto-create-props.write.metadata.path": "s3://bucket/source=datagen/event=customers/metadata",
+  "iceberg.catalog.warehouse": "s3://bucket",
   "transforms.addEventDate.type": "org.apache.iceberg.connect.transforms.CopyValue",
   "iceberg.table.datagen.customers.partition-by": "day(event_date)"
 }

@@ -30,9 +30,14 @@ tmpclaude-*
 # OS
 .DS_Store
 Thumbs.db
+nul
 
 # Prometheus data (if using monitoring)
 prometheus/data/
+
+# Sling
+.sling/
+.sling.*
 
 # Logs
 *.log

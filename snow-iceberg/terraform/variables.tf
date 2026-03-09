@@ -57,13 +57,6 @@ variable "snowflake_role" {
   default     = "ACCOUNTADMIN"
 }
 
-# Iceberg and Glue configuration
-variable "glue_database_name" {
-  description = "Glue database name for Iceberg catalog (should match source system name, e.g., 'faker', 'hubspot', 'billing_db')"
-  type        = string
-  default     = "faker"
-}
-
 # External Volume IAM configuration (for external_volumes_*.tf files)
 variable "external_volume_snowflake_iam_user_arn" {
   description = "Snowflake IAM user ARN for External Volume (from DESC EXTERNAL VOLUME)"
@@ -115,6 +108,12 @@ variable "create_iceberg_tables" {
   default     = false
 }
 
+variable "glue_default_catalog_namespace" {
+  description = "Default Glue catalog namespace for Snowflake catalog integration (must match a key in iceberg_tables)"
+  type        = string
+  default     = "faker"
+}
+
 # Iceberg tables configuration
 # Key = source system name (e.g., 'faker', 'hubspot', 'billing_db')
 # Value = list of table names from that source
@@ -137,6 +136,11 @@ variable "iceberg_tables" {
     datagen = [
       "customers"
     ]
+    # slingdata excluded - iceberg-go manifest incompatible with Snowflake (works with Athena)
+    # slingdata = [
+    #   "customers",
+    #   "orders"
+    # ]
   }
 }
 
@@ -145,11 +149,4 @@ variable "resource_creation_wait_time" {
   description = "Wait time for resource creation dependencies (e.g., '30s', '1m')"
   type        = string
   default     = "30s"
-}
-
-# S3 warehouse configuration
-variable "s3_warehouse_prefix" {
-  description = "S3 prefix for Iceberg warehouse directory"
-  type        = string
-  default     = "warehouse"
 }

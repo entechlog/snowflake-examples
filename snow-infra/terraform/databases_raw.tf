@@ -19,7 +19,7 @@ module "raw_db" {
     "pipe_admin_role" = { "role_name" = "${upper(var.project_code)}_PIPE_ADMIN_ROLE", "privileges" = ["USAGE"] },
   }
 
-  schemas = ["DATAGEN", "SEED", "YELLOW_TAXI", "UTIL", "FAKER"]
+  schemas = ["DATAGEN", "SEED", "YELLOW_TAXI", "UTIL", "FAKER", "SLINGDATA"]
 
   /* https://docs.snowflake.com/en/user-guide/security-access-control-privileges.html#schema-privileges */
   schema_grant = {
@@ -43,6 +43,11 @@ module "raw_db" {
     "FAKER dbt_role"        = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE STAGE", "CREATE PIPE"] },
     "FAKER pipe_admin_role" = { "role_name" = "${upper(var.project_code)}_PIPE_ADMIN_ROLE", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE STAGE", "CREATE PIPE"] },
 
+    "SLINGDATA sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "SLINGDATA terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE", "CREATE FILE FORMAT", "CREATE STAGE", "CREATE ICEBERG TABLE"] },
+    "SLINGDATA dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE STAGE", "CREATE PIPE"] },
+    "SLINGDATA de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE PIPE"] : ["USAGE"]) },
+
     "UTIL sysadmin_role"   = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "UTIL terraform_role"  = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE", "CREATE FILE FORMAT", "CREATE STAGE"] },
     "UTIL dbt_role"        = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE STAGE", "CREATE PIPE"] },
@@ -61,6 +66,9 @@ module "raw_db" {
 
     "FAKER dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
     "FAKER de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
+
+    "SLINGDATA dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "SLINGDATA de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
 
     "UTIL dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
     "UTIL de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },

@@ -1,7 +1,3 @@
-# AWS Glue Catalog Database for Iceberg tables
-resource "aws_glue_catalog_database" "iceberg" {
-  name        = var.glue_database_name
-  description = "Glue database for Iceberg tables created by PyIceberg generator"
-
-  tags = local.common_tags
-}
+# Glue databases are created by ingestion methods (Sling, PyIceberg, etc.)
+# as proper Iceberg namespaces. Terraform only manages Lake Formation
+# permissions and Snowflake integration on top of them.

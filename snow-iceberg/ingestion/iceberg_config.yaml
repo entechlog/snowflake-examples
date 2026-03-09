@@ -3,8 +3,7 @@
 # =============================================================================
 # Used by the Python Faker generator to:
 #   1. Derive event_date from source_date_column
-#   2. Write to correct S3 path format
-#   3. Partition by event_date
+#   2. Partition by event_date
 #
 # Note: Kafka Connect uses its own JSON config files, not this file.
 # =============================================================================
@@ -17,8 +16,6 @@ defaults:
 
 namespaces:
   faker:
-    base_path: s3://entechlog-raw-ext-volume
-    path_format: source={namespace}/event={table}
     tables:
       customers:
         source_date_column: created_at

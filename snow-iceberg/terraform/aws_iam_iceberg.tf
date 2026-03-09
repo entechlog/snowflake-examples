@@ -20,7 +20,7 @@ resource "aws_iam_policy" "iceberg_generator_policy" {
           "s3:AbortMultipartUpload"
         ]
         Resource = [
-          "${module.external_volume_bucket.aws_s3_bucket__arn[0]}/${var.s3_warehouse_prefix}/*"
+          "${module.external_volume_bucket.aws_s3_bucket__arn[0]}/*"
         ]
       },
       {

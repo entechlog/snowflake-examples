@@ -1,0 +1,1081 @@
+stats_date,customer_segment,region,total_spend,order_count,new_customers,returning_customers,churn_count
+2025-10-01,Enterprise,Northeast,17308.64,13,1,7,0
+2025-10-01,Enterprise,Southeast,13490.59,10,0,7,0
+2025-10-01,Enterprise,Midwest,12868.56,10,0,7,0
+2025-10-01,Enterprise,West,19393.29,15,1,9,0
+2025-10-01,Mid-Market,Northeast,7526.06,31,3,17,0
+2025-10-01,Mid-Market,Southeast,5697.55,23,2,14,0
+2025-10-01,Mid-Market,Midwest,4648.92,19,2,13,0
+2025-10-01,Mid-Market,West,6174.45,25,3,19,0
+2025-10-01,Small Business,Northeast,2663.49,53,10,33,1
+2025-10-01,Small Business,Southeast,1815.52,36,7,18,0
+2025-10-01,Small Business,Midwest,2152.49,43,8,28,1
+2025-10-01,Small Business,West,2552.21,51,10,34,2
+2025-10-02,Enterprise,Northeast,16974.18,13,1,7,0
+2025-10-02,Enterprise,Southeast,12964.87,10,0,7,0
+2025-10-02,Enterprise,Midwest,16107.6,12,1,9,0
+2025-10-02,Enterprise,West,13444.61,10,0,5,0
+2025-10-02,Mid-Market,Northeast,8120.64,33,4,17,0
+2025-10-02,Mid-Market,Southeast,5006.45,20,2,11,0
+2025-10-02,Mid-Market,Midwest,5032.15,20,2,13,0
+2025-10-02,Mid-Market,West,7358.25,30,3,15,0
+2025-10-02,Small Business,Northeast,2167.27,43,8,26,1
+2025-10-02,Small Business,Southeast,1883.05,37,7,26,1
+2025-10-02,Small Business,Midwest,1534.27,30,6,22,1
+2025-10-02,Small Business,West,2417.55,48,9,32,1
+2025-10-03,Enterprise,Northeast,15094.68,12,1,6,0
+2025-10-03,Enterprise,Southeast,13065.87,10,0,5,0
+2025-10-03,Enterprise,Midwest,13829.21,11,0,8,0
+2025-10-03,Enterprise,West,18784.43,15,1,8,0
+2025-10-03,Mid-Market,Northeast,6295.54,26,3,13,0
+2025-10-03,Mid-Market,Southeast,6205.66,25,3,12,0
+2025-10-03,Mid-Market,Midwest,5182.06,21,2,15,0
+2025-10-03,Mid-Market,West,6373.13,26,3,15,0
+2025-10-03,Small Business,Northeast,2764.39,55,11,42,2
+2025-10-03,Small Business,Southeast,1918.86,38,7,24,0
+2025-10-03,Small Business,Midwest,1911.12,38,7,26,0
+2025-10-03,Small Business,West,2529.32,50,10,35,0
+2025-10-04,Enterprise,Northeast,12136.06,9,0,6,0
+2025-10-04,Enterprise,Southeast,8266.96,6,0,4,0
+2025-10-04,Enterprise,Midwest,7898.52,6,0,4,0
+2025-10-04,Enterprise,West,9912.48,7,0,5,0
+2025-10-04,Mid-Market,Northeast,4818.02,20,2,13,0
+2025-10-04,Mid-Market,Southeast,3249.84,13,1,9,0
+2025-10-04,Mid-Market,Midwest,3445.05,14,1,9,0
+2025-10-04,Mid-Market,West,4242.34,17,2,11,0
+2025-10-04,Small Business,Northeast,1536.07,30,6,18,0
+2025-10-04,Small Business,Southeast,1385.99,27,5,16,1
+2025-10-04,Small Business,Midwest,1163.95,23,4,18,0
+2025-10-04,Small Business,West,1407.13,28,5,15,0
+2025-10-05,Enterprise,Northeast,11478.96,9,0,6,0
+2025-10-05,Enterprise,Southeast,8032.45,6,0,4,0
+2025-10-05,Enterprise,Midwest,7775.68,6,0,3,0
+2025-10-05,Enterprise,West,7925.12,6,0,3,0
+2025-10-05,Mid-Market,Northeast,4747.76,19,2,10,0
+2025-10-05,Mid-Market,Southeast,3519.53,14,1,7,0
+2025-10-05,Mid-Market,Midwest,3549.65,14,1,8,0
+2025-10-05,Mid-Market,West,4149.77,17,2,11,0
+2025-10-05,Small Business,Northeast,1594.91,31,6,17,0
+2025-10-05,Small Business,Southeast,1010.47,20,4,11,0
+2025-10-05,Small Business,Midwest,1279.21,25,5,15,0
+2025-10-05,Small Business,West,1350.22,27,5,21,0
+2025-10-06,Enterprise,Northeast,16525.24,13,1,9,0
+2025-10-06,Enterprise,Southeast,16761.72,13,1,8,0
+2025-10-06,Enterprise,Midwest,13288.44,10,0,5,0
+2025-10-06,Enterprise,West,16147.22,12,1,9,0
+2025-10-06,Mid-Market,Northeast,6964.31,29,3,22,0
+2025-10-06,Mid-Market,Southeast,5400.4,22,2,12,0
+2025-10-06,Mid-Market,Midwest,6241.89,26,3,15,0
+2025-10-06,Mid-Market,West,7753.54,32,3,20,0
+2025-10-06,Small Business,Northeast,2773.7,55,11,35,0
+2025-10-06,Small Business,Southeast,1659.8,33,6,18,0
+2025-10-06,Small Business,Midwest,1451.1,29,5,17,0
+2025-10-06,Small Business,West,2055.46,41,8,29,1
+2025-10-07,Enterprise,Northeast,18237.69,14,1,9,0
+2025-10-07,Enterprise,Southeast,14483.63,11,0,6,0
+2025-10-07,Enterprise,Midwest,11056.44,8,0,4,0
+2025-10-07,Enterprise,West,14717.71,11,0,7,0
+2025-10-07,Mid-Market,Northeast,7024.55,29,3,20,0
+2025-10-07,Mid-Market,Southeast,6732.85,28,3,14,0
+2025-10-07,Mid-Market,Midwest,4915.06,20,2,12,0
+2025-10-07,Mid-Market,West,5803.35,24,2,16,0
+2025-10-07,Small Business,Northeast,2546.49,50,10,37,0
+2025-10-07,Small Business,Southeast,2142.3,42,8,30,1
+2025-10-07,Small Business,Midwest,1548.14,30,6,15,1
+2025-10-07,Small Business,West,2329.02,46,9,25,2
+2025-10-08,Enterprise,Northeast,19561.98,15,1,10,0
+2025-10-08,Enterprise,Southeast,15666.52,12,1,7,0
+2025-10-08,Enterprise,Midwest,12648.97,10,0,6,0
+2025-10-08,Enterprise,West,14385.2,11,0,5,0
+2025-10-08,Mid-Market,Northeast,8543.93,35,4,25,0
+2025-10-08,Mid-Market,Southeast,5704.41,23,2,16,0
+2025-10-08,Mid-Market,Midwest,6036.89,25,3,14,0
+2025-10-08,Mid-Market,West,7373.35,30,3,22,0
+2025-10-08,Small Business,Northeast,2704.58,54,10,41,2
+2025-10-08,Small Business,Southeast,2219.24,44,8,26,0
+2025-10-08,Small Business,Midwest,1472.83,29,5,17,0
+2025-10-08,Small Business,West,1899.77,37,7,28,1
+2025-10-09,Enterprise,Northeast,20229.72,16,1,9,0
+2025-10-09,Enterprise,Southeast,14564.98,11,0,5,0
+2025-10-09,Enterprise,Midwest,14074.99,11,0,6,0
+2025-10-09,Enterprise,West,15357.9,12,1,8,0
+2025-10-09,Mid-Market,Northeast,8104.0,33,4,22,0
+2025-10-09,Mid-Market,Southeast,6464.72,26,3,13,0
+2025-10-09,Mid-Market,Midwest,4943.75,20,2,12,0
+2025-10-09,Mid-Market,West,7659.28,31,3,17,0
+2025-10-09,Small Business,Northeast,2871.98,57,11,32,2
+2025-10-09,Small Business,Southeast,1731.07,34,6,22,0
+2025-10-09,Small Business,Midwest,1847.2,36,7,18,0
+2025-10-09,Small Business,West,2552.5,51,10,28,0
+2025-10-10,Enterprise,Northeast,21522.25,17,1,9,0
+2025-10-10,Enterprise,Southeast,14583.77,11,0,5,0
+2025-10-10,Enterprise,Midwest,13516.08,10,0,7,0
+2025-10-10,Enterprise,West,13688.55,10,0,6,0
+2025-10-10,Mid-Market,Northeast,6140.41,25,3,19,0
+2025-10-10,Mid-Market,Southeast,6004.71,25,3,14,0
+2025-10-10,Mid-Market,Midwest,4770.14,19,2,14,0
+2025-10-10,Mid-Market,West,5812.42,24,2,17,0
+2025-10-10,Small Business,Northeast,2628.63,52,10,29,2
+2025-10-10,Small Business,Southeast,1805.22,36,7,25,1
+2025-10-10,Small Business,Midwest,1803.24,36,7,27,1
+2025-10-10,Small Business,West,1966.57,39,7,25,1
+2025-10-11,Enterprise,Northeast,10458.71,8,0,5,0
+2025-10-11,Enterprise,Southeast,8101.79,6,0,4,0
+2025-10-11,Enterprise,Midwest,7092.65,5,0,3,0
+2025-10-11,Enterprise,West,8071.43,6,0,3,0
+2025-10-11,Mid-Market,Northeast,3542.35,14,1,8,0
+2025-10-11,Mid-Market,Southeast,4209.3,17,2,9,0
+2025-10-11,Mid-Market,Midwest,2974.75,12,1,8,0
+2025-10-11,Mid-Market,West,3713.8,15,1,8,0
+2025-10-11,Small Business,Northeast,1301.98,26,5,16,1
+2025-10-11,Small Business,Southeast,973.06,19,3,10,0
+2025-10-11,Small Business,Midwest,1224.64,24,4,14,0
+2025-10-11,Small Business,West,1223.89,24,4,14,0
+2025-10-12,Enterprise,Northeast,12008.72,9,0,4,0
+2025-10-12,Enterprise,Southeast,7999.63,6,0,4,0
+2025-10-12,Enterprise,Midwest,6708.29,5,0,2,0
+2025-10-12,Enterprise,West,9645.96,7,0,4,0
+2025-10-12,Mid-Market,Northeast,4094.95,17,2,10,0
+2025-10-12,Mid-Market,Southeast,3985.45,16,1,12,0
+2025-10-12,Mid-Market,Midwest,3514.85,14,1,10,0
+2025-10-12,Mid-Market,West,3553.66,14,1,10,0
+2025-10-12,Small Business,Northeast,1339.81,26,5,13,1
+2025-10-12,Small Business,Southeast,1258.25,25,5,14,0
+2025-10-12,Small Business,Midwest,1056.11,21,4,10,0
+2025-10-12,Small Business,West,1096.99,21,4,12,0
+2025-10-13,Enterprise,Northeast,16432.55,13,1,9,0
+2025-10-13,Enterprise,Southeast,16223.69,12,1,7,0
+2025-10-13,Enterprise,Midwest,12532.85,10,0,7,0
+2025-10-13,Enterprise,West,16728.26,13,1,9,0
+2025-10-13,Mid-Market,Northeast,6585.22,27,3,19,0
+2025-10-13,Mid-Market,Southeast,7020.68,29,3,18,0
+2025-10-13,Mid-Market,Midwest,6471.62,26,3,13,0
+2025-10-13,Mid-Market,West,6766.59,28,3,19,0
+2025-10-13,Small Business,Northeast,2104.68,42,8,32,1
+2025-10-13,Small Business,Southeast,2062.99,41,8,20,1
+2025-10-13,Small Business,Midwest,1597.01,31,6,21,1
+2025-10-13,Small Business,West,1771.19,35,7,22,1
+2025-10-14,Enterprise,Northeast,16465.54,13,1,9,0
+2025-10-14,Enterprise,Southeast,16144.31,12,1,9,0
+2025-10-14,Enterprise,Midwest,11365.29,9,0,6,0
+2025-10-14,Enterprise,West,15748.61,12,1,6,0
+2025-10-14,Mid-Market,Northeast,7275.99,30,3,17,0
+2025-10-14,Mid-Market,Southeast,5179.94,21,2,12,0
+2025-10-14,Mid-Market,Midwest,5936.89,24,2,17,0
+2025-10-14,Mid-Market,West,6312.65,26,3,19,0
+2025-10-14,Small Business,Northeast,2128.81,42,8,33,1
+2025-10-14,Small Business,Southeast,1845.31,36,7,22,1
+2025-10-14,Small Business,Midwest,1896.85,37,7,23,0
+2025-10-14,Small Business,West,2049.62,40,8,21,1
+2025-10-15,Enterprise,Northeast,18818.3,15,1,10,0
+2025-10-15,Enterprise,Southeast,15334.71,12,1,8,0
+2025-10-15,Enterprise,Midwest,12623.9,10,0,7,0
+2025-10-15,Enterprise,West,18436.65,14,1,7,0
+2025-10-15,Mid-Market,Northeast,7078.75,29,3,15,0
+2025-10-15,Mid-Market,Southeast,7039.73,29,3,21,0
+2025-10-15,Mid-Market,Midwest,4567.39,19,2,13,0
+2025-10-15,Mid-Market,West,5737.33,23,2,15,0
+2025-10-15,Small Business,Northeast,2005.44,40,8,21,0
+2025-10-15,Small Business,Southeast,2270.01,45,9,26,0
+2025-10-15,Small Business,Midwest,1470.83,29,5,20,0
+2025-10-15,Small Business,West,2237.19,44,8,26,0
+2025-10-16,Enterprise,Northeast,14709.72,11,0,6,0
+2025-10-16,Enterprise,Southeast,17659.34,14,1,10,0
+2025-10-16,Enterprise,Midwest,15179.22,12,1,8,0
+2025-10-16,Enterprise,West,17941.16,14,1,11,0
+2025-10-16,Mid-Market,Northeast,7365.26,30,3,21,0
+2025-10-16,Mid-Market,Southeast,6081.36,25,3,12,0
+2025-10-16,Mid-Market,Midwest,5063.13,21,2,11,0
+2025-10-16,Mid-Market,West,6689.59,27,3,21,0
+2025-10-16,Small Business,Northeast,2720.65,54,10,29,0
+2025-10-16,Small Business,Southeast,2364.2,47,9,33,1
+2025-10-16,Small Business,Midwest,1652.82,33,6,23,0
+2025-10-16,Small Business,West,1934.82,38,7,20,0
+2025-10-17,Enterprise,Northeast,15065.81,12,1,7,0
+2025-10-17,Enterprise,Southeast,15268.78,12,1,7,0
+2025-10-17,Enterprise,Midwest,15779.96,12,1,6,0
+2025-10-17,Enterprise,West,19679.75,15,1,9,0
+2025-10-17,Mid-Market,Northeast,7721.37,32,3,24,0
+2025-10-17,Mid-Market,Southeast,5552.19,23,2,13,0
+2025-10-17,Mid-Market,Midwest,5754.49,23,2,13,0
+2025-10-17,Mid-Market,West,6356.66,26,3,14,0
+2025-10-17,Small Business,Northeast,2862.33,57,11,30,3
+2025-10-17,Small Business,Southeast,2129.19,42,8,30,2
+2025-10-17,Small Business,Midwest,1834.64,36,7,23,0
+2025-10-17,Small Business,West,2121.95,42,8,27,0
+2025-10-18,Enterprise,Northeast,10515.8,8,0,4,0
+2025-10-18,Enterprise,Southeast,8444.24,6,0,4,0
+2025-10-18,Enterprise,Midwest,8589.98,6,0,3,0
+2025-10-18,Enterprise,West,11006.79,8,0,6,0
+2025-10-18,Mid-Market,Northeast,4857.78,20,2,10,0
+2025-10-18,Mid-Market,Southeast,4258.01,17,2,13,0
+2025-10-18,Mid-Market,Midwest,3052.44,12,1,8,0
+2025-10-18,Mid-Market,West,3270.37,13,1,9,0
+2025-10-18,Small Business,Northeast,1688.92,33,6,20,1
+2025-10-18,Small Business,Southeast,1325.76,26,5,16,1
+2025-10-18,Small Business,Midwest,957.58,19,3,9,0
+2025-10-18,Small Business,West,1576.23,31,6,19,1
+2025-10-19,Enterprise,Northeast,12831.74,10,0,7,0
+2025-10-19,Enterprise,Southeast,8238.65,6,0,4,0
+2025-10-19,Enterprise,Midwest,8820.32,7,0,3,0
+2025-10-19,Enterprise,West,8049.02,6,0,3,0
+2025-10-19,Mid-Market,Northeast,4097.8,17,2,12,0
+2025-10-19,Mid-Market,Southeast,3289.3,13,1,7,0
+2025-10-19,Mid-Market,Midwest,3488.03,14,1,7,0
+2025-10-19,Mid-Market,West,4472.35,18,2,11,0
+2025-10-19,Small Business,Northeast,1390.98,27,5,18,0
+2025-10-19,Small Business,Southeast,1081.95,21,4,15,0
+2025-10-19,Small Business,Midwest,1042.18,20,4,15,1
+2025-10-19,Small Business,West,1216.15,24,4,12,0
+2025-10-20,Enterprise,Northeast,21423.6,17,1,12,0
+2025-10-20,Enterprise,Southeast,17425.6,13,1,9,0
+2025-10-20,Enterprise,Midwest,10896.05,8,0,5,0
+2025-10-20,Enterprise,West,14888.32,11,0,6,0
+2025-10-20,Mid-Market,Northeast,8306.56,34,4,20,0
+2025-10-20,Mid-Market,Southeast,5173.83,21,2,13,0
+2025-10-20,Mid-Market,Midwest,6133.02,25,3,17,0
+2025-10-20,Mid-Market,West,5748.19,23,2,15,0
+2025-10-20,Small Business,Northeast,1966.32,39,7,24,1
+2025-10-20,Small Business,Southeast,1722.68,34,6,26,0
+2025-10-20,Small Business,Midwest,1524.76,30,6,21,1
+2025-10-20,Small Business,West,2440.37,48,9,31,0
+2025-10-21,Enterprise,Northeast,15951.85,12,1,6,0
+2025-10-21,Enterprise,Southeast,15772.12,12,1,6,0
+2025-10-21,Enterprise,Midwest,11646.2,9,0,5,0
+2025-10-21,Enterprise,West,19495.45,15,1,9,0
+2025-10-21,Mid-Market,Northeast,7847.3,32,3,16,0
+2025-10-21,Mid-Market,Southeast,5316.66,22,2,17,0
+2025-10-21,Mid-Market,Midwest,5412.2,22,2,17,0
+2025-10-21,Mid-Market,West,7900.18,32,3,20,0
+2025-10-21,Small Business,Northeast,2337.17,46,9,26,2
+2025-10-21,Small Business,Southeast,2098.38,41,8,22,1
+2025-10-21,Small Business,Midwest,1937.59,38,7,20,1
+2025-10-21,Small Business,West,2150.71,43,8,23,1
+2025-10-22,Enterprise,Northeast,17907.77,14,1,9,0
+2025-10-22,Enterprise,Southeast,15687.9,12,1,8,0
+2025-10-22,Enterprise,Midwest,16010.82,12,1,9,0
+2025-10-22,Enterprise,West,14000.61,11,0,7,0
+2025-10-22,Mid-Market,Northeast,8319.45,34,4,20,0
+2025-10-22,Mid-Market,Southeast,5268.78,21,2,16,0
+2025-10-22,Mid-Market,Midwest,6284.85,26,3,16,0
+2025-10-22,Mid-Market,West,7272.18,30,3,22,0
+2025-10-22,Small Business,Northeast,2485.19,49,9,27,2
+2025-10-22,Small Business,Southeast,2217.12,44,8,25,0
+2025-10-22,Small Business,Midwest,2142.61,42,8,33,1
+2025-10-22,Small Business,West,1794.3,35,7,19,1
+2025-10-23,Enterprise,Northeast,15887.88,12,1,7,0
+2025-10-23,Enterprise,Southeast,14767.68,11,0,7,0
+2025-10-23,Enterprise,Midwest,12672.56,10,0,7,0
+2025-10-23,Enterprise,West,13314.78,10,0,6,0
+2025-10-23,Mid-Market,Northeast,8510.56,35,4,26,1
+2025-10-23,Mid-Market,Southeast,5312.4,22,2,16,0
+2025-10-23,Mid-Market,Midwest,4929.91,20,2,14,0
+2025-10-23,Mid-Market,West,5771.53,24,2,16,0
+2025-10-23,Small Business,Northeast,2209.54,44,8,30,1
+2025-10-23,Small Business,Southeast,1611.65,32,6,16,0
+2025-10-23,Small Business,Midwest,1504.93,30,6,15,1
+2025-10-23,Small Business,West,2597.78,51,10,36,2
+2025-10-24,Enterprise,Northeast,19368.0,15,1,11,0
+2025-10-24,Enterprise,Southeast,14236.02,11,0,6,0
+2025-10-24,Enterprise,Midwest,12255.75,9,0,5,0
+2025-10-24,Enterprise,West,19465.79,15,1,11,0
+2025-10-24,Mid-Market,Northeast,7496.77,31,3,17,0
+2025-10-24,Mid-Market,Southeast,6987.63,29,3,19,0
+2025-10-24,Mid-Market,Midwest,5360.69,22,2,16,0
+2025-10-24,Mid-Market,West,5574.24,23,2,14,0
+2025-10-24,Small Business,Northeast,2132.03,42,8,24,2
+2025-10-24,Small Business,Southeast,2042.65,40,8,29,0
+2025-10-24,Small Business,Midwest,2046.28,40,8,20,0
+2025-10-24,Small Business,West,1927.79,38,7,22,1
+2025-10-25,Enterprise,Northeast,9412.37,7,0,5,0
+2025-10-25,Enterprise,Southeast,10352.4,8,0,4,0
+2025-10-25,Enterprise,Midwest,6586.73,5,0,3,0
+2025-10-25,Enterprise,West,8156.51,6,0,3,0
+2025-10-25,Mid-Market,Northeast,3903.34,16,1,9,0
+2025-10-25,Mid-Market,Southeast,3237.67,13,1,8,0
+2025-10-25,Mid-Market,Midwest,3367.34,14,1,10,0
+2025-10-25,Mid-Market,West,4177.16,17,2,11,0
+2025-10-25,Small Business,Northeast,1373.45,27,5,14,0
+2025-10-25,Small Business,Southeast,1429.55,28,5,20,0
+2025-10-25,Small Business,Midwest,1048.94,20,4,13,0
+2025-10-25,Small Business,West,1564.59,31,6,23,0
+2025-10-26,Enterprise,Northeast,9619.42,7,0,5,0
+2025-10-26,Enterprise,Southeast,9773.57,7,0,5,0
+2025-10-26,Enterprise,Midwest,9023.09,7,0,3,0
+2025-10-26,Enterprise,West,10762.17,8,0,4,0
+2025-10-26,Mid-Market,Northeast,3926.1,16,1,12,0
+2025-10-26,Mid-Market,Southeast,3005.39,12,1,6,0
+2025-10-26,Mid-Market,Midwest,2688.57,11,1,5,0
+2025-10-26,Mid-Market,West,4626.13,19,2,14,0
+2025-10-26,Small Business,Northeast,1600.85,32,6,17,0
+2025-10-26,Small Business,Southeast,982.52,19,3,10,0
+2025-10-26,Small Business,Midwest,1064.07,21,4,16,0
+2025-10-26,Small Business,West,1419.79,28,5,19,0
+2025-10-27,Enterprise,Northeast,14707.51,11,0,6,0
+2025-10-27,Enterprise,Southeast,15091.36,12,1,7,0
+2025-10-27,Enterprise,Midwest,14106.03,11,0,5,0
+2025-10-27,Enterprise,West,15947.73,12,1,6,0
+2025-10-27,Mid-Market,Northeast,7143.78,29,3,15,0
+2025-10-27,Mid-Market,Southeast,5284.21,22,2,12,0
+2025-10-27,Mid-Market,Midwest,4487.22,18,2,13,0
+2025-10-27,Mid-Market,West,5492.09,22,2,12,0
+2025-10-27,Small Business,Northeast,2657.16,53,10,35,2
+2025-10-27,Small Business,Southeast,1952.54,39,7,26,1
+2025-10-27,Small Business,Midwest,1975.74,39,7,30,1
+2025-10-27,Small Business,West,1874.32,37,7,27,2
+2025-10-28,Enterprise,Northeast,18268.38,14,1,10,0
+2025-10-28,Enterprise,Southeast,16504.19,13,1,9,0
+2025-10-28,Enterprise,Midwest,11387.06,9,0,4,0
+2025-10-28,Enterprise,West,17439.93,13,1,7,0
+2025-10-28,Mid-Market,Northeast,8279.04,34,4,18,0
+2025-10-28,Mid-Market,Southeast,6625.1,27,3,15,0
+2025-10-28,Mid-Market,Midwest,5151.94,21,2,14,0
+2025-10-28,Mid-Market,West,6859.73,28,3,14,0
+2025-10-28,Small Business,Northeast,2408.76,48,9,27,0
+2025-10-28,Small Business,Southeast,1723.64,34,6,24,0
+2025-10-28,Small Business,Midwest,2053.21,41,8,32,0
+2025-10-28,Small Business,West,2352.6,47,9,26,0
+2025-10-29,Enterprise,Northeast,15998.58,12,1,7,0
+2025-10-29,Enterprise,Southeast,16838.75,13,1,9,0
+2025-10-29,Enterprise,Midwest,12302.39,9,0,5,0
+2025-10-29,Enterprise,West,19138.63,15,1,8,0
+2025-10-29,Mid-Market,Northeast,7924.2,33,3,21,0
+2025-10-29,Mid-Market,Southeast,6840.38,28,3,14,0
+2025-10-29,Mid-Market,Midwest,5947.2,24,2,16,0
+2025-10-29,Mid-Market,West,5517.95,22,2,13,0
+2025-10-29,Small Business,Northeast,2470.06,49,9,27,1
+2025-10-29,Small Business,Southeast,1724.86,34,6,17,0
+2025-10-29,Small Business,Midwest,1786.93,35,7,23,0
+2025-10-29,Small Business,West,2345.12,46,9,36,1
+2025-10-30,Enterprise,Northeast,18606.3,14,1,9,0
+2025-10-30,Enterprise,Southeast,12017.68,9,0,4,0
+2025-10-30,Enterprise,Midwest,13974.17,11,0,6,0
+2025-10-30,Enterprise,West,13878.53,11,0,7,0
+2025-10-30,Mid-Market,Northeast,6103.72,25,3,13,0
+2025-10-30,Mid-Market,Southeast,5482.66,22,2,14,0
+2025-10-30,Mid-Market,Midwest,5543.03,23,2,16,0
+2025-10-30,Mid-Market,West,6290.57,26,3,18,0
+2025-10-30,Small Business,Northeast,2797.74,55,11,39,0
+2025-10-30,Small Business,Southeast,2071.8,41,8,21,0
+2025-10-30,Small Business,Midwest,1754.61,35,7,24,0
+2025-10-30,Small Business,West,2136.16,42,8,24,0
+2025-10-31,Enterprise,Northeast,20808.95,16,1,11,0
+2025-10-31,Enterprise,Southeast,12865.46,10,0,7,0
+2025-10-31,Enterprise,Midwest,11172.84,8,0,4,0
+2025-10-31,Enterprise,West,14514.79,11,0,7,0
+2025-10-31,Mid-Market,Northeast,7449.6,31,3,23,0
+2025-10-31,Mid-Market,Southeast,6557.59,27,3,17,0
+2025-10-31,Mid-Market,Midwest,4626.16,19,2,12,0
+2025-10-31,Mid-Market,West,6266.77,26,3,15,0
+2025-10-31,Small Business,Northeast,2414.24,48,9,27,1
+2025-10-31,Small Business,Southeast,2027.29,40,8,25,2
+2025-10-31,Small Business,Midwest,1822.66,36,7,25,1
+2025-10-31,Small Business,West,2148.66,42,8,31,0
+2025-11-01,Enterprise,Northeast,8719.81,6,0,3,0
+2025-11-01,Enterprise,Southeast,9533.15,7,0,3,0
+2025-11-01,Enterprise,Midwest,7494.49,5,0,3,0
+2025-11-01,Enterprise,West,10527.17,8,0,5,0
+2025-11-01,Mid-Market,Northeast,4445.22,18,2,11,0
+2025-11-01,Mid-Market,Southeast,3474.46,14,1,8,0
+2025-11-01,Mid-Market,Midwest,3559.42,14,1,7,0
+2025-11-01,Mid-Market,West,3676.53,15,1,8,0
+2025-11-01,Small Business,Northeast,1424.2,28,5,17,0
+2025-11-01,Small Business,Southeast,1147.56,22,4,16,0
+2025-11-01,Small Business,Midwest,1267.08,25,5,12,1
+2025-11-01,Small Business,West,1567.0,31,6,20,0
+2025-11-02,Enterprise,Northeast,12558.6,10,0,5,0
+2025-11-02,Enterprise,Southeast,8867.44,7,0,5,0
+2025-11-02,Enterprise,Midwest,8011.28,6,0,3,0
+2025-11-02,Enterprise,West,10429.72,8,0,4,0
+2025-11-02,Mid-Market,Northeast,3921.25,16,1,10,0
+2025-11-02,Mid-Market,Southeast,3931.67,16,1,8,0
+2025-11-02,Mid-Market,Midwest,2705.12,11,1,7,0
+2025-11-02,Mid-Market,West,4301.46,17,2,10,0
+2025-11-02,Small Business,Northeast,1440.05,28,5,17,1
+2025-11-02,Small Business,Southeast,1391.75,27,5,21,1
+2025-11-02,Small Business,Midwest,889.26,17,3,11,0
+2025-11-02,Small Business,West,1486.23,29,5,16,1
+2025-11-03,Enterprise,Northeast,15382.12,12,1,6,0
+2025-11-03,Enterprise,Southeast,14083.7,11,0,8,0
+2025-11-03,Enterprise,Midwest,13858.63,11,0,8,0
+2025-11-03,Enterprise,West,16497.61,13,1,8,0
+2025-11-03,Mid-Market,Northeast,5911.78,24,2,14,0
+2025-11-03,Mid-Market,Southeast,5107.08,21,2,10,0
+2025-11-03,Mid-Market,Midwest,4606.72,19,2,12,0
+2025-11-03,Mid-Market,West,6428.41,26,3,19,0
+2025-11-03,Small Business,Northeast,2610.27,52,10,39,2
+2025-11-03,Small Business,Southeast,2214.17,44,8,22,1
+2025-11-03,Small Business,Midwest,1558.16,31,6,23,1
+2025-11-03,Small Business,West,2472.35,49,9,32,1
+2025-11-04,Enterprise,Northeast,16754.33,13,1,10,0
+2025-11-04,Enterprise,Southeast,12889.29,10,0,5,0
+2025-11-04,Enterprise,Midwest,12346.74,9,0,5,0
+2025-11-04,Enterprise,West,16084.35,12,1,6,0
+2025-11-04,Mid-Market,Northeast,8361.88,34,4,21,0
+2025-11-04,Mid-Market,Southeast,5126.31,21,2,16,0
+2025-11-04,Mid-Market,Midwest,5023.74,20,2,13,0
+2025-11-04,Mid-Market,West,6414.91,26,3,14,0
+2025-11-04,Small Business,Northeast,2485.57,49,9,31,0
+2025-11-04,Small Business,Southeast,2113.9,42,8,27,0
+2025-11-04,Small Business,Midwest,2159.57,43,8,27,1
+2025-11-04,Small Business,West,2289.05,45,9,24,0
+2025-11-05,Enterprise,Northeast,20707.73,16,1,9,0
+2025-11-05,Enterprise,Southeast,13301.82,10,0,6,0
+2025-11-05,Enterprise,Midwest,12871.79,10,0,6,0
+2025-11-05,Enterprise,West,17186.91,13,1,7,0
+2025-11-05,Mid-Market,Northeast,8257.7,34,4,17,0
+2025-11-05,Mid-Market,Southeast,5614.25,23,2,13,0
+2025-11-05,Mid-Market,Midwest,4977.34,20,2,10,0
+2025-11-05,Mid-Market,West,5416.2,22,2,13,0
+2025-11-05,Small Business,Northeast,2245.72,44,8,33,0
+2025-11-05,Small Business,Southeast,2170.17,43,8,33,0
+2025-11-05,Small Business,Midwest,1860.68,37,7,26,0
+2025-11-05,Small Business,West,1786.51,35,7,22,0
+2025-11-06,Enterprise,Northeast,17071.69,13,1,8,0
+2025-11-06,Enterprise,Southeast,13487.45,10,0,7,0
+2025-11-06,Enterprise,Midwest,14403.53,11,0,8,0
+2025-11-06,Enterprise,West,19465.86,15,1,7,0
+2025-11-06,Mid-Market,Northeast,7513.77,31,3,21,0
+2025-11-06,Mid-Market,Southeast,6390.68,26,3,14,0
+2025-11-06,Mid-Market,Midwest,6409.4,26,3,19,0
+2025-11-06,Mid-Market,West,5939.51,24,2,15,0
+2025-11-06,Small Business,Northeast,2040.2,40,8,24,1
+2025-11-06,Small Business,Southeast,1906.36,38,7,27,0
+2025-11-06,Small Business,Midwest,1793.31,35,7,27,1
+2025-11-06,Small Business,West,2217.67,44,8,31,1
+2025-11-07,Enterprise,Northeast,18368.46,14,1,8,0
+2025-11-07,Enterprise,Southeast,17550.4,14,1,8,0
+2025-11-07,Enterprise,Midwest,12227.57,9,0,5,0
+2025-11-07,Enterprise,West,15212.22,12,1,6,0
+2025-11-07,Mid-Market,Northeast,6038.29,25,3,12,0
+2025-11-07,Mid-Market,Southeast,6415.53,26,3,14,0
+2025-11-07,Mid-Market,Midwest,6138.39,25,3,13,0
+2025-11-07,Mid-Market,West,5534.73,23,2,14,0
+2025-11-07,Small Business,Northeast,1971.4,39,7,26,1
+2025-11-07,Small Business,Southeast,2147.69,42,8,28,0
+2025-11-07,Small Business,Midwest,1482.18,29,5,18,0
+2025-11-07,Small Business,West,2030.47,40,8,28,1
+2025-11-08,Enterprise,Northeast,10073.55,8,0,5,0
+2025-11-08,Enterprise,Southeast,7634.57,6,0,3,0
+2025-11-08,Enterprise,Midwest,8275.92,6,0,4,0
+2025-11-08,Enterprise,West,10115.17,8,0,6,0
+2025-11-08,Mid-Market,Northeast,4687.31,19,2,11,0
+2025-11-08,Mid-Market,Southeast,4071.14,16,2,11,0
+2025-11-08,Mid-Market,Midwest,3031.16,12,1,6,0
+2025-11-08,Mid-Market,West,3744.74,15,1,8,0
+2025-11-08,Small Business,Northeast,1664.26,33,6,22,0
+2025-11-08,Small Business,Southeast,1144.23,22,4,16,0
+2025-11-08,Small Business,Midwest,1038.24,20,4,10,0
+2025-11-08,Small Business,West,1319.54,26,5,17,0
+2025-11-09,Enterprise,Northeast,10172.2,8,0,4,0
+2025-11-09,Enterprise,Southeast,8877.43,7,0,3,0
+2025-11-09,Enterprise,Midwest,8011.42,6,0,3,0
+2025-11-09,Enterprise,West,11597.96,9,0,5,0
+2025-11-09,Mid-Market,Northeast,3906.43,16,1,12,0
+2025-11-09,Mid-Market,Southeast,4304.19,17,2,11,0
+2025-11-09,Mid-Market,Midwest,2811.4,11,1,8,0
+2025-11-09,Mid-Market,West,3353.79,13,1,8,0
+2025-11-09,Small Business,Northeast,1152.07,23,4,11,0
+2025-11-09,Small Business,Southeast,1164.17,23,4,17,0
+2025-11-09,Small Business,Midwest,1148.33,22,4,11,0
+2025-11-09,Small Business,West,1288.15,25,5,13,0
+2025-11-10,Enterprise,Northeast,20421.16,16,1,11,0
+2025-11-10,Enterprise,Southeast,12004.75,9,0,5,0
+2025-11-10,Enterprise,Midwest,11062.62,8,0,4,0
+2025-11-10,Enterprise,West,13633.41,10,0,5,0
+2025-11-10,Mid-Market,Northeast,7607.25,31,3,21,0
+2025-11-10,Mid-Market,Southeast,6893.34,28,3,15,0
+2025-11-10,Mid-Market,Midwest,4356.48,18,2,10,0
+2025-11-10,Mid-Market,West,6226.13,25,3,17,0
+2025-11-10,Small Business,Northeast,2348.95,46,9,31,1
+2025-11-10,Small Business,Southeast,1965.17,39,7,20,0
+2025-11-10,Small Business,Midwest,2019.62,40,8,28,2
+2025-11-10,Small Business,West,2549.47,50,10,37,1
+2025-11-11,Enterprise,Northeast,21488.64,17,1,10,0
+2025-11-11,Enterprise,Southeast,13012.58,10,0,5,0
+2025-11-11,Enterprise,Midwest,15020.02,12,1,6,0
+2025-11-11,Enterprise,West,19334.64,15,1,9,0
+2025-11-11,Mid-Market,Northeast,7286.17,30,3,17,0
+2025-11-11,Mid-Market,Southeast,4824.09,20,2,10,0
+2025-11-11,Mid-Market,Midwest,4937.77,20,2,14,0
+2025-11-11,Mid-Market,West,5637.81,23,2,16,0
+2025-11-11,Small Business,Northeast,2829.37,56,11,39,0
+2025-11-11,Small Business,Southeast,1823.67,36,7,26,1
+2025-11-11,Small Business,Midwest,1450.09,29,5,19,0
+2025-11-11,Small Business,West,2381.49,47,9,23,1
+2025-11-12,Enterprise,Northeast,20996.11,16,1,10,0
+2025-11-12,Enterprise,Southeast,13133.42,10,0,5,0
+2025-11-12,Enterprise,Midwest,13027.55,10,0,6,0
+2025-11-12,Enterprise,West,15510.87,12,1,9,0
+2025-11-12,Mid-Market,Northeast,6416.19,26,3,19,0
+2025-11-12,Mid-Market,Southeast,5744.56,23,2,15,0
+2025-11-12,Mid-Market,Midwest,6277.75,26,3,16,0
+2025-11-12,Mid-Market,West,6664.55,27,3,15,0
+2025-11-12,Small Business,Northeast,1959.18,39,7,27,0
+2025-11-12,Small Business,Southeast,1854.5,37,7,22,1
+2025-11-12,Small Business,Midwest,1588.54,31,6,19,0
+2025-11-12,Small Business,West,1808.46,36,7,25,0
+2025-11-13,Enterprise,Northeast,15078.52,12,1,9,0
+2025-11-13,Enterprise,Southeast,14911.88,11,0,6,0
+2025-11-13,Enterprise,Midwest,13508.71,10,0,7,0
+2025-11-13,Enterprise,West,14195.81,11,0,8,0
+2025-11-13,Mid-Market,Northeast,8038.15,33,4,23,0
+2025-11-13,Mid-Market,Southeast,6675.28,27,3,20,0
+2025-11-13,Mid-Market,Midwest,4529.27,18,2,10,0
+2025-11-13,Mid-Market,West,6980.89,29,3,14,0
+2025-11-13,Small Business,Northeast,2759.42,55,11,31,0
+2025-11-13,Small Business,Southeast,2252.95,45,9,28,0
+2025-11-13,Small Business,Midwest,1774.66,35,7,18,1
+2025-11-13,Small Business,West,2231.9,44,8,27,2
+2025-11-14,Enterprise,Northeast,20479.79,16,1,8,0
+2025-11-14,Enterprise,Southeast,14728.87,11,0,5,0
+2025-11-14,Enterprise,Midwest,12547.14,10,0,7,0
+2025-11-14,Enterprise,West,14731.83,11,0,7,0
+2025-11-14,Mid-Market,Northeast,7026.99,29,3,17,0
+2025-11-14,Mid-Market,Southeast,6084.7,25,3,13,0
+2025-11-14,Mid-Market,Midwest,5766.68,24,2,13,0
+2025-11-14,Mid-Market,West,6895.6,28,3,20,0
+2025-11-14,Small Business,Northeast,2810.09,56,11,29,0
+2025-11-14,Small Business,Southeast,2014.05,40,8,22,0
+2025-11-14,Small Business,Midwest,1785.92,35,7,26,0
+2025-11-14,Small Business,West,2132.34,42,8,31,2
+2025-11-15,Enterprise,Northeast,9464.49,7,0,4,0
+2025-11-15,Enterprise,Southeast,8240.56,6,0,3,0
+2025-11-15,Enterprise,Midwest,7170.26,5,0,3,0
+2025-11-15,Enterprise,West,10808.49,8,0,5,0
+2025-11-15,Mid-Market,Northeast,5110.39,21,2,14,0
+2025-11-15,Mid-Market,Southeast,4297.26,17,2,10,0
+2025-11-15,Mid-Market,Midwest,2983.9,12,1,9,0
+2025-11-15,Mid-Market,West,3235.07,13,1,8,0
+2025-11-15,Small Business,Northeast,1394.34,27,5,13,1
+2025-11-15,Small Business,Southeast,1392.69,27,5,18,0
+2025-11-15,Small Business,Midwest,922.46,18,3,10,0
+2025-11-15,Small Business,West,1089.68,21,4,13,1
+2025-11-16,Enterprise,Northeast,12892.2,10,0,7,0
+2025-11-16,Enterprise,Southeast,8451.42,6,0,3,0
+2025-11-16,Enterprise,Midwest,6961.1,5,0,3,0
+2025-11-16,Enterprise,West,9203.88,7,0,5,0
+2025-11-16,Mid-Market,Northeast,3646.78,15,1,8,0
+2025-11-16,Mid-Market,Southeast,2975.93,12,1,9,0
+2025-11-16,Mid-Market,Midwest,3886.82,16,1,9,0
+2025-11-16,Mid-Market,West,3888.08,16,1,10,0
+2025-11-16,Small Business,Northeast,1596.03,31,6,17,0
+2025-11-16,Small Business,Southeast,1379.08,27,5,19,1
+2025-11-16,Small Business,Midwest,885.41,17,3,10,0
+2025-11-16,Small Business,West,1187.79,23,4,14,0
+2025-11-17,Enterprise,Northeast,18639.78,14,1,11,0
+2025-11-17,Enterprise,Southeast,15284.14,12,1,6,0
+2025-11-17,Enterprise,Midwest,12501.09,10,0,6,0
+2025-11-17,Enterprise,West,17887.95,14,1,7,0
+2025-11-17,Mid-Market,Northeast,8016.67,33,4,22,0
+2025-11-17,Mid-Market,Southeast,6791.06,28,3,21,0
+2025-11-17,Mid-Market,Midwest,6059.0,25,3,18,0
+2025-11-17,Mid-Market,West,6669.68,27,3,14,0
+2025-11-17,Small Business,Northeast,2580.51,51,10,35,0
+2025-11-17,Small Business,Southeast,1623.21,32,6,17,1
+2025-11-17,Small Business,Midwest,1458.21,29,5,15,0
+2025-11-17,Small Business,West,1803.31,36,7,19,1
+2025-11-18,Enterprise,Northeast,21473.01,17,1,12,0
+2025-11-18,Enterprise,Southeast,14083.69,11,0,6,0
+2025-11-18,Enterprise,Midwest,12396.61,9,0,5,0
+2025-11-18,Enterprise,West,17839.91,14,1,9,0
+2025-11-18,Mid-Market,Northeast,8223.78,34,4,21,0
+2025-11-18,Mid-Market,Southeast,4863.33,20,2,14,0
+2025-11-18,Mid-Market,Midwest,6088.95,25,3,16,0
+2025-11-18,Mid-Market,West,7277.84,30,3,18,0
+2025-11-18,Small Business,Northeast,2604.94,52,10,28,0
+2025-11-18,Small Business,Southeast,2364.44,47,9,24,2
+2025-11-18,Small Business,Midwest,1568.47,31,6,20,1
+2025-11-18,Small Business,West,2082.9,41,8,24,1
+2025-11-19,Enterprise,Northeast,19191.48,15,1,7,0
+2025-11-19,Enterprise,Southeast,15909.49,12,1,8,0
+2025-11-19,Enterprise,Midwest,12068.25,9,0,7,0
+2025-11-19,Enterprise,West,13864.55,11,0,6,0
+2025-11-19,Mid-Market,Northeast,7130.99,29,3,18,0
+2025-11-19,Mid-Market,Southeast,5987.3,24,2,13,0
+2025-11-19,Mid-Market,Midwest,5500.67,22,2,15,0
+2025-11-19,Mid-Market,West,5843.94,24,2,18,0
+2025-11-19,Small Business,Northeast,2505.63,50,10,31,1
+2025-11-19,Small Business,Southeast,1921.61,38,7,30,0
+2025-11-19,Small Business,Midwest,1530.97,30,6,17,0
+2025-11-19,Small Business,West,2360.45,47,9,30,0
+2025-11-20,Enterprise,Northeast,20809.99,16,1,12,0
+2025-11-20,Enterprise,Southeast,17558.19,14,1,10,0
+2025-11-20,Enterprise,Midwest,15924.06,12,1,6,0
+2025-11-20,Enterprise,West,18665.19,14,1,10,0
+2025-11-20,Mid-Market,Northeast,7337.48,30,3,20,0
+2025-11-20,Mid-Market,Southeast,5881.78,24,2,12,0
+2025-11-20,Mid-Market,Midwest,5278.65,21,2,11,0
+2025-11-20,Mid-Market,West,6864.35,28,3,21,0
+2025-11-20,Small Business,Northeast,2681.98,53,10,35,1
+2025-11-20,Small Business,Southeast,2059.32,41,8,32,0
+2025-11-20,Small Business,Midwest,1847.04,36,7,20,1
+2025-11-20,Small Business,West,2425.18,48,9,28,0
+2025-11-21,Enterprise,Northeast,16904.16,13,1,6,0
+2025-11-21,Enterprise,Southeast,13267.59,10,0,5,0
+2025-11-21,Enterprise,Midwest,13921.35,11,0,8,0
+2025-11-21,Enterprise,West,15490.13,12,1,7,0
+2025-11-21,Mid-Market,Northeast,8316.06,34,4,18,0
+2025-11-21,Mid-Market,Southeast,5786.16,24,2,17,0
+2025-11-21,Mid-Market,Midwest,4939.64,20,2,10,0
+2025-11-21,Mid-Market,West,5440.54,22,2,13,0
+2025-11-21,Small Business,Northeast,2090.37,41,8,26,0
+2025-11-21,Small Business,Southeast,2320.67,46,9,29,0
+2025-11-21,Small Business,Midwest,1571.03,31,6,19,1
+2025-11-21,Small Business,West,1920.22,38,7,29,1
+2025-11-22,Enterprise,Northeast,9280.67,7,0,4,0
+2025-11-22,Enterprise,Southeast,10659.23,8,0,4,0
+2025-11-22,Enterprise,Midwest,8203.9,6,0,4,0
+2025-11-22,Enterprise,West,9642.06,7,0,5,0
+2025-11-22,Mid-Market,Northeast,3708.26,15,1,10,0
+2025-11-22,Mid-Market,Southeast,3042.75,12,1,7,0
+2025-11-22,Mid-Market,Midwest,2978.21,12,1,9,0
+2025-11-22,Mid-Market,West,4307.65,17,2,9,0
+2025-11-22,Small Business,Northeast,1584.52,31,6,20,0
+2025-11-22,Small Business,Southeast,1113.0,22,4,17,0
+2025-11-22,Small Business,Midwest,1037.8,20,4,10,1
+2025-11-22,Small Business,West,1411.03,28,5,15,1
+2025-11-23,Enterprise,Northeast,12738.77,10,0,6,0
+2025-11-23,Enterprise,Southeast,9167.11,7,0,5,0
+2025-11-23,Enterprise,Midwest,6595.71,5,0,2,0
+2025-11-23,Enterprise,West,8480.46,6,0,3,0
+2025-11-23,Mid-Market,Northeast,3678.23,15,1,11,0
+2025-11-23,Mid-Market,Southeast,3772.63,15,1,7,0
+2025-11-23,Mid-Market,Midwest,3017.23,12,1,9,0
+2025-11-23,Mid-Market,West,4201.39,17,2,9,0
+2025-11-23,Small Business,Northeast,1607.74,32,6,21,1
+2025-11-23,Small Business,Southeast,1001.97,20,4,13,0
+2025-11-23,Small Business,Midwest,1204.43,24,4,16,0
+2025-11-23,Small Business,West,1211.47,24,4,15,1
+2025-11-24,Enterprise,Northeast,18379.49,14,1,8,0
+2025-11-24,Enterprise,Southeast,12274.35,9,0,6,0
+2025-11-24,Enterprise,Midwest,10956.79,8,0,4,0
+2025-11-24,Enterprise,West,18705.8,14,1,10,0
+2025-11-24,Mid-Market,Northeast,6341.07,26,3,19,0
+2025-11-24,Mid-Market,Southeast,7157.04,29,3,15,0
+2025-11-24,Mid-Market,Midwest,5281.2,22,2,16,0
+2025-11-24,Mid-Market,West,6000.76,25,3,16,0
+2025-11-24,Small Business,Northeast,2829.67,56,11,34,0
+2025-11-24,Small Business,Southeast,2090.07,41,8,25,2
+2025-11-24,Small Business,Midwest,1483.61,29,5,22,0
+2025-11-24,Small Business,West,2117.79,42,8,31,0
+2025-11-25,Enterprise,Northeast,17774.98,14,1,9,0
+2025-11-25,Enterprise,Southeast,12806.51,10,0,7,0
+2025-11-25,Enterprise,Midwest,14539.56,11,0,5,0
+2025-11-25,Enterprise,West,17795.7,14,1,9,0
+2025-11-25,Mid-Market,Northeast,6707.5,27,3,16,0
+2025-11-25,Mid-Market,Southeast,6604.81,27,3,14,0
+2025-11-25,Mid-Market,Midwest,6095.22,25,3,18,0
+2025-11-25,Mid-Market,West,6883.59,28,3,17,0
+2025-11-25,Small Business,Northeast,2598.51,51,10,33,0
+2025-11-25,Small Business,Southeast,2397.87,47,9,32,0
+2025-11-25,Small Business,Midwest,1920.61,38,7,19,0
+2025-11-25,Small Business,West,1923.4,38,7,19,1
+2025-11-26,Enterprise,Northeast,20410.21,16,1,8,0
+2025-11-26,Enterprise,Southeast,14461.43,11,0,7,0
+2025-11-26,Enterprise,Midwest,12947.87,10,0,7,0
+2025-11-26,Enterprise,West,14735.53,11,0,7,0
+2025-11-26,Mid-Market,Northeast,7767.93,32,3,22,0
+2025-11-26,Mid-Market,Southeast,6777.97,28,3,17,0
+2025-11-26,Mid-Market,Midwest,4751.33,19,2,12,0
+2025-11-26,Mid-Market,West,6237.18,25,3,17,0
+2025-11-26,Small Business,Northeast,2205.45,44,8,24,2
+2025-11-26,Small Business,Southeast,1728.31,34,6,23,0
+2025-11-26,Small Business,Midwest,1753.4,35,7,27,1
+2025-11-26,Small Business,West,2422.22,48,9,34,1
+2025-11-27,Enterprise,Northeast,19033.86,15,1,11,0
+2025-11-27,Enterprise,Southeast,12240.3,9,0,5,0
+2025-11-27,Enterprise,Midwest,12166.18,9,0,4,0
+2025-11-27,Enterprise,West,16233.44,12,1,9,0
+2025-11-27,Mid-Market,Northeast,5868.91,24,2,18,0
+2025-11-27,Mid-Market,Southeast,6141.26,25,3,15,0
+2025-11-27,Mid-Market,Midwest,4460.17,18,2,10,0
+2025-11-27,Mid-Market,West,5308.41,22,2,13,0
+2025-11-27,Small Business,Northeast,2577.87,51,10,28,0
+2025-11-27,Small Business,Southeast,1675.13,33,6,16,0
+2025-11-27,Small Business,Midwest,1899.27,37,7,20,2
+2025-11-27,Small Business,West,2559.61,51,10,39,1
+2025-11-28,Enterprise,Northeast,16673.14,13,1,9,0
+2025-11-28,Enterprise,Southeast,16763.62,13,1,10,0
+2025-11-28,Enterprise,Midwest,13364.27,10,0,7,0
+2025-11-28,Enterprise,West,13571.05,10,0,5,0
+2025-11-28,Mid-Market,Northeast,6262.47,26,3,20,0
+2025-11-28,Mid-Market,Southeast,7164.11,29,3,16,0
+2025-11-28,Mid-Market,Midwest,6171.57,25,3,17,0
+2025-11-28,Mid-Market,West,5840.74,24,2,12,0
+2025-11-28,Small Business,Northeast,2146.08,42,8,29,1
+2025-11-28,Small Business,Southeast,1951.76,39,7,27,1
+2025-11-28,Small Business,Midwest,1493.96,29,5,21,0
+2025-11-28,Small Business,West,2001.25,40,8,25,1
+2025-11-29,Enterprise,Northeast,12862.69,10,0,7,0
+2025-11-29,Enterprise,Southeast,8210.89,6,0,3,0
+2025-11-29,Enterprise,Midwest,8173.58,6,0,4,0
+2025-11-29,Enterprise,West,8510.32,6,0,3,0
+2025-11-29,Mid-Market,Northeast,3979.08,16,1,10,0
+2025-11-29,Mid-Market,Southeast,3965.59,16,1,8,0
+2025-11-29,Mid-Market,Midwest,3443.87,14,1,10,0
+2025-11-29,Mid-Market,West,3828.82,15,1,9,0
+2025-11-29,Small Business,Northeast,1673.93,33,6,25,0
+2025-11-29,Small Business,Southeast,1193.27,23,4,12,0
+2025-11-29,Small Business,Midwest,1054.53,21,4,12,0
+2025-11-29,Small Business,West,1404.44,28,5,17,0
+2025-11-30,Enterprise,Northeast,9689.34,7,0,4,0
+2025-11-30,Enterprise,Southeast,10777.66,8,0,5,0
+2025-11-30,Enterprise,Midwest,6483.0,5,0,2,0
+2025-11-30,Enterprise,West,8983.44,7,0,4,0
+2025-11-30,Mid-Market,Northeast,4553.94,18,2,9,0
+2025-11-30,Mid-Market,Southeast,3605.86,15,1,11,0
+2025-11-30,Mid-Market,Midwest,3287.74,13,1,9,0
+2025-11-30,Mid-Market,West,3326.14,13,1,6,0
+2025-11-30,Small Business,Northeast,1636.08,32,6,16,1
+2025-11-30,Small Business,Southeast,1110.62,22,4,15,0
+2025-11-30,Small Business,Midwest,1013.07,20,4,14,0
+2025-11-30,Small Business,West,1292.5,25,5,18,1
+2025-12-01,Enterprise,Northeast,20388.51,16,1,9,0
+2025-12-01,Enterprise,Southeast,14403.33,11,0,7,0
+2025-12-01,Enterprise,Midwest,11484.95,9,0,6,0
+2025-12-01,Enterprise,West,19335.68,15,1,10,0
+2025-12-01,Mid-Market,Northeast,5849.22,24,2,15,0
+2025-12-01,Mid-Market,Southeast,6963.69,29,3,15,0
+2025-12-01,Mid-Market,Midwest,5261.38,21,2,16,0
+2025-12-01,Mid-Market,West,6102.71,25,3,19,0
+2025-12-01,Small Business,Northeast,2823.66,56,11,44,2
+2025-12-01,Small Business,Southeast,1614.17,32,6,19,1
+2025-12-01,Small Business,Midwest,1610.82,32,6,16,1
+2025-12-01,Small Business,West,2628.78,52,10,28,0
+2025-12-02,Enterprise,Northeast,20421.85,16,1,10,0
+2025-12-02,Enterprise,Southeast,17152.48,13,1,9,0
+2025-12-02,Enterprise,Midwest,15789.33,12,1,8,0
+2025-12-02,Enterprise,West,14326.94,11,0,8,0
+2025-12-02,Mid-Market,Northeast,8507.3,35,4,24,0
+2025-12-02,Mid-Market,Southeast,5565.97,23,2,15,0
+2025-12-02,Mid-Market,Midwest,6265.96,26,3,15,0
+2025-12-02,Mid-Market,West,7211.95,30,3,23,0
+2025-12-02,Small Business,Northeast,2027.61,40,8,31,1
+2025-12-02,Small Business,Southeast,1634.85,32,6,20,1
+2025-12-02,Small Business,Midwest,1933.6,38,7,23,0
+2025-12-02,Small Business,West,2265.58,45,9,24,0
+2025-12-03,Enterprise,Northeast,20724.87,16,1,12,0
+2025-12-03,Enterprise,Southeast,14114.36,11,0,8,0
+2025-12-03,Enterprise,Midwest,13682.05,10,0,6,0
+2025-12-03,Enterprise,West,14832.35,11,0,8,0
+2025-12-03,Mid-Market,Northeast,6671.85,27,3,15,0
+2025-12-03,Mid-Market,Southeast,5870.05,24,2,17,0
+2025-12-03,Mid-Market,Midwest,5039.49,20,2,11,0
+2025-12-03,Mid-Market,West,7318.11,30,3,18,0
+2025-12-03,Small Business,Northeast,1960.48,39,7,24,0
+2025-12-03,Small Business,Southeast,1855.12,37,7,28,1
+2025-12-03,Small Business,Midwest,1859.74,37,7,21,1
+2025-12-03,Small Business,West,1866.59,37,7,19,0
+2025-12-04,Enterprise,Northeast,20003.0,16,1,10,0
+2025-12-04,Enterprise,Southeast,16563.22,13,1,8,0
+2025-12-04,Enterprise,Midwest,12816.26,10,0,6,0
+2025-12-04,Enterprise,West,14759.2,11,0,7,0
+2025-12-04,Mid-Market,Northeast,5761.54,24,2,19,0
+2025-12-04,Mid-Market,Southeast,7133.15,29,3,18,0
+2025-12-04,Mid-Market,Midwest,5416.91,22,2,17,0
+2025-12-04,Mid-Market,West,7487.35,31,3,22,0
+2025-12-04,Small Business,Northeast,2558.14,51,10,40,1
+2025-12-04,Small Business,Southeast,2293.81,45,9,34,1
+2025-12-04,Small Business,Midwest,1848.8,36,7,27,0
+2025-12-04,Small Business,West,2369.82,47,9,29,2
+2025-12-05,Enterprise,Northeast,15873.38,12,1,6,0
+2025-12-05,Enterprise,Southeast,12550.12,10,0,7,0
+2025-12-05,Enterprise,Midwest,14486.18,11,0,7,0
+2025-12-05,Enterprise,West,19650.61,15,1,11,0
+2025-12-05,Mid-Market,Northeast,6848.03,28,3,16,0
+2025-12-05,Mid-Market,Southeast,6744.83,28,3,21,0
+2025-12-05,Mid-Market,Midwest,5051.99,21,2,15,0
+2025-12-05,Mid-Market,West,5773.7,24,2,14,0
+2025-12-05,Small Business,Northeast,2312.18,46,9,33,1
+2025-12-05,Small Business,Southeast,2340.45,46,9,30,1
+2025-12-05,Small Business,Midwest,1880.67,37,7,26,0
+2025-12-05,Small Business,West,2593.9,51,10,34,1
+2025-12-06,Enterprise,Northeast,9663.95,7,0,4,0
+2025-12-06,Enterprise,Southeast,7267.11,5,0,3,0
+2025-12-06,Enterprise,Midwest,9708.36,7,0,4,0
+2025-12-06,Enterprise,West,9435.62,7,0,3,0
+2025-12-06,Mid-Market,Northeast,3870.35,16,1,9,0
+2025-12-06,Mid-Market,Southeast,3876.08,16,1,10,0
+2025-12-06,Mid-Market,Midwest,2814.75,11,1,6,0
+2025-12-06,Mid-Market,West,4684.42,19,2,11,0
+2025-12-06,Small Business,Northeast,1238.91,24,4,18,0
+2025-12-06,Small Business,Southeast,1255.13,25,5,13,1
+2025-12-06,Small Business,Midwest,1279.23,25,5,17,0
+2025-12-06,Small Business,West,1207.14,24,4,18,0
+2025-12-07,Enterprise,Northeast,9048.9,7,0,4,0
+2025-12-07,Enterprise,Southeast,10583.39,8,0,5,0
+2025-12-07,Enterprise,Midwest,7931.04,6,0,4,0
+2025-12-07,Enterprise,West,9042.21,7,0,4,0
+2025-12-07,Mid-Market,Northeast,5012.49,20,2,11,0
+2025-12-07,Mid-Market,Southeast,3090.65,12,1,7,0
+2025-12-07,Mid-Market,Midwest,2614.66,10,1,7,0
+2025-12-07,Mid-Market,West,4391.87,18,2,13,0
+2025-12-07,Small Business,Northeast,1479.15,29,5,22,1
+2025-12-07,Small Business,Southeast,1099.63,21,4,12,0
+2025-12-07,Small Business,Midwest,1236.88,24,4,12,0
+2025-12-07,Small Business,West,1384.57,27,5,18,0
+2025-12-08,Enterprise,Northeast,16864.83,13,1,7,0
+2025-12-08,Enterprise,Southeast,15600.61,12,1,8,0
+2025-12-08,Enterprise,Midwest,11371.66,9,0,5,0
+2025-12-08,Enterprise,West,17078.93,13,1,9,0
+2025-12-08,Mid-Market,Northeast,6843.99,28,3,18,0
+2025-12-08,Mid-Market,Southeast,5738.71,23,2,17,0
+2025-12-08,Mid-Market,Midwest,5999.16,24,2,12,0
+2025-12-08,Mid-Market,West,6247.66,26,3,17,0
+2025-12-08,Small Business,Northeast,2321.43,46,9,30,1
+2025-12-08,Small Business,Southeast,1850.93,37,7,18,0
+2025-12-08,Small Business,Midwest,1969.87,39,7,29,1
+2025-12-08,Small Business,West,2145.76,42,8,25,2
+2025-12-09,Enterprise,Northeast,17372.14,13,1,9,0
+2025-12-09,Enterprise,Southeast,17418.58,13,1,9,0
+2025-12-09,Enterprise,Midwest,13646.47,10,0,6,0
+2025-12-09,Enterprise,West,14202.78,11,0,8,0
+2025-12-09,Mid-Market,Northeast,7502.9,31,3,15,0
+2025-12-09,Mid-Market,Southeast,5882.59,24,2,14,0
+2025-12-09,Mid-Market,Midwest,5124.25,21,2,10,0
+2025-12-09,Mid-Market,West,5921.33,24,2,12,0
+2025-12-09,Small Business,Northeast,2687.2,53,10,40,2
+2025-12-09,Small Business,Southeast,1951.86,39,7,24,0
+2025-12-09,Small Business,Midwest,2037.98,40,8,24,0
+2025-12-09,Small Business,West,2173.79,43,8,31,0
+2025-12-10,Enterprise,Northeast,21422.02,17,1,10,0
+2025-12-10,Enterprise,Southeast,16773.43,13,1,6,0
+2025-12-10,Enterprise,Midwest,13135.72,10,0,6,0
+2025-12-10,Enterprise,West,14574.81,11,0,7,0
+2025-12-10,Mid-Market,Northeast,6424.11,26,3,18,0
+2025-12-10,Mid-Market,Southeast,4872.44,20,2,12,0
+2025-12-10,Mid-Market,Midwest,4752.49,19,2,10,0
+2025-12-10,Mid-Market,West,7269.06,30,3,18,0
+2025-12-10,Small Business,Northeast,2784.44,55,11,41,2
+2025-12-10,Small Business,Southeast,1990.0,39,7,24,1
+2025-12-10,Small Business,Midwest,1474.46,29,5,20,1
+2025-12-10,Small Business,West,1786.23,35,7,18,2
+2025-12-11,Enterprise,Northeast,18507.5,14,1,10,0
+2025-12-11,Enterprise,Southeast,17345.91,13,1,6,0
+2025-12-11,Enterprise,Midwest,11958.24,9,0,7,0
+2025-12-11,Enterprise,West,18768.78,15,1,7,0
+2025-12-11,Mid-Market,Northeast,6464.17,26,3,13,0
+2025-12-11,Mid-Market,Southeast,5682.2,23,2,13,0
+2025-12-11,Mid-Market,Midwest,4899.95,20,2,10,0
+2025-12-11,Mid-Market,West,6629.83,27,3,21,0
+2025-12-11,Small Business,Northeast,2640.58,52,10,26,2
+2025-12-11,Small Business,Southeast,1913.39,38,7,21,0
+2025-12-11,Small Business,Midwest,1493.97,29,5,19,0
+2025-12-11,Small Business,West,1828.15,36,7,24,0
+2025-12-12,Enterprise,Northeast,20405.82,16,1,9,0
+2025-12-12,Enterprise,Southeast,15166.08,12,1,8,0
+2025-12-12,Enterprise,Midwest,15266.23,12,1,6,0
+2025-12-12,Enterprise,West,13527.75,10,0,5,0
+2025-12-12,Mid-Market,Northeast,7593.14,31,3,18,0
+2025-12-12,Mid-Market,Southeast,6683.4,27,3,14,0
+2025-12-12,Mid-Market,Midwest,5549.29,23,2,15,0
+2025-12-12,Mid-Market,West,6598.75,27,3,14,0
+2025-12-12,Small Business,Northeast,2503.2,50,10,27,0
+2025-12-12,Small Business,Southeast,2132.16,42,8,29,1
+2025-12-12,Small Business,Midwest,1700.21,34,6,22,0
+2025-12-12,Small Business,West,1971.86,39,7,20,0
+2025-12-13,Enterprise,Northeast,10437.78,8,0,5,0
+2025-12-13,Enterprise,Southeast,8535.68,6,0,3,0
+2025-12-13,Enterprise,Midwest,8812.62,7,0,5,0
+2025-12-13,Enterprise,West,9553.29,7,0,4,0
+2025-12-13,Mid-Market,Northeast,3803.22,15,1,8,0
+2025-12-13,Mid-Market,Southeast,3737.93,15,1,8,0
+2025-12-13,Mid-Market,Midwest,2940.9,12,1,9,0
+2025-12-13,Mid-Market,West,3285.77,13,1,8,0
+2025-12-13,Small Business,Northeast,1549.54,30,6,20,0
+2025-12-13,Small Business,Southeast,1229.39,24,4,13,0
+2025-12-13,Small Business,Midwest,1278.47,25,5,17,0
+2025-12-13,Small Business,West,1085.79,21,4,12,0
+2025-12-14,Enterprise,Northeast,11815.3,9,0,5,0
+2025-12-14,Enterprise,Southeast,9422.74,7,0,5,0
+2025-12-14,Enterprise,Midwest,7706.45,6,0,3,0
+2025-12-14,Enterprise,West,9498.5,7,0,5,0
+2025-12-14,Mid-Market,Northeast,5141.74,21,2,11,0
+2025-12-14,Mid-Market,Southeast,2956.28,12,1,7,0
+2025-12-14,Mid-Market,Midwest,3540.93,14,1,10,0
+2025-12-14,Mid-Market,West,4640.41,19,2,11,0
+2025-12-14,Small Business,Northeast,1603.73,32,6,18,1
+2025-12-14,Small Business,Southeast,1137.18,22,4,14,0
+2025-12-14,Small Business,Midwest,975.3,19,3,11,0
+2025-12-14,Small Business,West,1532.78,30,6,18,1
+2025-12-15,Enterprise,Northeast,17914.24,14,1,7,0
+2025-12-15,Enterprise,Southeast,14541.26,11,0,7,0
+2025-12-15,Enterprise,Midwest,11244.62,8,0,5,0
+2025-12-15,Enterprise,West,16333.04,13,1,7,0
+2025-12-15,Mid-Market,Northeast,6981.1,29,3,17,0
+2025-12-15,Mid-Market,Southeast,6188.35,25,3,13,0
+2025-12-15,Mid-Market,Midwest,6118.94,25,3,16,0
+2025-12-15,Mid-Market,West,5414.74,22,2,13,0
+2025-12-15,Small Business,Northeast,2273.62,45,9,35,2
+2025-12-15,Small Business,Southeast,1713.32,34,6,23,0
+2025-12-15,Small Business,Midwest,1454.55,29,5,22,0
+2025-12-15,Small Business,West,2364.82,47,9,25,2
+2025-12-16,Enterprise,Northeast,17645.32,14,1,9,0
+2025-12-16,Enterprise,Southeast,14682.66,11,0,6,0
+2025-12-16,Enterprise,Midwest,15984.66,12,1,8,0
+2025-12-16,Enterprise,West,17225.1,13,1,6,0
+2025-12-16,Mid-Market,Northeast,7743.49,32,3,19,0
+2025-12-16,Mid-Market,Southeast,6072.53,25,3,15,0
+2025-12-16,Mid-Market,Midwest,5307.56,22,2,16,0
+2025-12-16,Mid-Market,West,5352.73,22,2,11,0
+2025-12-16,Small Business,Northeast,2089.96,41,8,30,2
+2025-12-16,Small Business,Southeast,1941.15,38,7,29,1
+2025-12-16,Small Business,Midwest,2122.79,42,8,27,2
+2025-12-16,Small Business,West,2544.41,50,10,26,1
+2025-12-17,Enterprise,Northeast,15812.51,12,1,8,0
+2025-12-17,Enterprise,Southeast,13752.87,11,0,7,0
+2025-12-17,Enterprise,Midwest,12203.89,9,0,7,0
+2025-12-17,Enterprise,West,14377.14,11,0,8,0
+2025-12-17,Mid-Market,Northeast,7683.93,32,3,16,0
+2025-12-17,Mid-Market,Southeast,6108.85,25,3,14,0
+2025-12-17,Mid-Market,Midwest,5894.78,24,2,14,0
+2025-12-17,Mid-Market,West,6652.54,27,3,14,0
+2025-12-17,Small Business,Northeast,2292.42,45,9,35,2
+2025-12-17,Small Business,Southeast,1635.19,32,6,23,1
+2025-12-17,Small Business,Midwest,1882.9,37,7,29,2
+2025-12-17,Small Business,West,2232.65,44,8,30,2
+2025-12-18,Enterprise,Northeast,15414.84,12,1,7,0
+2025-12-18,Enterprise,Southeast,12006.66,9,0,5,0
+2025-12-18,Enterprise,Midwest,11717.94,9,0,5,0
+2025-12-18,Enterprise,West,14711.37,11,0,8,0
+2025-12-18,Mid-Market,Northeast,6358.94,26,3,18,0
+2025-12-18,Mid-Market,Southeast,5593.53,23,2,14,0
+2025-12-18,Mid-Market,Midwest,6073.75,25,3,17,0
+2025-12-18,Mid-Market,West,6568.44,27,3,17,0
+2025-12-18,Small Business,Northeast,2193.6,43,8,32,0
+2025-12-18,Small Business,Southeast,2314.43,46,9,34,2
+2025-12-18,Small Business,Midwest,1848.95,36,7,26,2
+2025-12-18,Small Business,West,2158.24,43,8,27,2
+2025-12-19,Enterprise,Northeast,15479.43,12,1,7,0
+2025-12-19,Enterprise,Southeast,17799.8,14,1,7,0
+2025-12-19,Enterprise,Midwest,13060.05,10,0,5,0
+2025-12-19,Enterprise,West,14655.92,11,0,7,0
+2025-12-19,Mid-Market,Northeast,6582.92,27,3,18,0
+2025-12-19,Mid-Market,Southeast,5961.39,24,2,17,0
+2025-12-19,Mid-Market,Midwest,5872.62,24,2,18,0
+2025-12-19,Mid-Market,West,6696.69,27,3,16,0
+2025-12-19,Small Business,Northeast,2052.9,41,8,28,1
+2025-12-19,Small Business,Southeast,1866.25,37,7,28,1
+2025-12-19,Small Business,Midwest,2071.97,41,8,28,0
+2025-12-19,Small Business,West,2214.31,44,8,25,1
+2025-12-20,Enterprise,Northeast,12121.02,9,0,5,0
+2025-12-20,Enterprise,Southeast,7660.2,6,0,3,0
+2025-12-20,Enterprise,Midwest,9279.02,7,0,3,0
+2025-12-20,Enterprise,West,11388.77,9,0,5,0
+2025-12-20,Mid-Market,Northeast,3500.89,14,1,8,0
+2025-12-20,Mid-Market,Southeast,4245.64,17,2,10,0
+2025-12-20,Mid-Market,Midwest,3361.28,14,1,9,0
+2025-12-20,Mid-Market,West,3945.19,16,1,9,0
+2025-12-20,Small Business,Northeast,1357.78,27,5,17,0
+2025-12-20,Small Business,Southeast,994.91,19,3,12,0
+2025-12-20,Small Business,Midwest,1127.91,22,4,16,1
+2025-12-20,Small Business,West,1269.69,25,5,14,0
+2025-12-21,Enterprise,Northeast,12953.23,10,0,6,0
+2025-12-21,Enterprise,Southeast,7474.4,5,0,3,0
+2025-12-21,Enterprise,Midwest,7845.46,6,0,4,0
+2025-12-21,Enterprise,West,10648.4,8,0,6,0
+2025-12-21,Mid-Market,Northeast,3964.97,16,1,10,0
+2025-12-21,Mid-Market,Southeast,3372.87,14,1,8,0
+2025-12-21,Mid-Market,Midwest,2640.36,11,1,8,0
+2025-12-21,Mid-Market,West,4169.59,17,2,9,0
+2025-12-21,Small Business,Northeast,1367.09,27,5,17,0
+2025-12-21,Small Business,Southeast,1375.08,27,5,17,0
+2025-12-21,Small Business,Midwest,1176.53,23,4,17,1
+2025-12-21,Small Business,West,1414.23,28,5,15,0
+2025-12-22,Enterprise,Northeast,16299.84,13,1,9,0
+2025-12-22,Enterprise,Southeast,12361.08,9,0,5,0
+2025-12-22,Enterprise,Midwest,12967.91,10,0,7,0
+2025-12-22,Enterprise,West,18168.84,14,1,9,0
+2025-12-22,Mid-Market,Northeast,8634.21,35,4,23,0
+2025-12-22,Mid-Market,Southeast,4845.0,20,2,10,0
+2025-12-22,Mid-Market,Midwest,6051.31,25,3,16,0
+2025-12-22,Mid-Market,West,6543.23,27,3,15,0
+2025-12-22,Small Business,Northeast,2734.04,54,10,37,0
+2025-12-22,Small Business,Southeast,2151.85,43,8,30,1
+2025-12-22,Small Business,Midwest,1656.01,33,6,17,1
+2025-12-22,Small Business,West,2429.42,48,9,32,2
+2025-12-23,Enterprise,Northeast,20723.7,16,1,9,0
+2025-12-23,Enterprise,Southeast,16595.96,13,1,7,0
+2025-12-23,Enterprise,Midwest,12227.3,9,0,6,0
+2025-12-23,Enterprise,West,14755.08,11,0,5,0
+2025-12-23,Mid-Market,Northeast,8168.7,34,4,26,0
+2025-12-23,Mid-Market,Southeast,6748.04,28,3,17,0
+2025-12-23,Mid-Market,Midwest,4535.83,18,2,10,0
+2025-12-23,Mid-Market,West,5327.25,22,2,13,0
+2025-12-23,Small Business,Northeast,2797.22,55,11,36,1
+2025-12-23,Small Business,Southeast,1793.85,35,7,19,0
+2025-12-23,Small Business,Midwest,1571.31,31,6,16,0
+2025-12-23,Small Business,West,2585.81,51,10,34,2
+2025-12-24,Enterprise,Northeast,15001.48,12,1,6,0
+2025-12-24,Enterprise,Southeast,12968.17,10,0,5,0
+2025-12-24,Enterprise,Midwest,11908.05,9,0,5,0
+2025-12-24,Enterprise,West,15543.36,12,1,7,0
+2025-12-24,Mid-Market,Northeast,7780.26,32,3,24,0
+2025-12-24,Mid-Market,Southeast,6047.98,25,3,14,0
+2025-12-24,Mid-Market,Midwest,6244.73,26,3,17,0
+2025-12-24,Mid-Market,West,5911.61,24,2,14,0
+2025-12-24,Small Business,Northeast,2830.95,56,11,37,0
+2025-12-24,Small Business,Southeast,2128.68,42,8,24,1
+2025-12-24,Small Business,Midwest,1723.15,34,6,24,0
+2025-12-24,Small Business,West,2461.67,49,9,31,2
+2025-12-25,Enterprise,Northeast,18855.43,15,1,9,0
+2025-12-25,Enterprise,Southeast,16199.95,12,1,7,0
+2025-12-25,Enterprise,Midwest,12310.07,9,0,4,0
+2025-12-25,Enterprise,West,17498.58,13,1,10,0
+2025-12-25,Mid-Market,Northeast,6583.43,27,3,17,0
+2025-12-25,Mid-Market,Southeast,6270.4,26,3,16,0
+2025-12-25,Mid-Market,Midwest,6429.91,26,3,20,0
+2025-12-25,Mid-Market,West,6631.06,27,3,15,0
+2025-12-25,Small Business,Northeast,2403.51,48,9,27,1
+2025-12-25,Small Business,Southeast,2330.89,46,9,31,1
+2025-12-25,Small Business,Midwest,1909.86,38,7,29,1
+2025-12-25,Small Business,West,2078.36,41,8,23,1
+2025-12-26,Enterprise,Northeast,16235.25,12,1,9,0
+2025-12-26,Enterprise,Southeast,16349.46,13,1,7,0
+2025-12-26,Enterprise,Midwest,15888.99,12,1,6,0
+2025-12-26,Enterprise,West,16208.88,12,1,9,0
+2025-12-26,Mid-Market,Northeast,5852.71,24,2,18,0
+2025-12-26,Mid-Market,Southeast,5952.64,24,2,16,0
+2025-12-26,Mid-Market,Midwest,5099.14,21,2,13,0
+2025-12-26,Mid-Market,West,7814.93,32,3,25,0
+2025-12-26,Small Business,Northeast,1939.86,38,7,24,1
+2025-12-26,Small Business,Southeast,2183.52,43,8,22,1
+2025-12-26,Small Business,Midwest,1564.94,31,6,18,0
+2025-12-26,Small Business,West,2148.8,42,8,27,0
+2025-12-27,Enterprise,Northeast,12488.7,9,0,4,0
+2025-12-27,Enterprise,Southeast,9976.35,7,0,5,0
+2025-12-27,Enterprise,Midwest,8718.87,6,0,3,0
+2025-12-27,Enterprise,West,9696.75,7,0,3,0
+2025-12-27,Mid-Market,Northeast,4313.79,17,2,9,0
+2025-12-27,Mid-Market,Southeast,3521.79,14,1,9,0
+2025-12-27,Mid-Market,Midwest,3881.18,16,1,12,0
+2025-12-27,Mid-Market,West,4323.4,18,2,13,0
+2025-12-27,Small Business,Northeast,1701.94,34,6,21,0
+2025-12-27,Small Business,Southeast,1076.39,21,4,16,0
+2025-12-27,Small Business,Midwest,985.71,19,3,11,0
+2025-12-27,Small Business,West,1253.09,25,5,13,0
+2025-12-28,Enterprise,Northeast,9519.99,7,0,4,0
+2025-12-28,Enterprise,Southeast,10796.3,8,0,5,0
+2025-12-28,Enterprise,Midwest,8913.92,7,0,5,0
+2025-12-28,Enterprise,West,8207.99,6,0,3,0
+2025-12-28,Mid-Market,Northeast,4072.56,16,2,10,0
+2025-12-28,Mid-Market,Southeast,3967.47,16,1,12,0
+2025-12-28,Mid-Market,Midwest,3094.24,12,1,7,0
+2025-12-28,Mid-Market,West,3634.5,15,1,8,0
+2025-12-28,Small Business,Northeast,1710.13,34,6,22,0
+2025-12-28,Small Business,Southeast,1169.58,23,4,12,0
+2025-12-28,Small Business,Midwest,1279.78,25,5,17,0
+2025-12-28,Small Business,West,1497.88,29,5,16,0
+2025-12-29,Enterprise,Northeast,16367.19,13,1,9,0
+2025-12-29,Enterprise,Southeast,13405.94,10,0,6,0
+2025-12-29,Enterprise,Midwest,14979.21,11,0,6,0
+2025-12-29,Enterprise,West,19564.12,15,1,10,0
+2025-12-29,Mid-Market,Northeast,6533.19,27,3,16,0
+2025-12-29,Mid-Market,Southeast,6570.97,27,3,18,0
+2025-12-29,Mid-Market,Midwest,4743.3,19,2,11,0
+2025-12-29,Mid-Market,West,7225.29,30,3,21,0
+2025-12-29,Small Business,Northeast,2258.52,45,9,33,0
+2025-12-29,Small Business,Southeast,1608.98,32,6,17,0
+2025-12-29,Small Business,Midwest,1563.37,31,6,21,1
+2025-12-29,Small Business,West,1934.76,38,7,22,0

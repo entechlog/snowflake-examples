@@ -17,9 +17,10 @@ module "dw_db" {
     "superset_role"  = { "role_name" = "${module.superset_role.role.name}", "privileges" = ["USAGE"] },
     "de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["USAGE"] },
     "da_role"        = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["USAGE"] },
+    "cortex_user_role"   = { "role_name" = "${upper(var.project_code)}_CORTEX_USER_ROLE", "privileges" = ["USAGE"] },
   }
 
-  schemas = ["DIM", "FACT", "OBT", "UTIL", "COMPLIANCE"]
+  schemas = ["DIM", "FACT", "OBT", "UTIL", "COMPLIANCE", "SEMANTIC"]
 
   schema_grant = {
     "DIM sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
@@ -52,6 +53,11 @@ module "dw_db" {
     "COMPLIANCE dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW"] },
     "COMPLIANCE de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW"] : ["USAGE"]) },
     "COMPLIANCE da_role"        = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["USAGE"] },
+
+    "SEMANTIC sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
+    "SEMANTIC terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE"] },
+    "SEMANTIC dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE SEMANTIC VIEW", "CREATE AGENT"] },
+    "SEMANTIC cortex_user_role"   = { "role_name" = "${upper(var.project_code)}_CORTEX_USER_ROLE", "privileges" = ["USAGE"] },
   }
 
   table_grant = {
@@ -77,6 +83,16 @@ module "dw_db" {
     "COMPLIANCE da_role"  = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
   }
 
-  depends_on = [module.dbt_role.role, module.superset_role.role, module.de_role.role, module.da_role.role]
+  view_grant = {
+    "OBT dbt_role"      = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "OBT superset_role" = { "role_name" = "${module.superset_role.role.name}", "privileges" = ["SELECT"] },
+    "OBT de_role"       = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
+    "OBT da_role"       = { "role_name" = "${upper(var.project_code)}_DA_ROLE", "privileges" = ["SELECT"] },
+
+    "SEMANTIC dbt_role"      = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "SEMANTIC cortex_user_role"  = { "role_name" = "${upper(var.project_code)}_CORTEX_USER_ROLE", "privileges" = ["SELECT"] },
+  }
+
+  depends_on = [module.dbt_role.role, module.superset_role.role, module.de_role.role, module.da_role.role, module.cortex_user_role.role]
 }
 

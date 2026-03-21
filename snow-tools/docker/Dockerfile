@@ -31,7 +31,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN curl "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowflake-snowsql-1.2.10-1.x86_64.rpm" -o /tmp/snowflake-snowsql.rpm
 RUN alien -i /tmp/snowflake-snowsql.rpm
 
-# Install teraform
+# Install Snowflake CLI (snow)
+RUN pip install --no-cache-dir snowflake-cli
+
+# Install Cortex Code CLI
+RUN curl -LsS https://ai.snowflake.com/static/cc-scripts/install.sh | sh || true
+
+# Install terraform
 RUN wget -qO - terraform.gpg https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/terraform-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/terraform-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/terraform.list
 RUN apt update

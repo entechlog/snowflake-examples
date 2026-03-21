@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: semantic__order_stats_1d
+    description: >
+      Semantic view for daily order statistics.
+      Maps 1:1 to the OBT table order_stats_1d.
+      Provides rich metadata for Cortex Analyst agents.

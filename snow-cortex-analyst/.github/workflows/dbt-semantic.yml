@@ -1,0 +1,80 @@
+# =============================================================================
+# CI/CD: dbt Semantic View + Cortex Agent Deployment
+#
+# Deploys seeds, OBT views, semantic views, and agents using dbt.
+# Triggered on push to develop (→ dev) and main (→ prd).
+#
+# ADO Migration Notes:
+#   - Replace `on: push` with `trigger: branches: [...]`
+#   - Replace `secrets.*` with ADO variable groups or key vault references
+#   - Replace `actions/checkout@v4` with `checkout: self`
+#   - Replace `run:` steps with `script:` tasks
+#   - Use `pool: vmImage: 'ubuntu-latest'` instead of `runs-on`
+# =============================================================================
+
+name: Deploy dbt Semantic Views
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'snow-cortex-analyst/dbt/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prd
+
+env:
+  PROJECT_CODE: entechlog
+
+jobs:
+  deploy:
+    name: Deploy (${{ github.ref_name == 'main' && 'prd' || 'dev' }})
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+
+    env:
+      ENV_CODE: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLE: ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}_SVC_ENTECHLOG_SNOW_DBT_ROLE
+      SNOWFLAKE_WAREHOUSE: ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}_ENTECHLOG_DBT_WH_XS
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: pip install dbt-core dbt-snowflake
+
+      - name: dbt deps
+        working-directory: snow-cortex-analyst/dbt
+        run: dbt deps
+
+      - name: dbt seed
+        working-directory: snow-cortex-analyst/dbt
+        run: dbt seed
+
+      - name: dbt run (OBT + semantic views)
+        working-directory: snow-cortex-analyst/dbt
+        run: dbt run
+
+      - name: Create Cortex Agents
+        working-directory: snow-cortex-analyst/dbt
+        run: dbt run-operation create_cortex_agents

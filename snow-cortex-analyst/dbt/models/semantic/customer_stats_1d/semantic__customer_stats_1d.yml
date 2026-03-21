@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: semantic__customer_stats_1d
+    description: >
+      Semantic view for daily customer statistics.
+      Maps 1:1 to the OBT table customer_stats_1d.
+      Provides rich metadata for Cortex Analyst agents.

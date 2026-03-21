@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: seed
+    description: "Seed data loaded via dbt seed"
+    database: "{{ env_var('ENV_CODE', 'dev') | trim | upper }}_{{ env_var('PROJECT_CODE', 'entechlog') | trim | upper }}_RAW_DB"
+    schema: seed
+    tables:
+      - name: order_stats_1d
+        description: "Daily order statistics by product category and region"
+      - name: customer_stats_1d
+        description: "Daily customer statistics by segment and region"

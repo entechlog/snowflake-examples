@@ -1,13 +1,12 @@
 {#
   Sales Agent Instructions
 
-  Provides orchestration, response, and sample question macros
-  for the sales_agent Cortex Analyst agent.
+  Referenced by: models/agents/sales_agent.sql via config(instructions = 'sales_agent')
 
   Macro naming convention:
-    {agent_name}_orchestration  - How the agent should think and query
-    {agent_name}_response       - How the agent should format answers
-    {agent_name}_sample_questions - Starter questions for the UI
+    {name}_orchestration    - How the agent should think and query
+    {name}_response         - How the agent should format answers
+    {name}_sample_questions - Starter questions shown in the UI
 #}
 
 

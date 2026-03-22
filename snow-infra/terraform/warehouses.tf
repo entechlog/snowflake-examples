@@ -74,11 +74,11 @@ module "cortex_wh_xs" {
   warehouse_grant = {
     "sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["MODIFY"] },
-    "cortex_user_role"   = { "role_name" = "${upper(var.project_code)}_CORTEX_USER_ROLE", "privileges" = ["USAGE"] },
+    "cortex_role"   = { "role_name" = "${upper(var.project_code)}_CORTEX_ROLE", "privileges" = ["USAGE"] },
     "dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "MONITOR"] },
   }
 
-  depends_on = [module.cortex_user_role.role, module.dbt_role.role]
+  depends_on = [module.cortex_role.role, module.dbt_role.role]
 }
 
 module "snowpipe_wh_xs" {

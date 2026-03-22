@@ -63,10 +63,10 @@ module "de_role" {
   depends_on = [module.all_user_accounts]
 }
 
-module "cortex_user_role" {
+module "cortex_role" {
   source       = "./modules/roles"
   count        = local.enable_in_dev_flag
-  role_name    = "${upper(var.project_code)}_CORTEX_USER_ROLE"
+  role_name    = "${upper(var.project_code)}_CORTEX_ROLE"
   role_comment = "Snowflake role used by Cortex Analyst consumers"
 
   roles = ["SYSADMIN"]

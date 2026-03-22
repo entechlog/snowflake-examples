@@ -57,3 +57,4 @@ DIMENSIONS(
 )
 
 COMMENT = 'Semantic view for daily order statistics by product category and region'
+;

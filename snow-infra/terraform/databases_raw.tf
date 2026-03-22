@@ -14,9 +14,10 @@ module "raw_db" {
     "sysadmin_role"   = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "terraform_role"  = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE", "CREATE SCHEMA"] },
     "kafka_role"      = { "role_name" = "${module.kafka_role.role.name}", "privileges" = ["USAGE", "CREATE SCHEMA"] },
-    "dbt_role"        = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE"] },
-    "de_role"         = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["USAGE"] },
-    "pipe_admin_role" = { "role_name" = "${upper(var.project_code)}_PIPE_ADMIN_ROLE", "privileges" = ["USAGE"] },
+    "dbt_role"           = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE"] },
+    "de_role"            = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["USAGE"] },
+    "pipe_admin_role"    = { "role_name" = "${upper(var.project_code)}_PIPE_ADMIN_ROLE", "privileges" = ["USAGE"] },
+    "cortex_role"   = { "role_name" = "${upper(var.project_code)}_CORTEX_ROLE", "privileges" = ["USAGE"] },
   }
 
   schemas = ["DATAGEN", "SEED", "YELLOW_TAXI", "UTIL", "FAKER", "SLINGDATA"]
@@ -26,7 +27,8 @@ module "raw_db" {
     "SEED sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "SEED terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE"] },
     "SEED dbt_role"       = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE STAGE", "CREATE PIPE"] },
-    "SEED de_role"        = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE PIPE"] : ["USAGE"]) },
+    "SEED de_role"             = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = (upper(var.env_code) == "DEV" ? ["USAGE", "CREATE TABLE", "CREATE VIEW", "CREATE PIPE"] : ["USAGE"]) },
+    "SEED cortex_role"    = { "role_name" = "${upper(var.project_code)}_CORTEX_ROLE", "privileges" = ["USAGE"] },
 
     "DATAGEN sysadmin_role"  = { "role_name" = "SYSADMIN", "privileges" = ["OWNERSHIP"] },
     "DATAGEN terraform_role" = { "role_name" = "${upper(var.terraform_role)}", "privileges" = ["USAGE", "CREATE FILE FORMAT", "CREATE STAGE", "CREATE ICEBERG TABLE"] },
@@ -55,8 +57,9 @@ module "raw_db" {
   }
 
   table_grant = {
-    "SEED dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
-    "SEED de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
+    "SEED dbt_role"          = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
+    "SEED de_role"           = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
+    "SEED cortex_role"  = { "role_name" = "${upper(var.project_code)}_CORTEX_ROLE", "privileges" = ["SELECT"] },
 
     "DATAGEN dbt_role" = { "role_name" = "${module.dbt_role.role.name}", "privileges" = ["SELECT"] },
     "DATAGEN de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
@@ -74,5 +77,5 @@ module "raw_db" {
     "UTIL de_role"  = { "role_name" = "${upper(var.project_code)}_DE_ROLE", "privileges" = ["SELECT"] },
   }
 
-  depends_on = [module.dbt_role.role]
+  depends_on = [module.dbt_role.role, module.cortex_role.role]
 }

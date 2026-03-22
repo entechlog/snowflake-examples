@@ -33,7 +33,7 @@ on:
           - prd
 
 env:
-  PROJECT_CODE: entechlog
+  PROJ_CODE: entechlog
 
 jobs:
   deploy:
@@ -71,10 +71,6 @@ jobs:
         working-directory: snow-cortex-analyst/dbt
         run: dbt seed
 
-      - name: dbt run (OBT + semantic views)
+      - name: dbt run (OBT + semantic views + verified queries + agents)
         working-directory: snow-cortex-analyst/dbt
         run: dbt run
-
-      - name: Create Cortex Agents
-        working-directory: snow-cortex-analyst/dbt
-        run: dbt run-operation create_cortex_agents

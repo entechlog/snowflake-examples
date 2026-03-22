@@ -56,3 +56,4 @@ DIMENSIONS(
 )
 
 COMMENT = 'Semantic view for daily customer statistics by segment and region'
+;

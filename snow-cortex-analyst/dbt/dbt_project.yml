@@ -1,0 +1,43 @@
+name: 'snow_cortex_analyst'
+version: '1.0.0'
+
+config-version: 2
+
+profile: 'snow_cortex_analyst'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  env_code: "{{ env_var('ENV_CODE', 'dev') | trim | lower }}"
+  project_code: "{{ env_var('PROJ_CODE', 'entechlog') | trim | lower }}"
+
+seeds:
+  snow_cortex_analyst:
+    +database: "{{ env_var('ENV_CODE', 'dev') | trim | upper }}_{{ env_var('PROJ_CODE', 'entechlog') | trim | upper }}_RAW_DB"
+    +schema: seed
+    +quote_columns: false
+
+models:
+  snow_cortex_analyst:
+    obt:
+      +database: "{{ env_var('ENV_CODE', 'dev') | trim | upper }}_{{ env_var('PROJ_CODE', 'entechlog') | trim | upper }}_DW_DB"
+      +schema: obt
+      +materialized: view
+    semantic:
+      +database: "{{ env_var('ENV_CODE', 'dev') | trim | upper }}_{{ env_var('PROJ_CODE', 'entechlog') | trim | upper }}_DW_DB"
+      +schema: semantic
+      +materialized: semantic_view
+      +tags: ['semantic']
+    agents:
+      +database: "{{ env_var('ENV_CODE', 'dev') | trim | upper }}_{{ env_var('PROJ_CODE', 'entechlog') | trim | upper }}_DW_DB"
+      +schema: semantic
+      +materialized: cortex_agent
+      +tags: ['agent']
+    +tags: ['cortex-analyst']

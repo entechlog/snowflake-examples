@@ -1,0 +1,19 @@
+-- EXAMPLE PROMPT: Adapt the agent name, semantic views, and rules for your own data.
+-- Run via: cortex -f prompts/02_create_agent.txt
+
+Build a Cortex Agent named marketing_agent that uses the semantic view:
+- DEV_ENTECHLOG_DW_DB.SEMANTIC.marketing_campaign_stats_1d (daily marketing metrics)
+
+The agent should:
+1. Use warehouse DEV_ENTECHLOG_CORTEX_WH_XS for query execution
+2. Have a 60-second timeout and 16000 token budget
+3. Have display name "Marketing Agent (DEV)"
+4. Include orchestration instructions that explain:
+   - All facts are cumulative (SUM valid across dimensions and time)
+   - Rate metrics (CTR, CPC, CVR, CPA, ROAS) must be computed from facts
+   - Date range is Oct-Dec 2025, use MAX(campaign_date) not CURRENT_DATE
+   - net_campaign_value = conversion_revenue - spend (positive = profitable)
+5. Include response formatting instructions for business stakeholders
+6. Include 4-6 sample questions about campaign performance
+
+Deploy this agent to Snowflake Intelligence. Then grant USAGE to role ENTECHLOG_CORTEX_ROLE.

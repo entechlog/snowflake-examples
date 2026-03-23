@@ -63,6 +63,18 @@ module "de_role" {
   depends_on = [module.all_user_accounts]
 }
 
+module "cortex_role" {
+  source       = "./modules/roles"
+  count        = local.enable_in_dev_flag
+  role_name    = "${upper(var.project_code)}_CORTEX_ROLE"
+  role_comment = "Snowflake role used by Cortex Analyst consumers"
+
+  roles = ["SYSADMIN"]
+  users = [lower("admin@entechlog.com")]
+
+  depends_on = [module.all_user_accounts]
+}
+
 module "pipe_admin_role" {
   source       = "./modules/roles"
   count        = local.enable_in_dev_flag

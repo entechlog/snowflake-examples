@@ -1,0 +1,13 @@
+snow_cortex_analyst:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user:  "{{ env_var('ENV_CODE') | trim }}_SVC_{{ env_var('PROJ_CODE') | trim }}_SNOW_DBT_USER"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'DEV_SVC_ENTECHLOG_SNOW_DBT_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'DEV_ENTECHLOG_DBT_WH_XS') }}"
+      database: "{{ env_var('ENV_CODE', 'dev') | upper }}_{{ env_var('PROJ_CODE', 'entechlog') | upper }}_DW_DB"
+      schema: public
+      threads: 4

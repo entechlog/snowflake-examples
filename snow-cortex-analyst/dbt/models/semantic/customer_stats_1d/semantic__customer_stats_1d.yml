@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: semantic__customer_stats_1d
+    description: >
+      Semantic view for daily customer statistics.
+      Maps 1:1 to the OBT table customer_stats_1d.
+    meta:
+      verified_queries:
+        - name: spend_by_segment
+          question: "Compare total spend across customer segments"
+          sql: "SELECT customer_segment, SUM(total_spend) AS total_spend FROM __customer_stats_1d GROUP BY customer_segment ORDER BY total_spend DESC"
+          use_as_onboarding_question: true
+        - name: new_customer_trend
+          question: "Show me the trend of new customer acquisition over time"
+          sql: "SELECT DATE_TRUNC('WEEK', stats_date) AS week, SUM(new_customers) AS new_customers FROM __customer_stats_1d GROUP BY week ORDER BY week"
+          use_as_onboarding_question: true
+        - name: retention_by_segment
+          question: "What is the customer retention rate by segment?"
+          sql: "SELECT customer_segment, SUM(returning_customers) AS returning, SUM(new_customers) + SUM(returning_customers) AS total_active, ROUND(SUM(returning_customers) * 100.0 / NULLIF(SUM(new_customers) + SUM(returning_customers), 0), 1) AS retention_pct FROM __customer_stats_1d GROUP BY customer_segment ORDER BY retention_pct DESC"
+          use_as_onboarding_question: true

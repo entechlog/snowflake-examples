@@ -10,3 +10,5 @@ sources:
         description: "Daily order statistics by product category and region"
       - name: customer_stats_1d
         description: "Daily customer statistics by segment and region"
+      - name: marketing_campaign_stats_1d
+        description: "Daily marketing campaign metrics by channel and region"

@@ -1,0 +1,12 @@
+-- EXAMPLE PROMPT: Adapt the object names for your own deployment.
+-- Run via: cortex -f prompts/03_validate.txt
+
+Validate the deployment by running these checks:
+
+1. Show all semantic views in DEV_ENTECHLOG_DW_DB.SEMANTIC
+2. Show all agents in DEV_ENTECHLOG_DW_DB.SEMANTIC
+3. Describe agent DEV_ENTECHLOG_DW_DB.SEMANTIC.marketing_agent
+4. Test the agent with: "What is the total spend by marketing channel?"
+5. Test the agent with: "Which channel has the best ROAS?"
+
+Report any errors or warnings.

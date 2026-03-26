@@ -31,7 +31,8 @@ Both share the same seed data and OBT layer (created by `dbt/`).
 ### 1. Create Snowflake objects
 
 ```sql
--- Run in Snowsight, replacing ${ENV_CODE}=DEV and ${PROJ_CODE}=ENTECHLOG
+-- Run in Snowsight (variables are now set at the top of each file)
+-- Modify ENV_CODE and PROJ_CODE values in the SET statements if needed
 -- sql/init/00_init_database.sql
 -- sql/init/01_init_roles_grants.sql
 ```

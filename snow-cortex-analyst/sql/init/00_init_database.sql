@@ -1,50 +1,55 @@
 -- =============================================================================
 -- Snowflake Object Setup for Cortex Analyst Demo
 -- Run this if you are NOT using the Terraform setup from snow-infra
---
--- Replace variables before running:
---   ${ENV_CODE}     : dev, stg, prd
---   ${PROJ_CODE} : entechlog (or your project code)
---
--- Example: DEV_ENTECHLOG_DW_DB
 -- =============================================================================
+
+-- Set variables at the beginning of the script
+-- Modify these values as needed for your environment
+SET ENV_CODE = 'DEV';        -- Options: DEV, STG, PRD
+SET PROJ_CODE = 'ENTECHLOG'; -- Your project code
+
+-- Construct database and warehouse names using the variables
+SET RAW_DB_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_RAW_DB';
+SET DW_DB_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_DW_DB';
+SET DBT_WH_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_DBT_WH_XS';
+SET CORTEX_WH_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_CORTEX_WH_XS';
 
 USE ROLE SYSADMIN;
 
 -- ---------------------------------------------------------------------------
 -- Databases
 -- ---------------------------------------------------------------------------
-CREATE DATABASE IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_RAW_DB
-  COMMENT = 'Raw data for ${PROJ_CODE} (${ENV_CODE})';
+CREATE DATABASE IF NOT EXISTS IDENTIFIER($RAW_DB_NAME)
+  COMMENT = 'Raw data for ' || $PROJ_CODE || ' (' || $ENV_CODE || ')';
 
-CREATE DATABASE IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_DW_DB
-  COMMENT = 'Data warehouse for ${PROJ_CODE} (${ENV_CODE})';
+CREATE DATABASE IF NOT EXISTS IDENTIFIER($DW_DB_NAME)
+  COMMENT = 'Data warehouse for ' || $PROJ_CODE || ' (' || $ENV_CODE || ')';
 
 -- ---------------------------------------------------------------------------
 -- Schemas
 -- ---------------------------------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_RAW_DB.SEED
+CREATE SCHEMA IF NOT EXISTS IDENTIFIER($RAW_DB_NAME || '.SEED')
   COMMENT = 'Seed data loaded by dbt';
 
-CREATE SCHEMA IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_DW_DB.OBT
+CREATE SCHEMA IF NOT EXISTS IDENTIFIER($DW_DB_NAME || '.OBT')
   COMMENT = 'One Big Table layer - pre-aggregated views';
 
-CREATE SCHEMA IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_DW_DB.SEMANTIC
+CREATE SCHEMA IF NOT EXISTS IDENTIFIER($DW_DB_NAME || '.SEMANTIC')
   COMMENT = 'Semantic views for Cortex Analyst';
 
 -- ---------------------------------------------------------------------------
 -- Warehouses
 -- ---------------------------------------------------------------------------
-CREATE WAREHOUSE IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_DBT_WH_XS
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($DBT_WH_NAME)
   WAREHOUSE_SIZE = 'XSMALL'
   AUTO_SUSPEND   = 60
   AUTO_RESUME    = TRUE
   INITIALLY_SUSPENDED = TRUE
-  COMMENT = 'dbt execution warehouse (${ENV_CODE})';
+  COMMENT = 'dbt execution warehouse (' || $ENV_CODE || ')';
 
-CREATE WAREHOUSE IF NOT EXISTS ${ENV_CODE}_${PROJ_CODE}_CORTEX_WH_XS
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($CORTEX_WH_NAME)
   WAREHOUSE_SIZE = 'XSMALL'
   AUTO_SUSPEND   = 60
   AUTO_RESUME    = TRUE
   INITIALLY_SUSPENDED = TRUE
-  COMMENT = 'Cortex Analyst agent warehouse (${ENV_CODE})';
+  COMMENT = 'Cortex Analyst agent warehouse (' || $ENV_CODE || ')';

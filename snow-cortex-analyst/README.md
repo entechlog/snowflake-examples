@@ -1,6 +1,6 @@
 # Snow Cortex Analyst
 
-Two end-to-end approaches for building Snowflake Cortex Analyst agents with semantic views — from seed data to production deployment.
+Two end-to-end approaches for building Snowflake Cortex Analyst agents with semantic views - from seed data to production deployment.
 
 **The key takeaway: clean models with precise descriptions, correct metric classifications, and verified queries produce accurate agents. Invest in your semantic layer.**
 
@@ -60,14 +60,14 @@ dbt deps && dbt seed && dbt run
 
 ### 4. Choose your approach
 
-**dbt approach** — deploys sales semantic views + sales agent:
+**dbt approach** - deploys sales semantic views + sales agent:
 ```bash
-# Already done in step 3 — dbt run creates OBT + semantic views + agent
+# Already done in step 3 - dbt run creates OBT + semantic views + agent
 dbt run-operation deploy_verified_queries
 ```
 See [dbt/ details](#dbt-approach) below.
 
-**CoCo approach** — deploys marketing semantic view + marketing agent:
+**CoCo approach** - deploys marketing semantic view + marketing agent:
 ```bash
 cd ../coco/scripts
 ./deploy.sh
@@ -78,7 +78,7 @@ See [coco/ details](coco/README.md).
 
 ### Agents as dbt models
 
-Agents use the custom `cortex_agent` materialization — one file per agent in `models/agents/`:
+Agents use the custom `cortex_agent` materialization - one file per agent in `models/agents/`:
 
 ```sql
 {{ config(
@@ -90,7 +90,7 @@ Agents use the custom `cortex_agent` materialization — one file per agent in `
 ) }}
 ```
 
-- **Idempotent:** Compares spec via `DESCRIBE AGENT` — only `ALTER AGENT` when changed, preserving chat history
+- **Idempotent:** Compares spec via `DESCRIBE AGENT` - only `ALTER AGENT` when changed, preserving chat history
 - **Selective:** `dbt run --select sales_agent`
 - **Instructions:** Structured macros in `macros/cortex/instructions/`
 
@@ -125,7 +125,7 @@ dbt run-operation deploy_verified_queries --args '{name: order_stats_1d}'
 | stg | `STG_ENTECHLOG_DW_DB` | `stg_sales_agent` | `marketing_agent` | `STG_ENTECHLOG_CORTEX_WH_XS` |
 | prd | `PRD_ENTECHLOG_DW_DB` | `prd_sales_agent` | `marketing_agent` | `PRD_ENTECHLOG_CORTEX_WH_XS` |
 
-CoCo agents don't include env prefix — the database provides isolation. Display name shows `(DEV)` / `(PRD)`.
+CoCo agents don't include env prefix - the database provides isolation. Display name shows `(DEV)` / `(PRD)`.
 
 ## CI/CD
 

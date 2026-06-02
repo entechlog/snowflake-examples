@@ -1,4 +1,4 @@
-# Cortex Code (CoCo) — Semantic Views + Agents
+# Cortex Code (CoCo) - Semantic Views + Agents
 
 An alternative approach to building Snowflake Cortex Analyst agents using **Cortex Code CLI** and **YAML specifications** instead of dbt.
 
@@ -103,7 +103,7 @@ python deploy.py --dry-run --agents marketing_agent
 
 ### Pull
 
-Exports deployed Snowflake definitions back to local YAML files. Enables **bidirectional sync** — edit in Snowflake UI, then pull changes back to Git.
+Exports deployed Snowflake definitions back to local YAML files. Enables **bidirectional sync** - edit in Snowflake UI, then pull changes back to Git.
 
 ```bash
 python deploy.py --pull                              # Pull all views and agents
@@ -166,12 +166,12 @@ The key advantage of the YAML-first approach: definitions can be edited both loc
 **Typical workflow:**
 
 1. Create or edit YAML locally
-2. `python deploy.py --dry-run` — review generated SQL
-3. `python deploy.py` — deploy to Snowflake
+2. `python deploy.py --dry-run` - review generated SQL
+3. `python deploy.py` - deploy to Snowflake
 4. Test in Snowflake Intelligence
 5. Someone tweaks a description in the Snowflake UI
-6. `python deploy.py --pull --views changed_view` — export the change
-7. `git diff` — review what changed
+6. `python deploy.py --pull --views changed_view` - export the change
+7. `git diff` - review what changed
 8. Commit to Git
 
 ## Applying This to Your Data
@@ -182,10 +182,10 @@ When building semantic views for your own models:
 Each semantic view should map 1:1 to a well-defined OBT or fact table. Know what one row represents.
 
 ### Step 2: Classify every column
-- **time_dimensions** — Date/timestamp columns (get special temporal handling)
-- **dimensions** — Categorical attributes (set `is_enum: true` when values are known)
-- **facts** — Additive measures that can be SUMmed
-- **metrics** — Computed from facts (ratios, averages, rates)
+- **time_dimensions** - Date/timestamp columns (get special temporal handling)
+- **dimensions** - Categorical attributes (set `is_enum: true` when values are known)
+- **facts** - Additive measures that can be SUMmed
+- **metrics** - Computed from facts (ratios, averages, rates)
 
 ### Step 3: Write descriptions as if explaining to a new analyst
 Bad: `"Revenue amount"`
@@ -224,10 +224,10 @@ Environment variables handle promotion across environments:
 | Agent | `marketing_agent` | `marketing_agent` |
 | Display Name | Marketing Agent (DEV) | Marketing Agent (PRD) |
 
-Agent names don't include env prefix — the database provides isolation. Display name shows `(DEV)` / `(PRD)` for clarity in Snowflake Intelligence.
+Agent names don't include env prefix - the database provides isolation. Display name shows `(DEV)` / `(PRD)` for clarity in Snowflake Intelligence.
 
 ## Cortex Code Skills
 
 The `.cortex/skills/semantic-view-guide.md` file teaches Cortex Code CLI about your data model and conventions. When you run the CLI from this directory, it automatically loads this skill, so prompts like "create a semantic view for marketing_campaign_stats_1d" produce YAML that follows your standards.
 
-Adapt this file for your own data — document your grain, your metrics, your naming conventions.
+Adapt this file for your own data - document your grain, your metrics, your naming conventions.

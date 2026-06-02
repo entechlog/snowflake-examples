@@ -1,0 +1,159 @@
+# =============================================================================
+# CI/CD: DCM Plan & Deploy (using official Snowflake-Labs actions)
+#
+# PRs touching snow-infra/dcm/:  plan only, posts diff as PR comment
+# Push to develop:               plan + deploy to DEV (auto-runs post_scripts)
+# Push to main:                  plan + deploy to STG, then PRD (PRD gated)
+#
+# Built-in safety:
+#   - allow-drops: "false"  → deploy refuses to DROP anything unless explicit
+#   - comment-on-pr: "true" → plan diff visible inline on the PR
+#   - post-scripts-path     → post_scripts/ runs automatically after deploy
+#
+# ADO Migration Notes:
+#   - Replace `uses: Snowflake-Labs/…` with `script:` blocks invoking snow CLI
+#   - PR-comment feature requires custom logic (gh-style API call)
+#   - Manual PRD approval: configure an "Environment" approval check in
+#     ADO Pipelines → Environments
+#   - SNOWFLAKE_PRIVATE_KEY: store as ADO secure file, load via DownloadSecureFile
+#   - GitHub `secrets.*` → ADO variable groups or key-vault references
+# =============================================================================
+
+name: DCM Plan & Deploy
+
+on:
+  pull_request:
+    paths:
+      - 'snow-infra/dcm/**'
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'snow-infra/dcm/**'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'DCM target'
+        required: true
+        default: 'DCM_DEV'
+        type: choice
+        options:
+          - DCM_DEV
+          - DCM_STG
+          - DCM_PRD
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write   # required for plan PR comments
+
+env:
+  DCM_PROJECT_PATH: snow-infra/dcm/dcm
+  SNOWFLAKE_USER:   SVC_SALES_SNOW_DCM_USER
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Plan: runs on every PR + before every deploy
+  # ---------------------------------------------------------------------------
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'snowflake-stg' || 'snowflake-dev' }}
+
+    env:
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'main' && 'DCM_STG' || 'DCM_DEV') }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: DCM plan
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
+        with:
+          target:         ${{ env.TARGET }}
+          project-path:   ${{ env.DCM_PROJECT_PATH }}
+          snowflake-user: ${{ env.SNOWFLAKE_USER }}
+          comment-on-pr:  "true"
+
+  # ---------------------------------------------------------------------------
+  # Deploy DEV: push to develop
+  # ---------------------------------------------------------------------------
+  deploy-dev:
+    name: Deploy to DEV
+    needs: plan
+    if: github.event_name == 'push' && github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    environment: snowflake-dev
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: DCM deploy (DEV)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_DEV
+          project-path:      ${{ env.DCM_PROJECT_PATH }}
+          snowflake-user:    ${{ env.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"
+
+  # ---------------------------------------------------------------------------
+  # Deploy STG then PRD: push to main (PRD gated by GitHub environment)
+  # ---------------------------------------------------------------------------
+  deploy-stg:
+    name: Deploy to STG
+    needs: plan
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    environment: snowflake-stg
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: DCM deploy (STG)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_STG
+          project-path:      ${{ env.DCM_PROJECT_PATH }}
+          snowflake-user:    ${{ env.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"
+
+  deploy-prd:
+    name: Deploy to PRD
+    needs: deploy-stg
+    runs-on: ubuntu-latest
+    environment: snowflake-prd       # manual approval gate configured in GitHub UI
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: DCM plan (PRD pre-flight)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
+        with:
+          target:         DCM_PRD
+          project-path:   ${{ env.DCM_PROJECT_PATH }}
+          snowflake-user: ${{ env.SNOWFLAKE_USER }}
+
+      - name: DCM deploy (PRD)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_PRD
+          project-path:      ${{ env.DCM_PROJECT_PATH }}
+          snowflake-user:    ${{ env.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"

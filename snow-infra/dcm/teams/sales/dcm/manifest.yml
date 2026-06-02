@@ -1,0 +1,65 @@
+manifest_version: 2
+type: DCM_PROJECT
+
+default_target: DCM_SALES_DEV
+
+# -----------------------------------------------------------------------------
+# Team SALES — DCM project lives INSIDE the team's DW database (hybrid pattern)
+#
+# project_name format: {ENV}_SALES_DW_DB.DCM.{ENV}_SALES_PROJECT
+# The platform layer creates these project objects and transfers OWNERSHIP
+# to SVC_SALES_SNOW_DCM_ROLE. The team then plans/deploys without ever
+# touching DCM_REGISTRY or platform-managed objects.
+# -----------------------------------------------------------------------------
+targets:
+  DCM_SALES_DEV:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       DEV_SALES_DW_DB.DCM.DEV_SALES_PROJECT
+    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    templating_config:  DEV
+
+  DCM_SALES_STG:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       STG_SALES_DW_DB.DCM.STG_SALES_PROJECT
+    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    templating_config:  STG
+
+  DCM_SALES_PRD:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       PRD_SALES_DW_DB.DCM.PRD_SALES_PROJECT
+    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    templating_config:  PRD
+
+# -----------------------------------------------------------------------------
+# Team-local templating
+#
+# - team_name fixes this project to SALES (other teams have their own dir)
+# - proj_code stays for reference but real naming uses team_name now
+# - User roles + service roles are PLATFORM-owned — referenced here but not
+#   created. deploy_query_warehouse flag toggles the shared ALL_*_QUERY_WH.
+# -----------------------------------------------------------------------------
+templating:
+  defaults:
+    team_name:   "SALES"
+    proj_code:   "ENTECHLOG"
+
+    dbt_wh_size:    "XSMALL"
+    query_wh_size:  "XSMALL"
+    cortex_wh_size: "XSMALL"
+    auto_suspend_seconds: 30
+
+  configurations:
+    DEV:
+      env_code: "DEV"
+      deploy_query_warehouse: true
+
+    STG:
+      env_code: "STG"
+      deploy_query_warehouse: false
+
+    PRD:
+      env_code: "PRD"
+      deploy_query_warehouse: false
+      auto_suspend_seconds: 60
+      dbt_wh_size:   "SMALL"
+      query_wh_size: "SMALL"

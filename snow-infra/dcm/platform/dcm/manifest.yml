@@ -1,0 +1,60 @@
+manifest_version: 2
+type: DCM_PROJECT
+
+default_target: DCM_PLATFORM_DEV
+
+# -----------------------------------------------------------------------------
+# Platform-layer targets — one DCM PROJECT object per env, central registry
+# -----------------------------------------------------------------------------
+targets:
+  DCM_PLATFORM_DEV:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       DCM_REGISTRY.PROJECTS.DEV_PLATFORM_PROJECT
+    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    templating_config:  DEV
+
+  DCM_PLATFORM_STG:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       DCM_REGISTRY.PROJECTS.STG_PLATFORM_PROJECT
+    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    templating_config:  STG
+
+  DCM_PLATFORM_PRD:
+    account_identifier: MBHCOYN-OGA75238
+    project_name:       DCM_REGISTRY.PROJECTS.PRD_PLATFORM_PROJECT
+    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    templating_config:  PRD
+
+# -----------------------------------------------------------------------------
+# Templating
+#
+# `teams` is the list of teams the platform manages — each gets a DB triplet
+# (RAW/PREP/DW), a DCM service role, and a DCM PROJECT object inside their
+# DW database. Adding a team is a one-line change here + a new teams/<name>/
+# directory.
+# -----------------------------------------------------------------------------
+templating:
+  defaults:
+    proj_code: "ENTECHLOG"   # parent org / project code (was used as team code in Pattern A demo)
+
+    data_retention_days: 1
+
+    teams:
+      - name: SALES
+        # In a real org you'd list MARKETING, FINANCE, etc. here too;
+        # the team_databases.sql + team_dcm_scaffolding.sql files loop over this.
+
+  configurations:
+    DEV:
+      env_code: "DEV"
+      deploy_account_user_roles: true   # account roles deploy in DEV target only (single SF account)
+
+    STG:
+      env_code: "STG"
+      deploy_account_user_roles: false
+      data_retention_days: 3
+
+    PRD:
+      env_code: "PRD"
+      deploy_account_user_roles: false
+      data_retention_days: 7

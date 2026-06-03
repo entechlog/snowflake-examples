@@ -26,8 +26,9 @@ DCM is recommended by Snowflake for net-new infrastructure.
 Two DCM projects per team - **platform** (foundation) + **team** (data) - each with its own deployer role. Platform owns the perimeter (DBs, roles, warehouses), team owns what's inside (schemas, tables, views).
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph PLATFORM["PLATFORM LAYER &nbsp;|&nbsp; deployer: SVC_PLATFORM_SNOW_DCM_ROLE"]
+        direction TB
         PP["DCM_REGISTRY.PROJECTS.&#123;ENV&#125;_PLATFORM_PROJECT"]
         PP --> DBS["3 databases per team<br/>(RAW / PREP / DW shells)"]
         PP --> AR["6 Access Roles per env<br/>(RO + RW per DB)<br/><i>hold FUTURE grants</i>"]
@@ -38,6 +39,7 @@ flowchart TB
     end
 
     subgraph TEAM["TEAM LAYER (per team) &nbsp;|&nbsp; deployer: SVC_&lt;TEAM&gt;_SNOW_DCM_ROLE"]
+        direction TB
         TP["&#123;ENV&#125;_SALES_DW_DB.DCM.&#123;ENV&#125;_SALES_PROJECT"]
         TP --> SCHEMAS["Schemas inside the 3 DBs<br/>(RAW: SEED/YELLOW_TAXI/KAFKA/UTIL<br/>PREP: STAGING/INTERIM/UTIL<br/>DW: DIM/FACT/OBT/SEMANTIC/COMPLIANCE/UTIL)"]
         TP --> TVS["Tables, views, dynamic tables"]

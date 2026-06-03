@@ -28,32 +28,32 @@ Two DCM projects per team - **platform** (foundation) + **team** (data) - each w
 ```mermaid
 flowchart TB
     subgraph PLATFORM["PLATFORM LAYER &nbsp;|&nbsp; deployer: SVC_PLATFORM_SNOW_DCM_ROLE"]
-        direction LR
-        PP["DCM_REGISTRY.PROJECTS.&#123;ENV&#125;_PLATFORM_PROJECT"]
-        PP --> DBS["3 databases per team<br/>(RAW / PREP / DW shells)"]
-        PP --> AR["6 Access Roles per env<br/>(RO + RW per DB)<br/><i>hold FUTURE grants</i>"]
-        PP --> FR["4 Functional Roles per team<br/>(DE / DA / CORTEX / PIPE_ADMIN)<br/><i>no env, granted to humans</i>"]
-        PP --> SVCFR["3 Service-FRs per env<br/>(DBT / KAFKA / SUPERSET)<br/><i>granted to service users</i>"]
-        PP --> WHS["3 warehouses per env<br/>+ 1 shared query WH"]
-        PP --> SCAFF["Team DCM deployer role<br/>+ DCM state schema<br/>+ AR-to-FR/SVC_FR grants<br/>+ OWNERSHIP transfers"]
+        direction TB
+        PP["DEV_PLATFORM_PROJECT"]
+        PP --> DBS["3 DBs<br/>RAW / PREP / DW"]
+        PP --> AR["6 Access Roles<br/>RO + RW per DB<br/><i>FUTURE grants</i>"]
+        PP --> FR["4 Functional Roles<br/>DE / DA / CORTEX<br/>PIPE_ADMIN"]
+        PP --> SVCFR["3 Service-FRs<br/>DBT / KAFKA<br/>SUPERSET"]
+        PP --> WHS["3 WHs per env<br/>+ 1 shared query"]
+        PP --> SCAFF["DCM scaffolding<br/>+ team role<br/>+ ownership"]
     end
 
     subgraph TEAM["TEAM LAYER (per team) &nbsp;|&nbsp; deployer: SVC_&lt;TEAM&gt;_SNOW_DCM_ROLE"]
-        direction LR
-        TP["&#123;ENV&#125;_SALES_DW_DB.DCM.&#123;ENV&#125;_SALES_PROJECT"]
-        TP --> SCHEMAS["Schemas inside the 3 DBs<br/>(RAW: SEED/YELLOW_TAXI/KAFKA/UTIL<br/>PREP: STAGING/INTERIM/UTIL<br/>DW: DIM/FACT/OBT/SEMANTIC/COMPLIANCE/UTIL)"]
-        TP --> TVS["Tables, views, dynamic tables"]
-        TP -.->|"NO grants - FUTURE grants on ARs auto-cover everything"| NOGRANT[" "]
+        direction TB
+        TP["DEV_SALES_PROJECT"]
+        TP --> SCHEMAS["13 Schemas<br/>across 3 DBs"]
+        TP --> TVS["Tables, views,<br/>dynamic tables"]
+        TP --> NOGRANT["NO grants<br/><i>FUTURE on ARs<br/>auto-covers all</i>"]
     end
 
     PLATFORM ==>|"hands off DBs + DCM project<br/>via OWNERSHIP transfers"| TEAM
 
     classDef platform fill:#dae8fc,stroke:#6c8ebf,color:#000
     classDef team fill:#d5e8d4,stroke:#82b366,color:#000
-    classDef hidden fill:none,stroke:none
+    classDef note fill:#fff4d6,stroke:#d6b656,color:#000
     class PP,DBS,AR,FR,SVCFR,WHS,SCAFF platform
     class TP,SCHEMAS,TVS team
-    class NOGRANT hidden
+    class NOGRANT note
 ```
 
 The role chain in action - analyst reads a table via FR → AR → FUTURE grant, with zero direct grants on the object:

@@ -8,19 +8,19 @@ default_target: DCM_PLATFORM_DEV
 # -----------------------------------------------------------------------------
 targets:
   DCM_PLATFORM_DEV:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       DCM_REGISTRY.PROJECTS.DEV_PLATFORM_PROJECT
     project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
     templating_config:  DEV
 
   DCM_PLATFORM_STG:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       DCM_REGISTRY.PROJECTS.STG_PLATFORM_PROJECT
     project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
     templating_config:  STG
 
   DCM_PLATFORM_PRD:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       DCM_REGISTRY.PROJECTS.PRD_PLATFORM_PROJECT
     project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
     templating_config:  PRD

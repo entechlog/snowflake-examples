@@ -17,7 +17,7 @@
 
 # ----------------- PLATFORM LAYER -----------------
 [connections.dcm-platform-dev]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_PLATFORM_SNOW_DCM_USER"
 role = "SVC_PLATFORM_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"
@@ -25,7 +25,7 @@ authenticator = "SNOWFLAKE_JWT"
 private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
 
 [connections.dcm-platform-stg]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_PLATFORM_SNOW_DCM_USER"
 role = "SVC_PLATFORM_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"
@@ -33,7 +33,7 @@ authenticator = "SNOWFLAKE_JWT"
 private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
 
 [connections.dcm-platform-prd]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_PLATFORM_SNOW_DCM_USER"
 role = "SVC_PLATFORM_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"
@@ -42,7 +42,7 @@ private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
 
 # ----------------- SALES TEAM LAYER -----------------
 [connections.dcm-sales-dev]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_SALES_SNOW_DCM_USER"
 role = "SVC_SALES_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"
@@ -50,7 +50,7 @@ authenticator = "SNOWFLAKE_JWT"
 private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_sales_dcm.p8"
 
 [connections.dcm-sales-stg]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_SALES_SNOW_DCM_USER"
 role = "SVC_SALES_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"
@@ -58,7 +58,7 @@ authenticator = "SNOWFLAKE_JWT"
 private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_sales_dcm.p8"
 
 [connections.dcm-sales-prd]
-account = "MBHCOYN-OGA75238"
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
 user = "SVC_SALES_SNOW_DCM_USER"
 role = "SVC_SALES_SNOW_DCM_ROLE"
 warehouse = "SVC_PLATFORM_SNOW_DCM_WH_XS"

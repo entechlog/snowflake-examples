@@ -13,19 +13,19 @@ default_target: DCM_SALES_DEV
 # -----------------------------------------------------------------------------
 targets:
   DCM_SALES_DEV:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       DEV_SALES_DW_DB.DCM.DEV_SALES_PROJECT
     project_owner:      SVC_SALES_SNOW_DCM_ROLE
     templating_config:  DEV
 
   DCM_SALES_STG:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       STG_SALES_DW_DB.DCM.STG_SALES_PROJECT
     project_owner:      SVC_SALES_SNOW_DCM_ROLE
     templating_config:  STG
 
   DCM_SALES_PRD:
-    account_identifier: MBHCOYN-OGA75238
+    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
     project_name:       PRD_SALES_DW_DB.DCM.PRD_SALES_PROJECT
     project_owner:      SVC_SALES_SNOW_DCM_ROLE
     templating_config:  PRD

@@ -35,4 +35,4 @@ snow dcm deploy \
 
 echo ""
 echo "==> Deployment recorded. Review history:"
-echo "    snow dcm list-deployments DCM_REGISTRY.PROJECTS.${TARGET#DCM_}_SALES_PROJECT --connection ${CONN}"
+echo "    snow dcm list-deployments ${TARGET#DCM_}_SALES_PREP_DB.DCM.INFRA --connection ${CONN}"

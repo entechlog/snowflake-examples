@@ -16,9 +16,10 @@ SET ENV_CODE  = 'DEV';        -- DEV, STG, PRD — pick to match deploy target
 SET TEAM_NAME = 'SALES';
 
 SET RAW_DB        = $ENV_CODE || '_' || $TEAM_NAME || '_RAW_DB';
+SET PREP_DB       = $ENV_CODE || '_' || $TEAM_NAME || '_PREP_DB';
 SET DW_DB         = $ENV_CODE || '_' || $TEAM_NAME || '_DW_DB';
--- Hybrid pattern: team project lives inside team's DW DB
-SET PROJECT_FQN   = $DW_DB || '.DCM.' || $ENV_CODE || '_' || $TEAM_NAME || '_PROJECT';
+-- Hybrid pattern: team project lives inside team's PREP DB (safer than DW)
+SET PROJECT_FQN   = $PREP_DB || '.DCM.INFRA';
 SET CUSTOMERS_FQN = $RAW_DB || '.SEED.CUSTOMERS';
 SET ORDERS_FQN    = $RAW_DB || '.SEED.ORDERS';
 SET OBT_FQN       = $DW_DB  || '.OBT.CUSTOMER_ORDERS';

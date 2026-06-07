@@ -1,7 +1,7 @@
 {# =============================================================================
-   Platform-layer name builders — AR / FR / SVC_FR pattern
+   Platform-layer name builders - AR / FR / SVC_FR pattern
    -----------------------------------------------------------------------------
-   DCM disallows {% import %}. Macros under sources/macros/ are auto-global —
+   DCM disallows {% import %}. Macros under sources/macros/ are auto-global -
    call by bare name.
 
    Naming conventions (env-first prefix kept per repo standard):

@@ -1,15 +1,20 @@
 -- =============================================================================
 -- Per-team DCM scaffolding
 -- =============================================================================
--- Creates the team's DCM deployer role, the DCM state schema inside their DW
--- database, ownership transfers, and the user→role attachment.
+-- Creates the team's DCM deployer role, the DCM state schema inside their PREP
+-- database, ownership transfers, and the user-to-role attachment.
 --
--- The team's DCM PROJECT object itself is created out-of-band — DCM doesn't
+-- DCM state schema lives in PREP_DB (the regenerable intermediate layer), NOT
+-- in DW_DB. DW is the user-facing consumption layer; an accidental DCM purge
+-- or ownership issue there would put end-user data at risk. PREP can be
+-- rebuilt from RAW, so it's the safer home for the DCM PROJECT object.
+--
+-- The team's DCM PROJECT object itself is created out-of-band - DCM doesn't
 -- support declaring a DCM PROJECT inside another DCM project. See the README
 -- "Create team DCM project" step for the one-time snow CLI command.
 --
 -- With the AR/FR/SVC_FR pattern in place, the team DCM role no longer needs
--- MANAGE GRANTS on account — all bulk/future grants live on the platform-owned
+-- MANAGE GRANTS on account - all bulk/future grants live on the platform-owned
 -- ARs, never on the team role.
 -- =============================================================================
 
@@ -24,18 +29,19 @@ GRANT ROLE {{ team_dcm_role(team.name) }} TO ROLE SVC_PLATFORM_SNOW_DCM_ROLE;
 GRANT ROLE {{ team_dcm_role(team.name) }} TO ROLE SYSADMIN;
 {% endif %}
 
--- 2. DCM state schema inside the team's DW DB
-DEFINE SCHEMA {{ db_name(team.name, 'DW') }}.DCM
-    COMMENT = '{{ team.name }} DCM state (holds the team DCM PROJECT object)';
-
--- 3. OWNERSHIP transfers — DBs + DCM schema → team's DCM role
+-- 2. OWNERSHIP transfers — 3 DBs → team's DCM role
+--    Team creates the DCM schema + DCM PROJECT out-of-band (see README
+--    "Create team DCM project" step). Done out-of-band because:
+--    (a) DCM can't declare a DCM PROJECT inside another DCM project, and
+--    (b) the DCM schema, if platform-created, would conflict with PREP's
+--        RW_AR FUTURE grants on schema ownership transfer.
+--    Team owns PREP DB after transfer, so team can create the DCM schema
+--    inside it cleanly (no FUTURE-grant conflict on a team-owned schema).
 GRANT OWNERSHIP ON DATABASE {{ db_name(team.name, 'RAW') }}
     TO ROLE {{ team_dcm_role(team.name) }};
 GRANT OWNERSHIP ON DATABASE {{ db_name(team.name, 'PREP') }}
     TO ROLE {{ team_dcm_role(team.name) }};
 GRANT OWNERSHIP ON DATABASE {{ db_name(team.name, 'DW') }}
-    TO ROLE {{ team_dcm_role(team.name) }};
-GRANT OWNERSHIP ON SCHEMA {{ db_name(team.name, 'DW') }}.DCM
     TO ROLE {{ team_dcm_role(team.name) }};
 
 -- 4. Platform-warehouse USAGE for the team's plan/deploy ops

@@ -2,8 +2,11 @@
 -- DW schemas — modeled / consumption layer
 -- =============================================================================
 -- Database is platform-owned. Team creates these schemas.
--- NOTE: the DCM schema (DW_DB.DCM) is created by PLATFORM, not by this team
--- project — it's where this project's own state lives.
+-- NOTE: the DCM state schema (PREP_DB.DCM) is created by the team out-of-band
+-- alongside the DCM PROJECT object - see README "Create team DCM project" step.
+-- It's deliberately not declared here because DCM can't define the schema
+-- that contains its own project, and the platform layer doesn't create it
+-- either (FUTURE-grant conflict on ownership transfer).
 -- =============================================================================
 
 {% set dw_db = db_name('DW') %}

@@ -40,7 +40,7 @@ flowchart TB
 
     subgraph TEAM["TEAM LAYER (per team) &nbsp;|&nbsp; deployer: SVC_&lt;TEAM&gt;_SNOW_DCM_ROLE"]
         direction TB
-        TP["DEV_SALES_PROJECT"]
+        TP["INFRA (in PREP.DCM)"]
         TP --> SCHEMAS["13 Schemas<br/>across 3 DBs"]
         TP --> TVS["Tables, views,<br/>dynamic tables"]
         TP --> NOGRANT["NO grants<br/><i>FUTURE on ARs<br/>auto-covers all</i>"]
@@ -139,7 +139,7 @@ Env-first prefix preserved per repo standard (groups all DEV things together for
 | Team DCM deployer role | `SVC_{PROJ}_SNOW_DCM_ROLE` | `SVC_SALES_SNOW_DCM_ROLE` |
 | Team DCM deployer user | `SVC_{PROJ}_SNOW_DCM_USER` | `SVC_SALES_SNOW_DCM_USER` |
 | DCM project (platform) | `DCM_REGISTRY.PROJECTS.{ENV}_PLATFORM_PROJECT` | `DCM_REGISTRY.PROJECTS.DEV_PLATFORM_PROJECT` |
-| DCM project (team) | `{ENV}_{PROJ}_DW_DB.DCM.{ENV}_{PROJ}_PROJECT` | `DEV_SALES_DW_DB.DCM.DEV_SALES_PROJECT` |
+| DCM project (team) | `{ENV}_{PROJ}_PREP_DB.DCM.INFRA` | `DEV_SALES_PREP_DB.DCM.INFRA` |
 
 ## Role architecture (AR / FR / SVC_FR)
 
@@ -267,7 +267,9 @@ docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake
     snow sql --connection dcm-sales-dev -q "
     USE ROLE SVC_SALES_SNOW_DCM_ROLE;
     USE WAREHOUSE SVC_PLATFORM_SNOW_DCM_WH_XS;
-    CREATE DCM PROJECT IF NOT EXISTS DEV_SALES_DW_DB.DCM.DEV_SALES_PROJECT
+    CREATE SCHEMA IF NOT EXISTS DEV_SALES_PREP_DB.DCM
+        COMMENT = '\''SALES DCM state'\'';
+    CREATE DCM PROJECT IF NOT EXISTS DEV_SALES_PREP_DB.DCM.INFRA
         COMMENT = '\''SALES team DCM project (DEV)'\'';
     "'
 ```
@@ -309,7 +311,7 @@ This is the test of whether the pattern actually scales. To onboard `MARKETING`:
 3. **Generate the team RSA key**: `SF_USER=SVC_MARKETING_SNOW_DCM_USER KEY_NAME=svc_marketing_dcm ./teams/sales/bootstrap/00_generate_rsa_key.sh` (or copy that script under `teams/marketing/bootstrap/`)
 4. **Register the public key** in Snowsight (ACCOUNTADMIN)
 5. **Platform deploy** - creates MARKETING DBs, ARs, FRs, SVC_FRs, warehouses, DCM scaffolding
-6. **Create MARKETING DCM project** out-of-band (`CREATE DCM PROJECT DEV_MARKETING_DW_DB.DCM.DEV_MARKETING_PROJECT`)
+6. **Create MARKETING DCM schema + project** out-of-band as the team role: `CREATE SCHEMA DEV_MARKETING_PREP_DB.DCM; CREATE DCM PROJECT DEV_MARKETING_PREP_DB.DCM.INFRA;`
 7. **Copy** `teams/sales/` → `teams/marketing/`, swap `team_name: MARKETING` in manifest, push
 8. **Team deploy** - creates schemas, tables, etc. inside the MARKETING DBs
 

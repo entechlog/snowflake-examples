@@ -78,3 +78,8 @@ out/
 output/
 **/output/
 config.toml
+
+# Synced macros — canonical copy is snow-infra/dcm/shared/macros/.
+# Local + CI run scripts/sync_macros.sh to populate these before plan/deploy.
+snow-infra/dcm/platform/dcm/sources/macros/*.sql
+snow-infra/dcm/teams/*/dcm/sources/macros/*.sql

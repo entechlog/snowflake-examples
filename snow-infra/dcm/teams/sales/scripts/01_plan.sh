@@ -20,7 +20,10 @@ TARGET="${1:-DCM_DEV}"
 CONN="${SNOWFLAKE_CONNECTION:-dcm-${TARGET#DCM_}}"
 CONN="${CONN,,}"   # lowercase: dcm-dev / dcm-stg / dcm-prd
 
-cd "$(dirname "$0")/../dcm"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+"$SCRIPT_DIR/../../../scripts/sync_macros.sh"
+
+cd "$SCRIPT_DIR/../dcm"
 
 echo "==> Planning target: ${TARGET} (connection: ${CONN})"
 snow dcm plan \

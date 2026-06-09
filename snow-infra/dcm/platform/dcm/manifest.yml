@@ -8,21 +8,21 @@ default_target: DCM_PLATFORM_DEV
 # -----------------------------------------------------------------------------
 targets:
   DCM_PLATFORM_DEV:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       DCM_REGISTRY.PROJECTS.DEV_PLATFORM_PROJECT
-    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       DEV_PLATFORM_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  DEV
 
   DCM_PLATFORM_STG:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       DCM_REGISTRY.PROJECTS.STG_PLATFORM_PROJECT
-    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       STG_PLATFORM_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  STG
 
   DCM_PLATFORM_PRD:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       DCM_REGISTRY.PROJECTS.PRD_PLATFORM_PROJECT
-    project_owner:      SVC_PLATFORM_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       PRD_PLATFORM_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  PRD
 
 # -----------------------------------------------------------------------------

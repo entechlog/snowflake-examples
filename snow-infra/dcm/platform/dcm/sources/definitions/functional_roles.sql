@@ -18,16 +18,9 @@ DEFINE ROLE {{ fr_name(team.name, 'DE') }}
     COMMENT = '{{ team.name }} — Data Engineers (write in DEV, read elsewhere)';
 DEFINE ROLE {{ fr_name(team.name, 'DA') }}
     COMMENT = '{{ team.name }} — Data Analysts (read on DW)';
-DEFINE ROLE {{ fr_name(team.name, 'CORTEX') }}
-    COMMENT = '{{ team.name }} — Cortex Analyst consumers (read on RAW + DW)';
-DEFINE ROLE {{ fr_name(team.name, 'PIPE_ADMIN') }}
-    COMMENT = '{{ team.name }} — Snowpipe administrators (write on RAW)';
 
--- Roll up under SYSADMIN — required so SYSADMIN can manage objects these FRs touch
-GRANT ROLE {{ fr_name(team.name, 'DE') }}         TO ROLE SYSADMIN;
-GRANT ROLE {{ fr_name(team.name, 'DA') }}         TO ROLE SYSADMIN;
-GRANT ROLE {{ fr_name(team.name, 'CORTEX') }}     TO ROLE SYSADMIN;
-GRANT ROLE {{ fr_name(team.name, 'PIPE_ADMIN') }} TO ROLE SYSADMIN;
+GRANT ROLE {{ fr_name(team.name, 'DE') }} TO ROLE SYSADMIN;
+GRANT ROLE {{ fr_name(team.name, 'DA') }} TO ROLE SYSADMIN;
 {% endif %}
 
 -- ─── Grant env-scoped ARs to the FRs (runs in every env target) ──────────────
@@ -45,12 +38,5 @@ GRANT ROLE {{ ar_name(team.name, 'DW',   'RO') }} TO ROLE {{ fr_name(team.name, 
 
 {# DA: read-only on DW only #}
 GRANT ROLE {{ ar_name(team.name, 'DW', 'RO') }} TO ROLE {{ fr_name(team.name, 'DA') }};
-
-{# CORTEX: read on RAW (SEED context) and DW (OBT + SEMANTIC) #}
-GRANT ROLE {{ ar_name(team.name, 'RAW', 'RO') }} TO ROLE {{ fr_name(team.name, 'CORTEX') }};
-GRANT ROLE {{ ar_name(team.name, 'DW',  'RO') }} TO ROLE {{ fr_name(team.name, 'CORTEX') }};
-
-{# PIPE_ADMIN: write on RAW (stages, pipes, streams) #}
-GRANT ROLE {{ ar_name(team.name, 'RAW', 'RW') }} TO ROLE {{ fr_name(team.name, 'PIPE_ADMIN') }};
 
 {% endfor %}

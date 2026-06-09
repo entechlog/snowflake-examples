@@ -22,4 +22,8 @@ DEFINE DATABASE {{ db_name(team.name, 'DW') }}
     DATA_RETENTION_TIME_IN_DAYS = {{ data_retention_days }}
     COMMENT = '{{ team.name }} — consumption/DW layer ({{ env_code }})';
 
+DEFINE DATABASE {{ db_name(team.name, 'DCM') }}
+    DATA_RETENTION_TIME_IN_DAYS = {{ data_retention_days }}
+    COMMENT = '{{ team.name }} — DCM state ({{ env_code }})';
+
 {% endfor %}

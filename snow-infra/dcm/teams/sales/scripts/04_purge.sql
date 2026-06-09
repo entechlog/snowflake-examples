@@ -11,11 +11,10 @@
 SET ENV_CODE  = 'DEV';        -- DEV, STG, PRD — run once per env to clean up
 SET TEAM_NAME = 'SALES';
 
--- Team DCM project lives in PREP_DB.DCM.INFRA (hybrid pattern, INT-layer home)
-SET PROJECT_FQN = $ENV_CODE || '_' || $TEAM_NAME || '_PREP_DB.DCM.INFRA';
+SET PROJECT_FQN = $ENV_CODE || '_' || $TEAM_NAME || '_DCM_DB.PROJECTS.INFRA';
 
-USE ROLE SVC_SALES_SNOW_DCM_ROLE;
-USE WAREHOUSE SVC_PLATFORM_SNOW_DCM_WH_XS;
+USE ROLE SVC_SALES_DCM_ROLE;
+USE WAREHOUSE SVC_PLATFORM_DCM_WH_XS;
 
 -- Drops every object DCM is tracking (DBs, schemas, tables, views, roles, WHs)
 EXECUTE DCM PROJECT IDENTIFIER($PROJECT_FQN) PURGE;

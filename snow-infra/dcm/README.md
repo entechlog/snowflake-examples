@@ -1,25 +1,8 @@
 # Snowflake DCM Projects - Reference Demo
 
-End-to-end Database Change Management example for Snowflake using **DCM Projects** (public preview), structured as the **hybrid platform + team pattern** with a full **AR / FR / SVC_FR** role layering. Manages databases, schemas, tables, views, dynamic tables, warehouses, roles, and grants declaratively from a single source of truth - the same scope as the sibling `../terraform/` setup, with multi-env support and CI/CD.
+End-to-end Database Change Management example for Snowflake using **DCM Projects**, structured as the **hybrid platform + team pattern** with a full **AR / FR / SVC_FR** role layering. Manages databases, schemas, tables, views, dynamic tables, warehouses, roles, and grants declaratively from a single source of truth.
 
-> **Status:** DCM Projects is in **public preview**. APIs and command syntax may shift before GA. Pin Snow CLI v3.16.0+.
-
-The demo uses `proj_code: SALES` so it coexists with the existing `ENTECHLOG`-prefixed TF setup in the same Snowflake account - no ownership transfer needed. Swap `team_name` in `platform/dcm/manifest.yml` `teams:` list (and add a matching `teams/<name>/` directory) to model your own domains.
-
-## Why DCM vs Terraform?
-
-| Aspect | Terraform (`../terraform/`) | DCM Projects (this dir) |
-|---|---|---|
-| Language | HCL + Snowflake provider | SQL with Jinja2 templating |
-| State | External tfstate file/backend | Tracked inside Snowflake (DCM project object) |
-| Drift detection | Yes (refresh) | Yes (`PLAN` compares live to desired) |
-| Object coverage | Whatever the provider supports | Native Snowflake - full coverage as DDL evolves |
-| Run-time | Local + CI (TF binary + provider) | Local + CI (Snow CLI) - no provider lag |
-| Plan output | `terraform plan` | `snow dcm plan` → `out/plan.json` |
-| Cleanup | `terraform destroy` | `EXECUTE DCM PROJECT … PURGE` |
-| Auditability | tfstate + git | DCM project history (SQL-queryable) + git |
-
-DCM is recommended by Snowflake for net-new infrastructure.
+Swap `team_name` in `platform/dcm/manifest.yml` `teams:` list (and add a matching `teams/<name>/` directory) to model your own domains.
 
 ## Architecture (hybrid pattern)
 
@@ -27,21 +10,21 @@ Two DCM projects per team - **platform** (foundation) + **team** (data) - each w
 
 ```mermaid
 flowchart TB
-    subgraph PLATFORM["PLATFORM LAYER &nbsp;|&nbsp; deployer: SVC_PLATFORM_SNOW_DCM_ROLE"]
+    subgraph PLATFORM["PLATFORM LAYER &nbsp;|&nbsp; deployer: SVC_PLATFORM_DCM_ROLE"]
         direction TB
-        PP["DEV_PLATFORM_PROJECT"]
-        PP --> DBS["3 DBs<br/>RAW / PREP / DW"]
+        PP["DEV_PLATFORM_DCM_DB.PROJECTS.INFRA"]
+        PP --> DBS["4 DBs<br/>RAW / PREP / DW / DCM"]
         PP --> AR["6 Access Roles<br/>RO + RW per DB<br/><i>FUTURE grants</i>"]
-        PP --> FR["4 Functional Roles<br/>DE / DA / CORTEX<br/>PIPE_ADMIN"]
-        PP --> SVCFR["3 Service-FRs<br/>DBT / KAFKA<br/>SUPERSET"]
+        PP --> FR["2 Functional Roles<br/>DE / DA"]
+        PP --> SVCFR["1 Service-FR<br/>DBT"]
         PP --> WHS["3 WHs per env<br/>+ 1 shared query"]
         PP --> SCAFF["DCM scaffolding<br/>+ team role<br/>+ ownership"]
     end
 
-    subgraph TEAM["TEAM LAYER (per team) &nbsp;|&nbsp; deployer: SVC_&lt;TEAM&gt;_SNOW_DCM_ROLE"]
+    subgraph TEAM["TEAM LAYER (per team) &nbsp;|&nbsp; deployer: SVC_&lt;TEAM&gt;_DCM_ROLE"]
         direction TB
-        TP["INFRA (in PREP.DCM)"]
-        TP --> SCHEMAS["13 Schemas<br/>across 3 DBs"]
+        TP["DEV_SALES_DCM_DB.PROJECTS.INFRA"]
+        TP --> SCHEMAS["6 Schemas<br/>across 3 data DBs"]
         TP --> TVS["Tables, views,<br/>dynamic tables"]
         TP --> NOGRANT["NO grants<br/><i>FUTURE on ARs<br/>auto-covers all</i>"]
     end
@@ -62,7 +45,7 @@ The role chain in action - analyst reads a table via FR → AR → FUTURE grant,
 flowchart LR
     USER["👤 analyst@example.com"] -->|"USE ROLE"| FR2["SALES_DA_FR<br/><i>functional role</i>"]
     FR2 --> AR2["DEV_SALES_DW_RO_AR<br/><i>access role</i>"]
-    AR2 -->|"USAGE on FUTURE SCHEMAS<br/>SELECT on FUTURE TABLES/VIEWS/DT"| TABLE["DEV_SALES_DW_DB.OBT.CUSTOMER_ORDERS<br/><i>dynamic table</i>"]
+    AR2 -->|"USAGE on FUTURE SCHEMAS<br/>SELECT on FUTURE TABLES/VIEWS/DT"| TABLE["DEV_SALES_DW_DB.OBT.CUSTOMER_SALES_ORDER<br/><i>dynamic table</i>"]
 
     classDef user fill:#fff2cc,stroke:#d6b656,color:#000
     classDef role fill:#dae8fc,stroke:#6c8ebf,color:#000
@@ -74,59 +57,9 @@ flowchart LR
     class TABLE obj
 ```
 
-## Layout
-
-```
-snow-infra/dcm/
-├── README.md
-├── config.toml.template                        # Snow CLI connections (platform + sales × 3 envs each)
-│
-├── platform/                                   # PLATFORM project
-│   ├── bootstrap/                              # one-time, ACCOUNTADMIN
-│   │   ├── 00_generate_platform_rsa_key.sh
-│   │   ├── 01_create_platform_service_role.sql
-│   │   ├── 02_create_platform_project_objects.sql
-│   │   └── 99_teardown.sql
-│   ├── dcm/
-│   │   ├── manifest.yml                        # PLATFORM_DEV/STG/PRD targets, teams list
-│   │   └── sources/
-│   │       ├── macros/env_helpers.sql          # builders: db_name, ar_name, fr_name, svc_fr_name
-│   │       └── definitions/
-│   │           ├── access_roles.sql            # RO + RW AR per team-DB with FUTURE grants
-│   │           ├── functional_roles.sql        # SALES_DE/DA/CORTEX/PIPE_ADMIN _FR + AR grants
-│   │           ├── service_functional_roles.sql # {ENV}_SALES_DBT/KAFKA/SUPERSET_SVC_FR + AR grants
-│   │           ├── team_databases.sql          # {ENV}_SALES_RAW/PREP/DW_DB (shells)
-│   │           ├── team_warehouses.sql         # team WHs + USAGE to FR/SVC_FR + OWNERSHIP transfers
-│   │           └── team_dcm_scaffolding.sql    # team DCM role + DCM state schema + ownership transfers
-│   └── scripts/
-│       ├── 01_plan.sh
-│       ├── 02_deploy.sh
-│       └── 04_purge.sql
-│
-└── teams/
-    └── sales/                                  # SALES team project
-        ├── bootstrap/00_generate_rsa_key.sh    # one-time team key
-        ├── dcm/
-        │   ├── manifest.yml                    # SALES_DEV/STG/PRD targets
-        │   ├── sources/
-        │   │   ├── macros/env_helpers.sql      # team-local: db_name, wh_name
-        │   │   └── definitions/                # OBJECTS ONLY - no grants
-        │   │       ├── raw_schemas.sql
-        │   │       ├── prep_schemas.sql
-        │   │       ├── dw_schemas.sql
-        │   │       ├── raw_tables.sql
-        │   │       ├── prep_views.sql
-        │   │       └── dw_objects.sql
-        │   └── post_scripts/01_seed_data.sql   # auto-run by official dcm-deploy action
-        └── scripts/
-            ├── 01_plan.sh
-            ├── 02_deploy.sh
-            └── 04_purge.sql
-```
-
 ## Naming conventions
 
-Env-first prefix preserved per repo standard (groups all DEV things together for Snowsight browsing). See `platform/dcm/sources/macros/env_helpers.sql` for the canonical builders.
+Env-first prefix preserved per repo standard (groups all DEV things together for Snowsight browsing). See `shared/macros/env_helpers.sql` for the canonical builders.
 
 | Object | Pattern | Example |
 |---|---|---|
@@ -136,10 +69,10 @@ Env-first prefix preserved per repo standard (groups all DEV things together for
 | **Access Role** (per DB, env-scoped) | `{ENV}_{PROJ}_{LAYER}_{ACCESS}_AR` | `DEV_SALES_RAW_RO_AR`, `DEV_SALES_DW_RW_AR` |
 | **Functional Role** (no env, per job) | `{PROJ}_{ROLE}_FR` | `SALES_DE_FR`, `SALES_DA_FR` |
 | **Service-FR** (per env, per tool) | `{ENV}_{PROJ}_{TOOL}_SVC_FR` | `DEV_SALES_DBT_SVC_FR` |
-| Team DCM deployer role | `SVC_{PROJ}_SNOW_DCM_ROLE` | `SVC_SALES_SNOW_DCM_ROLE` |
-| Team DCM deployer user | `SVC_{PROJ}_SNOW_DCM_USER` | `SVC_SALES_SNOW_DCM_USER` |
-| DCM project (platform) | `DCM_REGISTRY.PROJECTS.{ENV}_PLATFORM_PROJECT` | `DCM_REGISTRY.PROJECTS.DEV_PLATFORM_PROJECT` |
-| DCM project (team) | `{ENV}_{PROJ}_PREP_DB.DCM.INFRA` | `DEV_SALES_PREP_DB.DCM.INFRA` |
+| Team DCM deployer role | `SVC_{PROJ}_DCM_ROLE` | `SVC_SALES_DCM_ROLE` |
+| Team DCM deployer user | `SVC_{PROJ}_DCM_USER` | `SVC_SALES_DCM_USER` |
+| DCM project (platform) | `{ENV}_PLATFORM_DCM_DB.PROJECTS.INFRA` | `DEV_PLATFORM_DCM_DB.PROJECTS.INFRA` |
+| DCM project (team) | `{ENV}_{PROJ}_DCM_DB.PROJECTS.INFRA` | `DEV_SALES_DCM_DB.PROJECTS.INFRA` |
 
 ## Role architecture (AR / FR / SVC_FR)
 
@@ -152,166 +85,185 @@ The role layer separates *what privileges exist* (AR) from *who's the user* (FR 
 
 **Why FUTURE grants work without team-level MANAGE GRANTS:** the platform role (which legitimately has `MANAGE GRANTS`) creates the ARs and issues `GRANT … ON FUTURE TABLES IN DATABASE` while it still owns the DB. Ownership then transfers to the team. FUTURE grants survive ownership transfer, so any table the team creates afterwards inherits the AR's privileges automatically. The team role never touches grants - it just runs DDL.
 
-## DBT layer chain
+## Data layer chain
 
 ```
-RAW_DB                  PREP_DB                  DW_DB
-├── SEED        ───►    ├── STAGING     ───►    ├── DIM
-├── YELLOW_TAXI         ├── INTERIM             ├── FACT
-├── KAFKA               └── UTIL                ├── OBT       ◄── dynamic table
-└── UTIL                                        ├── SEMANTIC  ◄── Cortex Analyst
-                                                ├── COMPLIANCE
-                                                ├── UTIL
-                                                └── DCM       ◄── team DCM PROJECT object
+RAW_DB           PREP_DB           DW_DB                    DCM_DB
+└── SEED   ───►  ├── DIM    ───►   ├── DIM                  └── PROJECTS
+                 └── FACT          ├── FACT                      └── INFRA  ◄── DCM PROJECT
+                                   └── OBT ◄── dynamic table
 ```
+
+PREP mirrors DW's `DIM` / `FACT` shape — PREP is the conformed staging form, DW is the consumer-facing final form. DCM_DB holds the DCM project object (state) and nothing else.
+
+## Macros — single source of truth via `shared/`
+
+DCM requires macros to live INSIDE each project's `sources/macros/` directory. With multiple projects (platform + per-team), keeping N copies in git would let them drift. So:
+
+- **Canonical copy** (only thing tracked in git): `snow-infra/dcm/shared/macros/env_helpers.sql`
+- **Per-project copies** (gitignored): `platform/dcm/sources/macros/` and `teams/<team>/dcm/sources/macros/` — populated at run time by `scripts/sync_macros.sh`
+
+The `.gitignore` excludes `snow-infra/dcm/platform/dcm/sources/macros/*.sql` and `snow-infra/dcm/teams/*/dcm/sources/macros/*.sql` so the sync output is never committed.
+
+**After clone — one-time sync:**
+```bash
+snow-infra/dcm/scripts/sync_macros.sh
+```
+
+**Workflow:**
+- Edit `shared/macros/env_helpers.sql` only
+- The local plan/deploy scripts (`platform/scripts/0[12]_*.sh`, `teams/<team>/scripts/0[12]_*.sh`) call `sync_macros.sh` automatically before every `snow dcm` invocation, so you can't forget
+- CI also runs it before every plan/deploy as a safety net (`.github/workflows/dcm-deploy.yml`)
+
+If you run `snow dcm` directly (not via the wrappers), run the sync first.
+
+The macros are parameterized (every name builder takes `team` as the first argument), so the single canonical file works for both platform (loops over teams) and team layers (passes its own `team_name` from manifest defaults).
+
+## Runtime env vars
+
+Both manifests reference `{{ env.SNOWFLAKE_ACCOUNT }}` and `{{ env.SNOWFLAKE_ROLE }}` in target fields. DCM substitutes these at plan/deploy time from the shell environment, so the manifests are committed without any account or role hardcoded.
+
+**Local dev:** values live in `snow-tools/.env` and are loaded into the container automatically by docker-compose:
+
+| Var | Purpose | Default |
+|---|---|---|
+| `SNOWFLAKE_HOME` | Snow CLI config dir (host-mounted, persistent) | e.g. `/C/Users/<you>/.snowflake` on Windows |
+| `SNOWFLAKE_ACCOUNT` | manifest `account_identifier` | your `ORG-ACCOUNT` |
+| `SNOWFLAKE_ROLE` | manifest `project_owner` | `SVC_PLATFORM_DCM_ROLE` |
+
+Edit `snow-tools/.env` once, then `docker-compose down && docker-compose up -d` to apply. Override `SNOWFLAKE_ROLE` inline (`export SNOWFLAKE_ROLE=SVC_SALES_DCM_ROLE`) when switching to team plan/deploy.
+
+**CI:** GitHub Actions sets the same vars from secrets per job (see `.github/workflows/dcm-deploy.yml`).
 
 ## Prerequisites
 
 - Snowflake account with **ACCOUNTADMIN access** (one-time bootstrap only)
-- The `snow-tools` container from this repo:
+- The `snow-tools` container from this repo with `.env` configured (see above):
   ```bash
-  cd ../../snow-tools && docker-compose up -d --build
-  ```
-- `SNOWFLAKE_HOME` env var pointing at a persistent path (under the `/C` mount in this user's setup):
-  ```bash
-  export SNOWFLAKE_HOME=/C/Users/<your-user>/.snowflake
+  cd ../../snow-tools
+  cp .env.template .env       # first time only — then edit the values
+  docker-compose up -d --build
   ```
 
 ## Getting started
 
-> All shell commands run inside `snow-tools`. Either `docker exec -it snow-tools bash` or wrap each with `docker exec snow-tools bash -lc '…'`.
+> All shell commands run inside the `snow-tools` container:
+> ```bash
+> docker exec -it snow-tools bash
+> cd <path-to-this-repo>/snow-infra/dcm     # one time per shell — all later commands are relative
+> ```
+> Replace `<path-to-this-repo>` with wherever you cloned the repo on the host (visible inside the container via the `/C` bind mount on Windows or the equivalent on macOS/Linux).
 
 ### Step 1 - Platform bootstrap (Snowsight, ACCOUNTADMIN)
 
 Paste `platform/bootstrap/01_create_platform_service_role.sql` into Snowsight as ACCOUNTADMIN. It creates:
-- `SVC_PLATFORM_SNOW_DCM_ROLE` with the full account-level privilege set (CREATE DB/WH/ROLE/USER + MANAGE GRANTS + DATA_QUALITY app roles)
-- `SVC_PLATFORM_SNOW_DCM_USER` (TYPE = SERVICE, key-pair only)
-- `SVC_PLATFORM_SNOW_DCM_WH_XS`
+- `SVC_PLATFORM_DCM_ROLE` with the full account-level privilege set (CREATE DB/WH/ROLE/USER + MANAGE GRANTS + DATA_QUALITY app roles)
+- `SVC_PLATFORM_DCM_USER` (TYPE = SERVICE, key-pair only)
+- `SVC_PLATFORM_DCM_WH_XS`
 - Prints your `ORG-ACCOUNT` identifier - save it
 
 ### Step 2 - Generate the platform RSA key (in snow-tools)
 
 ```bash
-docker exec -it snow-tools bash -lc \
-  'cd /C/.../snow-infra/dcm && \
-   KEY_DIR=/C/Users/<you>/.snowflake/keys ./platform/bootstrap/00_generate_platform_rsa_key.sh'
+./platform/bootstrap/00_generate_platform_rsa_key.sh
 ```
 
-Copy the printed `ALTER USER SVC_PLATFORM_SNOW_DCM_USER SET RSA_PUBLIC_KEY = '…'` into Snowsight and run.
+Keys land at `$SNOWFLAKE_HOME/keys/svc_platform_dcm.{p8,pub}` (host-mounted path from `.env`). Copy the printed `ALTER USER … SET RSA_PUBLIC_KEY = '…'` into Snowsight and run.
 
 ### Step 3 - Create the platform DCM project objects
 
-Either via Snowsight (paste `platform/bootstrap/02_create_platform_project_objects.sql`) or via snow CLI (after Step 5 config):
+Either paste `platform/bootstrap/02_create_platform_project_objects.sql` into Snowsight, or run it via snow CLI after Step 6:
 ```bash
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    snow sql --connection dcm-platform-dev -f /C/.../snow-infra/dcm/platform/bootstrap/02_create_platform_project_objects.sql'
+snow sql --connection dcm-platform-dev -f platform/bootstrap/02_create_platform_project_objects.sql
 ```
 
 ### Step 4 - Create the SALES team's DCM USER (one-time, ACCOUNTADMIN)
 
-This is the team's headless deployer. The role for it (`SVC_SALES_SNOW_DCM_ROLE`) is created BY the platform DCM project in Step 6 - but the USER must exist beforehand because its RSA key needs to be registered out-of-band.
+This is the team's headless deployer. The role for it (`SVC_SALES_DCM_ROLE`) is created BY the platform DCM project in Step 6 - but the USER must exist beforehand because its RSA key needs to be registered out-of-band.
 
 In Snowsight, as ACCOUNTADMIN:
 ```sql
 USE ROLE SECURITYADMIN;
-CREATE USER IF NOT EXISTS SVC_SALES_SNOW_DCM_USER
+CREATE USER IF NOT EXISTS SVC_SALES_DCM_USER
   TYPE              = SERVICE
-  DEFAULT_WAREHOUSE = SVC_PLATFORM_SNOW_DCM_WH_XS
+  DEFAULT_WAREHOUSE = SVC_PLATFORM_DCM_WH_XS
   COMMENT           = 'Service account for SALES team DCM plan/deploy';
 ```
 
 ### Step 5 - Generate the SALES team RSA key (in snow-tools)
 
 ```bash
-docker exec -it snow-tools bash -lc \
-  'cd /C/.../snow-infra/dcm && \
-   KEY_DIR=/C/Users/<you>/.snowflake/keys ./teams/sales/bootstrap/00_generate_rsa_key.sh'
+./teams/sales/bootstrap/00_generate_rsa_key.sh
 ```
 
-Paste the printed `ALTER USER SVC_SALES_SNOW_DCM_USER SET RSA_PUBLIC_KEY = '…'` into Snowsight and run.
+Paste the printed `ALTER USER SVC_SALES_DCM_USER SET RSA_PUBLIC_KEY = '…'` into Snowsight and run.
 
 ### Step 6 - Wire up Snow CLI
 
-Patch the `account_identifier` in BOTH manifest files (`platform/dcm/manifest.yml` and `teams/sales/dcm/manifest.yml`) with your real `ORG-ACCOUNT` value, then:
-
-```bash
-mkdir -p C:/Users/<you>/.snowflake
-cp snow-infra/dcm/config.toml.template C:/Users/<you>/.snowflake/config.toml
-# Edit the account value in all 6 connection blocks
-
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    snow connection test --connection dcm-platform-dev'
-# Status: OK
-```
+1. From the host, copy `config.toml.template` to `$SNOWFLAKE_HOME/config.toml` (the path you set in `snow-tools/.env`) and edit `account` in all 6 connection blocks to your `ORG-ACCOUNT`.
+2. Set the same `ORG-ACCOUNT` in `snow-tools/.env` as `SNOWFLAKE_ACCOUNT`, then from the host restart the container so the env vars load:
+   ```bash
+   cd snow-tools && docker-compose down && docker-compose up -d
+   ```
+3. Test (in the container shell):
+   ```bash
+   snow connection test --connection dcm-platform-dev
+   # Status: OK
+   ```
 
 ### Step 7 - Platform plan + deploy
 
 ```bash
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    cd /C/.../snow-infra/dcm/platform/dcm && \
-    snow dcm plan --target DCM_PLATFORM_DEV --connection dcm-platform-dev --save-output'
-# Review out/plan.json, then:
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    cd /C/.../snow-infra/dcm/platform/dcm && \
-    snow dcm deploy --target DCM_PLATFORM_DEV --connection dcm-platform-dev --alias "initial-platform"'
+./scripts/sync_macros.sh                              # one-time per shell after fresh clone
+./platform/scripts/01_plan.sh DEV                     # review out/plan.json
+./platform/scripts/02_deploy.sh DEV "initial-platform"
 ```
 
-After deploy: 3 DBs, 6 ARs, 4 FRs, 3 SVC_FRs, 4 WHs, the SALES DCM role + DCM schema, all ownership transfers, the SALES user attachment.
+After deploy: 4 DBs (RAW/PREP/DW/DCM), 6 ARs, 2 FRs, 1 SVC_FR, 2 WHs (DBT + ALL_QUERY), the SALES DCM role, all ownership transfers, the SALES user attachment.
 
 ### Step 8 - Create the SALES team DCM PROJECT object
 
-DCM can't declare a DCM PROJECT inside another DCM project, so we create the team project once out-of-band (as the SALES DCM role, which platform just created and attached to your user):
+DCM can't declare a DCM PROJECT inside another DCM project. Create the team project once out-of-band (snow-tools shell from Step 7):
 
 ```bash
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    snow sql --connection dcm-sales-dev -q "
-    USE ROLE SVC_SALES_SNOW_DCM_ROLE;
-    USE WAREHOUSE SVC_PLATFORM_SNOW_DCM_WH_XS;
-    CREATE SCHEMA IF NOT EXISTS DEV_SALES_PREP_DB.DCM
-        COMMENT = '\''SALES DCM state'\'';
-    CREATE DCM PROJECT IF NOT EXISTS DEV_SALES_PREP_DB.DCM.INFRA
-        COMMENT = '\''SALES team DCM project (DEV)'\'';
-    "'
+export SNOWFLAKE_ROLE=SVC_SALES_DCM_ROLE     # switch to team deployer
+snow sql --connection dcm-sales-dev -q "
+    USE ROLE SVC_SALES_DCM_ROLE;
+    USE WAREHOUSE SVC_PLATFORM_DCM_WH_XS;
+    CREATE SCHEMA IF NOT EXISTS DEV_SALES_DCM_DB.PROJECTS;
+    CREATE DCM PROJECT IF NOT EXISTS DEV_SALES_DCM_DB.PROJECTS.INFRA;
+"
 ```
 
 ### Step 9 - SALES team plan + deploy
 
 ```bash
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    cd /C/.../snow-infra/dcm/teams/sales/dcm && \
-    snow dcm plan --target DCM_SALES_DEV --connection dcm-sales-dev --save-output'
-
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    cd /C/.../snow-infra/dcm/teams/sales/dcm && \
-    snow dcm deploy --target DCM_SALES_DEV --connection dcm-sales-dev --alias "initial-team"'
+./teams/sales/scripts/01_plan.sh DCM_SALES_DEV         # review out/plan.json
+./teams/sales/scripts/02_deploy.sh DCM_SALES_DEV "initial-team"
 ```
 
-This creates 13 schemas + 4 tables + 2 views + 1 dynamic table. **No grants** - the platform's ARs (with their FUTURE grants) auto-cover everything.
+Deploy auto-runs `post_scripts/01_seed_data.sql` (TRUNCATE + INSERT seed rows + REFRESH dynamic tables).
 
-### Step 10 - Seed data + verify
+### Step 10 - Verify
 
-```bash
-docker exec snow-tools bash -lc 'export SNOWFLAKE_HOME=/C/Users/<you>/.snowflake && \
-    snow sql -f /C/.../snow-infra/dcm/teams/sales/dcm/post_scripts/01_seed_data.sql --connection dcm-sales-dev'
-```
-
-In Snowsight:
 ```sql
 USE ROLE SALES_DA_FR;
 USE WAREHOUSE ALL_SALES_QUERY_WH_XS;
-SELECT * FROM DEV_SALES_DW_DB.OBT.CUSTOMER_ORDERS;
+SELECT * FROM DEV_SALES_DW_DB.OBT.CUSTOMER_SALES_ORDER;
 ```
+
+Rows means the chain works: FR → AR (FUTURE) → object, no direct grants.
 
 ## Adding a new team
 
 This is the test of whether the pattern actually scales. To onboard `MARKETING`:
 
 1. **Platform manifest**: add `{ name: MARKETING }` to the `teams:` list in `platform/dcm/manifest.yml`
-2. **Create the team's DCM USER** in Snowsight (ACCOUNTADMIN): `CREATE USER SVC_MARKETING_SNOW_DCM_USER TYPE=SERVICE …`
-3. **Generate the team RSA key**: `SF_USER=SVC_MARKETING_SNOW_DCM_USER KEY_NAME=svc_marketing_dcm ./teams/sales/bootstrap/00_generate_rsa_key.sh` (or copy that script under `teams/marketing/bootstrap/`)
+2. **Create the team's DCM USER** in Snowsight (ACCOUNTADMIN): `CREATE USER SVC_MARKETING_DCM_USER TYPE=SERVICE …`
+3. **Generate the team RSA key**: `SF_USER=SVC_MARKETING_DCM_USER KEY_NAME=svc_marketing_dcm ./teams/sales/bootstrap/00_generate_rsa_key.sh` (or copy that script under `teams/marketing/bootstrap/`)
 4. **Register the public key** in Snowsight (ACCOUNTADMIN)
 5. **Platform deploy** - creates MARKETING DBs, ARs, FRs, SVC_FRs, warehouses, DCM scaffolding
-6. **Create MARKETING DCM schema + project** out-of-band as the team role: `CREATE SCHEMA DEV_MARKETING_PREP_DB.DCM; CREATE DCM PROJECT DEV_MARKETING_PREP_DB.DCM.INFRA;`
+6. **Create MARKETING DCM schema + project** out-of-band as the team role: `CREATE SCHEMA DEV_MARKETING_DCM_DB.PROJECTS; CREATE DCM PROJECT DEV_MARKETING_DCM_DB.PROJECTS.INFRA;`
 7. **Copy** `teams/sales/` → `teams/marketing/`, swap `team_name: MARKETING` in manifest, push
 8. **Team deploy** - creates schemas, tables, etc. inside the MARKETING DBs
 
@@ -332,18 +284,6 @@ DCM forbids `{% import %}` / `{% extends %}` / `{% include %}` - macros under `s
 ## How DCM handles existing objects
 
 DCM is fully declarative. First deploy → CREATEs. No code change → empty plan. Add a column → single ALTER. Manual drift → plan offers to reconcile.
-
-## Migrating from Terraform (OWNERSHIP transfer)
-
-This demo uses `proj_code: SALES` to coexist with the existing `ENTECHLOG` TF setup - no ownership transfer needed for the demo itself.
-
-When you eventually want DCM to take over an environment TF currently owns:
-1. Stand up DCM with a separate `proj_code` first (this demo) - proves the manifest + macros render and deploy cleanly
-2. For real cutover: freeze TF changes on the target env, transfer ownership of every object to the DCM service role using `GRANT OWNERSHIP … COPY CURRENT GRANTS` (preserves downstream grants), then `snow dcm plan` should be empty
-3. Record an empty deploy to baseline DCM as the new owner
-4. Remove the corresponding resources from `../terraform/` and `terraform state rm` (do not destroy)
-
-Rollback: reverse the OWNERSHIP grants back to the TF role. **Do not** `PURGE` migrated objects - DCM will drop them.
 
 ## CI/CD
 
@@ -369,17 +309,24 @@ Required GitHub secrets per environment: `SNOWFLAKE_PRIVATE_KEY`. Add separate s
 
 ## Cleanup
 
+Three options depending on what you want to keep.
+
+**1. DCM-aware purge** (preferred — keeps DCM PROJECT objects, deploy history intact):
 ```bash
-# Team layer first (drops schemas/tables/views inside team DBs)
 snow sql -f teams/sales/scripts/04_purge.sql --connection dcm-sales-dev
-
-# Then platform layer (drops DBs/roles/warehouses/scaffolding)
-snow sql -f platform/scripts/04_purge.sql --connection dcm-platform-dev
-
-# Finally, drop the platform DCM PROJECT objects + DCM_REGISTRY (Snowsight as ACCOUNTADMIN if needed)
+snow sql -f platform/scripts/04_purge.sql   --connection dcm-platform-dev
 ```
 
-For full teardown of the platform service identity itself, run `platform/bootstrap/99_teardown.sql` as ACCOUNTADMIN.
+**2. Fresh-test wipe** (drops *all* demo objects in Snowflake — DBs, roles, WHs — but keeps Phase 0 bootstrap intact: `SVC_PLATFORM_DCM_USER`, `SVC_SALES_DCM_USER`, `SVC_PLATFORM_DCM_WH_XS`, registered RSA keys). Run in Snowsight as `ACCOUNTADMIN`:
+```
+snow-infra/dcm/platform/bootstrap/98_cleanup_for_fresh_test.sql
+```
+After this, redo from **Step 3** of [Getting started](#getting-started) (DCM project objects need to be recreated; bootstrap identities + keys stay).
+
+**3. Full teardown** (also drops the platform service identity):
+```
+snow-infra/dcm/platform/bootstrap/99_teardown.sql
+```
 
 ## References
 
@@ -388,4 +335,3 @@ For full teardown of the platform service identity itself, run `platform/bootstr
 - [Snowflake-Labs/snowflake-dcm-projects](https://github.com/Snowflake-Labs/snowflake-dcm-projects) - canonical examples + GitHub Actions
 - [Snowflake RBAC best practices (select.dev)](https://select.dev/posts/snowflake-rbac-best-practices) - AR/FR/SR pattern source
 - [Snowflake object naming conventions (entechlog blog)](https://www.entechlog.com/blog/data/snowflake-object-naming-conventions/) - companion blog post
-- Sibling Terraform setup: [`../terraform/`](../terraform/)

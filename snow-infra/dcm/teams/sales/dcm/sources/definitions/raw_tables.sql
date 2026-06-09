@@ -1,13 +1,14 @@
 -- =============================================================================
 -- Demo RAW tables (source layer)
 -- =============================================================================
--- Two reference tables in RAW.SEED. CHANGE_TRACKING = TRUE so downstream
--- dynamic tables can incrementally refresh. Populated by scripts/03_post_deploy.sql.
+-- Two reference tables in RAW.SEED, singular names per repo standard.
+-- CHANGE_TRACKING = TRUE so downstream dynamic tables incrementally refresh.
+-- Populated by post_scripts/01_seed_data.sql.
 -- =============================================================================
 
-{% set raw_db = db_name('RAW') %}
+{% set raw_db = db_name(team_name, 'RAW') %}
 
-DEFINE TABLE {{ raw_db }}.SEED.CUSTOMERS (
+DEFINE TABLE {{ raw_db }}.SEED.CUSTOMER (
     customer_id     NUMBER,
     customer_name   VARCHAR,
     email           VARCHAR,
@@ -18,8 +19,8 @@ DEFINE TABLE {{ raw_db }}.SEED.CUSTOMERS (
 CHANGE_TRACKING = TRUE
 COMMENT = 'Customer reference data (seeded)';
 
-DEFINE TABLE {{ raw_db }}.SEED.ORDERS (
-    order_id        NUMBER,
+DEFINE TABLE {{ raw_db }}.SEED.SALES_ORDER (
+    sales_order_id  NUMBER,
     customer_id     NUMBER,
     order_date      DATE,
     item_count      NUMBER,
@@ -27,4 +28,4 @@ DEFINE TABLE {{ raw_db }}.SEED.ORDERS (
     status          VARCHAR
 )
 CHANGE_TRACKING = TRUE
-COMMENT = 'Order events (seeded)';
+COMMENT = 'Order events (seeded). Avoids reserved word ORDER.';

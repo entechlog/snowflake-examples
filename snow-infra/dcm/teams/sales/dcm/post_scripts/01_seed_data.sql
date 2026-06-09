@@ -6,37 +6,36 @@
 -- automatically after every deploy (post-scripts-path: "post_scripts").
 --
 -- For local runs, call explicitly:
---   snow sql -f dcm/post_scripts/01_seed_data.sql --connection dcm-dev
+--   snow sql -f dcm/post_scripts/01_seed_data.sql --connection dcm-sales-dev
 --
--- Re-runnable: INSERT statements would duplicate rows on second run — the
+-- Re-runnable: INSERT statements would duplicate rows on second run - the
 -- TRUNCATE up front keeps it idempotent.
 -- =============================================================================
 
-SET ENV_CODE  = 'DEV';        -- DEV, STG, PRD — pick to match deploy target
+SET ENV_CODE  = 'DEV';        -- DEV, STG, PRD - pick to match deploy target
 SET TEAM_NAME = 'SALES';
 
-SET RAW_DB        = $ENV_CODE || '_' || $TEAM_NAME || '_RAW_DB';
-SET PREP_DB       = $ENV_CODE || '_' || $TEAM_NAME || '_PREP_DB';
-SET DW_DB         = $ENV_CODE || '_' || $TEAM_NAME || '_DW_DB';
--- Hybrid pattern: team project lives inside team's PREP DB (safer than DW)
-SET PROJECT_FQN   = $PREP_DB || '.DCM.INFRA';
-SET CUSTOMERS_FQN = $RAW_DB || '.SEED.CUSTOMERS';
-SET ORDERS_FQN    = $RAW_DB || '.SEED.ORDERS';
-SET OBT_FQN       = $DW_DB  || '.OBT.CUSTOMER_ORDERS';
+SET RAW_DB          = $ENV_CODE || '_' || $TEAM_NAME || '_RAW_DB';
+SET DW_DB           = $ENV_CODE || '_' || $TEAM_NAME || '_DW_DB';
+SET DCM_DB          = $ENV_CODE || '_' || $TEAM_NAME || '_DCM_DB';
+SET PROJECT_FQN     = $DCM_DB || '.PROJECTS.INFRA';
+SET CUSTOMER_FQN    = $RAW_DB || '.SEED.CUSTOMER';
+SET SALES_ORDER_FQN = $RAW_DB || '.SEED.SALES_ORDER';
+SET OBT_FQN         = $DW_DB  || '.OBT.CUSTOMER_SALES_ORDER';
 
-USE ROLE SVC_SALES_SNOW_DCM_ROLE;
-USE WAREHOUSE SVC_PLATFORM_SNOW_DCM_WH_XS;
-
--- ---------------------------------------------------------------------------
--- Idempotency — clear seed tables before re-loading
--- ---------------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS IDENTIFIER($CUSTOMERS_FQN);
-TRUNCATE TABLE IF EXISTS IDENTIFIER($ORDERS_FQN);
+USE ROLE SVC_SALES_DCM_ROLE;
+USE WAREHOUSE SVC_PLATFORM_DCM_WH_XS;
 
 -- ---------------------------------------------------------------------------
--- Seed customers
+-- Idempotency - clear seed tables before re-loading
 -- ---------------------------------------------------------------------------
-INSERT INTO IDENTIFIER($CUSTOMERS_FQN)
+TRUNCATE TABLE IF EXISTS IDENTIFIER($CUSTOMER_FQN);
+TRUNCATE TABLE IF EXISTS IDENTIFIER($SALES_ORDER_FQN);
+
+-- ---------------------------------------------------------------------------
+-- Seed customer
+-- ---------------------------------------------------------------------------
+INSERT INTO IDENTIFIER($CUSTOMER_FQN)
     (customer_id, customer_name, email, signup_date, region, is_active)
 VALUES
     (1, 'alice cooper',  'alice@example.com',  '2024-01-15', 'us-east', TRUE),
@@ -45,10 +44,10 @@ VALUES
     (4, 'dan ellis',     'dan@example.com',    '2024-03-10', 'us-east', FALSE);
 
 -- ---------------------------------------------------------------------------
--- Seed orders
+-- Seed sales_order
 -- ---------------------------------------------------------------------------
-INSERT INTO IDENTIFIER($ORDERS_FQN)
-    (order_id, customer_id, order_date, item_count, order_total_usd, status)
+INSERT INTO IDENTIFIER($SALES_ORDER_FQN)
+    (sales_order_id, customer_id, order_date, item_count, order_total_usd, status)
 VALUES
     (1001, 1, '2026-05-01', 3, 149.50, 'shipped'),
     (1002, 2, '2026-05-02', 1,  29.99, 'shipped'),

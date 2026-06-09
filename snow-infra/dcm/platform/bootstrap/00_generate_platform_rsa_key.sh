@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Generate RSA key pair for SVC_PLATFORM_SNOW_DCM_USER
+# Generate RSA key pair for SVC_PLATFORM_DCM_USER
 # =============================================================================
 # Identical to teams/sales/bootstrap/00_generate_rsa_key.sh but defaults to
-# the PLATFORM user/key name. See that file for the full explanation.
+# the PLATFORM user/key name.
+#
+# Keys land under $SNOWFLAKE_HOME/keys (set in snow-tools/.env, mounted from
+# the host so they survive container restarts). Override with KEY_DIR if needed.
 #
 # Run inside snow-tools container:
-#   docker exec -it snow-tools bash -lc \
-#     'cd /C/.../snow-infra/dcm && \
-#      KEY_DIR=/C/Users/nadesansiva/.snowflake/keys ./platform/bootstrap/00_generate_platform_rsa_key.sh'
+#   ./platform/bootstrap/00_generate_platform_rsa_key.sh
 # =============================================================================
 set -euo pipefail
 
-KEY_DIR="${KEY_DIR:-$HOME/.snowflake/keys}"
+KEY_DIR="${KEY_DIR:-${SNOWFLAKE_HOME:-$HOME/.snowflake}/keys}"
 KEY_NAME="${KEY_NAME:-svc_platform_dcm}"
-SF_USER="${SF_USER:-SVC_PLATFORM_SNOW_DCM_USER}"
+SF_USER="${SF_USER:-SVC_PLATFORM_DCM_USER}"
 ENCRYPT_PASSPHRASE="${ENCRYPT_PASSPHRASE:-}"
 
 python - "$KEY_DIR" "$KEY_NAME" "$SF_USER" "$ENCRYPT_PASSPHRASE" <<'PY'

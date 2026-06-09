@@ -22,7 +22,10 @@ ALIAS="${2:-deploy-$(date +%Y%m%d-%H%M%S)}"
 CONN="${SNOWFLAKE_CONNECTION:-dcm-${TARGET#DCM_}}"
 CONN="${CONN,,}"
 
-cd "$(dirname "$0")/../dcm"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+"$SCRIPT_DIR/../../../scripts/sync_macros.sh"
+
+cd "$SCRIPT_DIR/../dcm"
 
 echo "==> Deploying target: ${TARGET}"
 echo "==> Alias: ${ALIAS}"
@@ -35,4 +38,4 @@ snow dcm deploy \
 
 echo ""
 echo "==> Deployment recorded. Review history:"
-echo "    snow dcm list-deployments ${TARGET#DCM_}_SALES_PREP_DB.DCM.INFRA --connection ${CONN}"
+echo "    snow dcm list-deployments ${TARGET#DCM_}_SALES_DCM_DB.PROJECTS.INFRA --connection ${CONN}"

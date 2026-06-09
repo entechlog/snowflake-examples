@@ -2,18 +2,21 @@
 -- Demo DW objects (consumption layer)
 -- =============================================================================
 -- Three object types DCM manages natively:
---   1. Dimensional table   — DIM.CUSTOMERS
---   2. Fact table          — FACT.ORDERS
---   3. Dynamic table (OBT) — refreshes from prep views automatically
+--   1. Dimensional table   - DIM.CUSTOMER
+--   2. Fact table          - FACT.SALES_ORDER
+--   3. Dynamic table (OBT) - refreshes from PREP staging views automatically
 --
--- INITIALIZE = ON_SCHEDULE skips synchronous first refresh during deploy →
--- much faster plan/apply cycles. Initial refresh runs in scripts/03.
+-- INITIALIZE = ON_SCHEDULE skips synchronous first refresh during deploy
+-- (much faster plan/apply cycles). Initial refresh runs in post_scripts/.
+--
+-- Naming: singular per repo standard. SALES_ORDER instead of ORDER to avoid
+-- the SQL reserved word collision.
 -- =============================================================================
 
-{% set prep_db = db_name('PREP') %}
-{% set dw_db   = db_name('DW')   %}
+{% set prep_db = db_name(team_name, 'PREP') %}
+{% set dw_db   = db_name(team_name, 'DW')   %}
 
-DEFINE TABLE {{ dw_db }}.DIM.CUSTOMERS (
+DEFINE TABLE {{ dw_db }}.DIM.CUSTOMER (
     customer_sk     NUMBER AUTOINCREMENT START 1 INCREMENT 1,
     customer_id     NUMBER,
     customer_name   VARCHAR,
@@ -27,8 +30,8 @@ DEFINE TABLE {{ dw_db }}.DIM.CUSTOMERS (
 )
 COMMENT = 'Customer dimension (SCD-2 ready)';
 
-DEFINE TABLE {{ dw_db }}.FACT.ORDERS (
-    order_id        NUMBER,
+DEFINE TABLE {{ dw_db }}.FACT.SALES_ORDER (
+    sales_order_id  NUMBER,
     customer_sk     NUMBER,
     order_date      DATE,
     item_count      NUMBER,
@@ -36,13 +39,13 @@ DEFINE TABLE {{ dw_db }}.FACT.ORDERS (
     status          VARCHAR
 )
 CLUSTER BY (order_date)
-COMMENT = 'Order facts, clustered by date';
+COMMENT = 'Sales order facts, clustered by date';
 
--- One Big Table — dynamic table pre-joining customers + orders.
+-- One Big Table - dynamic table pre-joining customer + sales orders.
 -- TARGET_LAG = 'DOWNSTREAM' refreshes on read instead of polling.
 -- DCM resolves the dependency on the prep views automatically.
-DEFINE DYNAMIC TABLE {{ dw_db }}.OBT.CUSTOMER_ORDERS
-    WAREHOUSE  = {{ wh_name('DBT') }}
+DEFINE DYNAMIC TABLE {{ dw_db }}.OBT.CUSTOMER_SALES_ORDER
+    WAREHOUSE  = {{ wh_name(team_name, 'DBT') }}
     TARGET_LAG = 'DOWNSTREAM'
     INITIALIZE = ON_SCHEDULE
 AS
@@ -51,11 +54,11 @@ SELECT
     c.customer_name,
     c.email,
     c.region,
-    o.order_id,
+    o.sales_order_id,
     o.order_date,
     o.item_count,
     o.order_total_usd,
     o.status
-FROM {{ prep_db }}.STAGING.STG_CUSTOMERS c
-LEFT JOIN {{ prep_db }}.STAGING.STG_ORDERS o
+FROM {{ prep_db }}.DIM.STG_CUSTOMER c
+LEFT JOIN {{ prep_db }}.FACT.STG_SALES_ORDER o
     ON c.customer_id = o.customer_id;

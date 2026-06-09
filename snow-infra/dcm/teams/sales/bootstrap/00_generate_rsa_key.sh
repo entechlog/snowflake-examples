@@ -1,16 +1,9 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Generate an RSA key pair for SVC_SALES_SNOW_DCM_USER (or any service user)
+# Generate an RSA key pair for SVC_SALES_DCM_USER (or any service user)
 # =============================================================================
-# Run this INSIDE the snow-tools container:
-#
-#   docker exec -it snow-tools bash
-#   cd /C/Users/nadesansiva/VisualStudioCode/snowflake-examples/snow-infra/dcm
-#   ./bootstrap/00_generate_rsa_key.sh
-#
-# Why a script (not raw openssl): the snow-tools image already ships the
-# `cryptography` Python library (via snowflake-connector-python). Using Python
-# avoids needing `openssl` in the base image and works identically across OSes.
+# Run inside the snow-tools container:
+#   ./teams/sales/bootstrap/00_generate_rsa_key.sh
 #
 # Output:
 #   - <KEY_DIR>/<KEY_NAME>.p8   private key (chmod 600), referenced by snow CLI
@@ -18,22 +11,16 @@
 #   - prints an ALTER USER statement to paste into Snowsight as ACCOUNTADMIN
 #
 # Defaults (override via env vars):
-#   KEY_DIR              ~/.snowflake/keys (ephemeral inside container)
+#   KEY_DIR              $SNOWFLAKE_HOME/keys (persistent host-mounted path)
 #   KEY_NAME             svc_sales_dcm
-#   SF_USER              SVC_SALES_SNOW_DCM_USER
+#   SF_USER              SVC_SALES_DCM_USER
 #   ENCRYPT_PASSPHRASE   unset = unencrypted PKCS8 (recommended for service accts)
-#
-# For persistence across container rebuilds, point KEY_DIR at the mounted host
-# path, e.g.:
-#
-#   KEY_DIR=/C/Users/nadesansiva/.snowflake/keys ./bootstrap/00_generate_rsa_key.sh
-#
 # =============================================================================
 set -euo pipefail
 
-KEY_DIR="${KEY_DIR:-$HOME/.snowflake/keys}"
+KEY_DIR="${KEY_DIR:-${SNOWFLAKE_HOME:-$HOME/.snowflake}/keys}"
 KEY_NAME="${KEY_NAME:-svc_sales_dcm}"
-SF_USER="${SF_USER:-SVC_SALES_SNOW_DCM_USER}"
+SF_USER="${SF_USER:-SVC_SALES_DCM_USER}"
 ENCRYPT_PASSPHRASE="${ENCRYPT_PASSPHRASE:-}"
 
 python - "$KEY_DIR" "$KEY_NAME" "$SF_USER" "$ENCRYPT_PASSPHRASE" <<'PY'

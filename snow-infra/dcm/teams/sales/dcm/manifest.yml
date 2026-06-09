@@ -4,31 +4,25 @@ type: DCM_PROJECT
 default_target: DCM_SALES_DEV
 
 # -----------------------------------------------------------------------------
-# Team SALES - DCM project lives INSIDE the team's PREP database (hybrid pattern)
-#
-# project_name format: {ENV}_SALES_PREP_DB.DCM.INFRA
-# (PREP is the regenerable intermediate layer - safer DCM-state home than DW)
-# The platform layer creates these project objects and transfers OWNERSHIP
-# to SVC_SALES_SNOW_DCM_ROLE. The team then plans/deploys without ever
-# touching DCM_REGISTRY or platform-managed objects.
+# Team SALES — project_name format: {ENV}_SALES_DCM_DB.PROJECTS.INFRA
 # -----------------------------------------------------------------------------
 targets:
   DCM_SALES_DEV:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       DEV_SALES_PREP_DB.DCM.INFRA
-    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       DEV_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  DEV
 
   DCM_SALES_STG:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       STG_SALES_PREP_DB.DCM.INFRA
-    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       STG_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  STG
 
   DCM_SALES_PRD:
-    account_identifier: <YOUR-ORG>-<YOUR-ACCOUNT>
-    project_name:       PRD_SALES_PREP_DB.DCM.INFRA
-    project_owner:      SVC_SALES_SNOW_DCM_ROLE
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       PRD_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
     templating_config:  PRD
 
 # -----------------------------------------------------------------------------

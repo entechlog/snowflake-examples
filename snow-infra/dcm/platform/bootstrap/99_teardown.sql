@@ -1,14 +1,16 @@
 -- =============================================================================
 -- Platform DCM Bootstrap Teardown
 -- =============================================================================
--- DESTRUCTIVE. Run as ACCOUNTADMIN. Only after all DCM PROJECTS in DCM_REGISTRY
--- have been purged (use scripts/04_purge.sql first).
+-- DESTRUCTIVE. Run as ACCOUNTADMIN. Only after all platform DCM PROJECTs have
+-- been purged (use scripts/04_purge.sql first, per env).
 -- =============================================================================
 
 USE ROLE ACCOUNTADMIN;
-DROP DATABASE  IF EXISTS DCM_REGISTRY;
-DROP WAREHOUSE IF EXISTS SVC_PLATFORM_SNOW_DCM_WH_XS;
+DROP DATABASE  IF EXISTS DEV_PLATFORM_DCM_DB;
+DROP DATABASE  IF EXISTS STG_PLATFORM_DCM_DB;
+DROP DATABASE  IF EXISTS PRD_PLATFORM_DCM_DB;
+DROP WAREHOUSE IF EXISTS SVC_PLATFORM_DCM_WH_XS;
 
 USE ROLE SECURITYADMIN;
-DROP USER IF EXISTS SVC_PLATFORM_SNOW_DCM_USER;
-DROP ROLE IF EXISTS SVC_PLATFORM_SNOW_DCM_ROLE;
+DROP USER IF EXISTS SVC_PLATFORM_DCM_USER;
+DROP ROLE IF EXISTS SVC_PLATFORM_DCM_ROLE;

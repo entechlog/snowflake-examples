@@ -294,6 +294,7 @@ DCM is fully declarative. First deploy → CREATEs. No code change → empty pla
 | PR touching `snow-infra/dcm/**` | `dcm-plan` - posts plan as PR comment | DEV |
 | Push to `develop` | plan + deploy | DEV |
 | Push to `main` | plan + deploy → STG, then PRD (gated by `snowflake-prd` GitHub environment) | STG → PRD |
+| `workflow_dispatch` (manual) | plan or deploy — pick target + action in the UI | any |
 
 Built-in safety:
 - `allow-drops: "false"` - deploy fails if plan contains DROP
@@ -301,7 +302,25 @@ Built-in safety:
 - `post-scripts-path: "post_scripts"` - `01_seed_data.sql` auto-runs after deploy
 - `test-expectations: "true"` - runs DCM expectations, fails on regressions
 
-Required GitHub secrets per environment: `SNOWFLAKE_PRIVATE_KEY`. Add separate secrets if running platform + team workflows under different service users.
+**End-to-end automation (zero manual Step 8):** every deploy job runs a pre-step (`.github/actions/ensure-team-dcm-project`) that idempotently issues `CREATE SCHEMA IF NOT EXISTS …` + `CREATE DCM PROJECT IF NOT EXISTS …` before `dcm-deploy`. So on a new team or new env, you don't need to bootstrap the DCM PROJECT manually — first deploy creates it, every subsequent one is a no-op.
+
+**Required GitHub secrets per environment** (`snowflake-dev`, `snowflake-stg`, `snowflake-prd`):
+- `SNOWFLAKE_ACCOUNT` — your `ORG-ACCOUNT` (e.g. `MYORG-MYACCOUNT`)
+- `SNOWFLAKE_USER` — `SVC_SALES_DCM_USER`
+- `SNOWFLAKE_PRIVATE_KEY` — raw PKCS8 PEM of `svc_sales_dcm.p8` (entire file content, BEGIN/END lines included)
+
+### Testing the CI from a feature branch
+
+To exercise the workflow on a non-`develop` / non-`main` branch (e.g. `feature/<name>`):
+
+1. **PR plan** — open a PR from your feature branch. The `plan` job runs and posts the diff as a PR comment. No deploy.
+2. **Manual deploy to any env** — `Actions` tab → *DCM Plan & Deploy* → *Run workflow* → select your feature branch + a `target` (DCM_SALES_DEV / STG / PRD) + `action = deploy`. The `manual-deploy` job:
+   - Picks the matching GitHub Environment automatically (`snowflake-dev` / `snowflake-stg` / `snowflake-prd`)
+   - Runs plan first, then the idempotent DCM-PROJECT pre-step, then deploy
+   - For PRD the environment's approval gate still applies
+3. **Promotion to develop / main** — once you're confident, merge feature → `develop` (auto DEV deploy), then `develop` → `main` (auto STG → PRD).
+
+> **TST env?** The demo ships only DEV/STG/PRD. To add a TST env, mirror any one target block in `platform/dcm/manifest.yml` + `teams/sales/dcm/manifest.yml`, add `DCM_SALES_TST` to the `workflow_dispatch` target choices, and create a `snowflake-tst` GitHub Environment with the three secrets.
 
 **ADO migration:** see header comments in `dcm-deploy.yml` for the field-by-field mapping.
 

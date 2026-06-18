@@ -45,7 +45,7 @@ COMMENT = 'Sales order facts, clustered by date';
 -- TARGET_LAG = 'DOWNSTREAM' refreshes on read instead of polling.
 -- DCM resolves the dependency on the prep views automatically.
 DEFINE DYNAMIC TABLE {{ dw_db }}.OBT.CUSTOMER_SALES_ORDER
-    WAREHOUSE  = {{ wh_name(team_name, 'DBT') }}
+    WAREHOUSE  = SVC_SALES_DCM_WH_XS
     TARGET_LAG = 'DOWNSTREAM'
     INITIALIZE = ON_SCHEDULE
 AS

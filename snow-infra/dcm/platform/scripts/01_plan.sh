@@ -9,6 +9,11 @@ TARGET="DCM_PLATFORM_${ENV_CODE}"
 CONN="${SNOWFLAKE_CONNECTION:-dcm-platform-${ENV_CODE,,}}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 "$SCRIPT_DIR/../../scripts/sync_macros.sh"
+
+# Plan is strictly read-only. DCM file references no USER entity
+# (user creation lives in 02_deploy.sh pre/post-steps), so plan can
+# compile cleanly even on a fresh account with no team users yet.
+
 cd "$SCRIPT_DIR/../dcm"
 echo "==> Platform plan: ${TARGET} (connection: ${CONN})"
 snow dcm plan --target "${TARGET}" --connection "${CONN}" --save-output

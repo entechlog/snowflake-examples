@@ -35,26 +35,17 @@ targets:
 # -----------------------------------------------------------------------------
 templating:
   defaults:
-    team_name:   "SALES"
-    proj_code:   "ENTECHLOG"
-
-    dbt_wh_size:    "XSMALL"
-    query_wh_size:  "XSMALL"
-    cortex_wh_size: "XSMALL"
-    auto_suspend_seconds: 30
+    team_name: "SALES"
+    data_retention_days: 1
 
   configurations:
     DEV:
       env_code: "DEV"
-      deploy_query_warehouse: true
 
     STG:
       env_code: "STG"
-      deploy_query_warehouse: false
+      data_retention_days: 3
 
     PRD:
       env_code: "PRD"
-      deploy_query_warehouse: false
-      auto_suspend_seconds: 60
-      dbt_wh_size:   "SMALL"
-      query_wh_size: "SMALL"
+      data_retention_days: 7

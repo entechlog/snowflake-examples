@@ -16,9 +16,11 @@
 # =============================================================================
 set -euo pipefail
 
-TARGET="${1:-DCM_DEV}"
+TARGET="${1:-DCM_SALES_DEV}"
+# DCM_SALES_DEV -> dcm-sales-dev to match config.toml connection names
 CONN="${SNOWFLAKE_CONNECTION:-dcm-${TARGET#DCM_}}"
-CONN="${CONN,,}"   # lowercase: dcm-dev / dcm-stg / dcm-prd
+CONN="${CONN,,}"
+CONN="${CONN//_/-}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 "$SCRIPT_DIR/../../../scripts/sync_macros.sh"

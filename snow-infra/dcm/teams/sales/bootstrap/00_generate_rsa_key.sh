@@ -2,16 +2,20 @@
 # =============================================================================
 # Generate an RSA key pair for SVC_SALES_DCM_USER (or any service user)
 # =============================================================================
+# Idempotent:
+#   - If the key file already exists, skip generation and reprint the ALTER USER
+#     (so you can re-register the existing key if needed).
+#   - Pass --force to overwrite the existing key (you'll need to re-register).
+#   - Pass --register-via <conn> to auto-run the ALTER USER via snow CLI
+#     instead of just printing it.
+#
 # Run inside the snow-tools container:
 #   ./teams/sales/bootstrap/00_generate_rsa_key.sh
-#
-# Output:
-#   - <KEY_DIR>/<KEY_NAME>.p8   private key (chmod 600), referenced by snow CLI
-#   - <KEY_DIR>/<KEY_NAME>.pub  public key
-#   - prints an ALTER USER statement to paste into Snowsight as ACCOUNTADMIN
+#   ./teams/sales/bootstrap/00_generate_rsa_key.sh --register-via dcm-platform-dev
+#   ./teams/sales/bootstrap/00_generate_rsa_key.sh --force --register-via dcm-platform-dev
 #
 # Defaults (override via env vars):
-#   KEY_DIR              $SNOWFLAKE_HOME/keys (persistent host-mounted path)
+#   KEY_DIR              $SNOWFLAKE_HOME/keys
 #   KEY_NAME             svc_sales_dcm
 #   SF_USER              SVC_SALES_DCM_USER
 #   ENCRYPT_PASSPHRASE   unset = unencrypted PKCS8 (recommended for service accts)
@@ -22,92 +26,78 @@ KEY_DIR="${KEY_DIR:-${SNOWFLAKE_HOME:-$HOME/.snowflake}/keys}"
 KEY_NAME="${KEY_NAME:-svc_sales_dcm}"
 SF_USER="${SF_USER:-SVC_SALES_DCM_USER}"
 ENCRYPT_PASSPHRASE="${ENCRYPT_PASSPHRASE:-}"
+FORCE="false"
+REGISTER_CONN=""
 
-python - "$KEY_DIR" "$KEY_NAME" "$SF_USER" "$ENCRYPT_PASSPHRASE" <<'PY'
-import os, sys, stat
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --force)         FORCE="true"; shift ;;
+        --register-via)  REGISTER_CONN="$2"; shift 2 ;;
+        *) echo "Unknown arg: $1" >&2; exit 2 ;;
+    esac
+done
+
+OUT_FILE="$(mktemp)"
+trap 'rm -f "$OUT_FILE"' EXIT
+
+python - "$KEY_DIR" "$KEY_NAME" "$SF_USER" "$ENCRYPT_PASSPHRASE" "$FORCE" "$OUT_FILE" <<'PY'
+import os, sys
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
-key_dir, key_name, sf_user, passphrase = sys.argv[1:5]
+key_dir, key_name, sf_user, passphrase, force, out_file = sys.argv[1:7]
+force = force == "true"
 
 os.makedirs(key_dir, exist_ok=True)
-try:
-    os.chmod(key_dir, 0o700)
-except PermissionError:
-    pass  # bind-mounted host paths on Windows may not honor chmod
+try: os.chmod(key_dir, 0o700)
+except PermissionError: pass
 
 priv_path = os.path.join(key_dir, key_name + ".p8")
 pub_path  = os.path.join(key_dir, key_name + ".pub")
+existed = os.path.exists(priv_path)
 
-if os.path.exists(priv_path):
-    print(f"ERROR: {priv_path} already exists.", file=sys.stderr)
-    print(f"       Move/delete it first, or set KEY_NAME=<other-name>.", file=sys.stderr)
-    sys.exit(1)
-
-# Generate the key
-key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-
-# Private key — PKCS8 PEM
-if passphrase:
-    enc = serialization.BestAvailableEncryption(passphrase.encode())
+if existed and not force:
+    print(f"==> {priv_path} already exists — skipping generation.")
+    print(f"    Pass --force to regenerate (you'll need to re-register the new public key).")
+    with open(pub_path) as f:
+        pub_text = f.read()
 else:
-    enc = serialization.NoEncryption()
+    if existed:
+        print(f"==> --force given; overwriting {priv_path}")
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    enc = serialization.BestAvailableEncryption(passphrase.encode()) if passphrase else serialization.NoEncryption()
+    priv_bytes = key.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8, enc)
+    pub_bytes  = key.public_key().public_bytes(serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo)
+    with open(priv_path, "wb") as f: f.write(priv_bytes)
+    try: os.chmod(priv_path, 0o600)
+    except PermissionError: pass
+    with open(pub_path, "wb") as f: f.write(pub_bytes)
+    pub_text = pub_bytes.decode()
+    print(f"==> Wrote {priv_path}")
+    print(f"==> Wrote {pub_path}")
 
-priv_bytes = key.private_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PrivateFormat.PKCS8,
-    encryption_algorithm=enc,
-)
-
-pub_bytes = key.public_key().public_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PublicFormat.SubjectPublicKeyInfo,
-)
-
-with open(priv_path, "wb") as f:
-    f.write(priv_bytes)
-try:
-    os.chmod(priv_path, 0o600)
-except PermissionError:
-    pass
-
-with open(pub_path, "wb") as f:
-    f.write(pub_bytes)
-
-# Strip BEGIN/END for the ALTER USER body
-pub_body = "".join(
-    line for line in pub_bytes.decode().splitlines()
-    if not line.startswith("-----")
-)
+pub_body = "".join(l for l in pub_text.splitlines() if not l.startswith("-----"))
+with open(out_file, "w") as f:
+    f.write(pub_body)
 
 print()
-print("=" * 70)
-print("Keys generated")
-print("=" * 70)
-print(f"  Private (PKCS8 {'encrypted' if passphrase else 'unencrypted'}): {priv_path}")
-print(f"  Public:                                                        {pub_path}")
-print()
-print("=" * 70)
-print("STEP 1 — Run this in Snowsight as ACCOUNTADMIN")
-print("=" * 70)
-print()
-print(f"USE ROLE ACCOUNTADMIN;")
-print(f"ALTER USER {sf_user} SET RSA_PUBLIC_KEY = '{pub_body}';")
-print()
-print("=" * 70)
-print("STEP 2 — Verify the fingerprint")
-print("=" * 70)
-print()
-print(f"DESC USER {sf_user};")
-print("    -- Look for the RSA_PUBLIC_KEY_FP property (SHA256:... value)")
-print()
-print("=" * 70)
-print("STEP 3 — Snow CLI config (config.toml inside the container)")
-print("=" * 70)
-print()
-print(f"  authenticator    = \"SNOWFLAKE_JWT\"")
-print(f"  private_key_path = \"{priv_path}\"")
-if passphrase:
-    print(f"  private_key_passphrase = \"<set via SNOWFLAKE_PRIVATE_KEY_PASSPHRASE env var>\"")
-print()
+print(f"User:       {sf_user}")
+print(f"Private:    {priv_path}")
+print(f"Public:     {pub_path}")
 PY
+
+PUB_BODY="$(cat "$OUT_FILE")"
+
+if [[ -n "$REGISTER_CONN" ]]; then
+    echo "==> Registering public key on ${SF_USER} via connection ${REGISTER_CONN}"
+    snow sql --connection "$REGISTER_CONN" -q \
+        "ALTER USER ${SF_USER} SET RSA_PUBLIC_KEY = '${PUB_BODY}';"
+    echo "==> Key registered. Verify with: snow sql --connection ${REGISTER_CONN} -q \"DESC USER ${SF_USER};\""
+else
+    echo
+    echo "To register (or re-register) the key, paste in Snowsight as ACCOUNTADMIN"
+    echo "(or re-run this script with --register-via <connection>):"
+    echo
+    echo "ALTER USER ${SF_USER} SET RSA_PUBLIC_KEY = '${PUB_BODY}';"
+    echo
+fi

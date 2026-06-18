@@ -42,6 +42,11 @@ runs:
         TEAM:                  ${{ inputs.team }}
       run: |
         set -euo pipefail
+        ENV_UPPER="$(printf '%s' "$ENV_CODE" | tr '[:lower:]' '[:upper:]')"
+        TEAM_UPPER="$(printf '%s' "$TEAM"     | tr '[:lower:]' '[:upper:]')"
+        DB="${ENV_UPPER}_${TEAM_UPPER}_DCM_DB"
+        WH="SVC_${TEAM_UPPER}_DCM_WH_XS"
+
         KEY_FILE="$RUNNER_TEMP/sf_key.p8"
         CFG_DIR="$RUNNER_TEMP/.snowflake"
         mkdir -p "$CFG_DIR"
@@ -53,21 +58,17 @@ runs:
         account            = "$SF_ACCOUNT"
         user               = "$SF_USER"
         role               = "$SF_ROLE"
-        warehouse          = "SVC_PLATFORM_DCM_WH_XS"
+        warehouse          = "$WH"
         authenticator      = "SNOWFLAKE_JWT"
         private_key_path   = "$KEY_FILE"
         EOF
         chmod 600 "$CFG_DIR/config.toml"
         export SNOWFLAKE_HOME="$CFG_DIR"
 
-        ENV_UPPER="$(printf '%s' "$ENV_CODE" | tr '[:lower:]' '[:upper:]')"
-        TEAM_UPPER="$(printf '%s' "$TEAM"     | tr '[:lower:]' '[:upper:]')"
-        DB="${ENV_UPPER}_${TEAM_UPPER}_DCM_DB"
-
         echo "==> Ensuring ${DB}.PROJECTS.INFRA exists"
         snow sql --connection ci -q "
           USE ROLE ${SF_ROLE};
-          USE WAREHOUSE SVC_PLATFORM_DCM_WH_XS;
+          USE WAREHOUSE ${WH};
           CREATE SCHEMA IF NOT EXISTS ${DB}.PROJECTS;
           CREATE DCM PROJECT IF NOT EXISTS ${DB}.PROJECTS.INFRA;
         "

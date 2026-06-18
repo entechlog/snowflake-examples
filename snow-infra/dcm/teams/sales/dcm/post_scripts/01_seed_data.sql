@@ -24,7 +24,7 @@ SET SALES_ORDER_FQN = $RAW_DB || '.SEED.SALES_ORDER';
 SET OBT_FQN         = $DW_DB  || '.OBT.CUSTOMER_SALES_ORDER';
 
 USE ROLE SVC_SALES_DCM_ROLE;
-USE WAREHOUSE SVC_PLATFORM_DCM_WH_XS;
+USE WAREHOUSE SVC_SALES_DCM_WH_XS;
 
 -- ---------------------------------------------------------------------------
 -- Idempotency - clear seed tables before re-loading

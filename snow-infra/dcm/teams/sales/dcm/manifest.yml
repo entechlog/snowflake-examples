@@ -1,0 +1,51 @@
+manifest_version: 2
+type: DCM_PROJECT
+
+default_target: DCM_SALES_DEV
+
+# -----------------------------------------------------------------------------
+# Team SALES — project_name format: {ENV}_SALES_DCM_DB.PROJECTS.INFRA
+# -----------------------------------------------------------------------------
+targets:
+  DCM_SALES_DEV:
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       DEV_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
+    templating_config:  DEV
+
+  DCM_SALES_STG:
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       STG_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
+    templating_config:  STG
+
+  DCM_SALES_PRD:
+    account_identifier: "{{ env.SNOWFLAKE_ACCOUNT }}"
+    project_name:       PRD_SALES_DCM_DB.PROJECTS.INFRA
+    project_owner:      "{{ env.SNOWFLAKE_ROLE }}"
+    templating_config:  PRD
+
+# -----------------------------------------------------------------------------
+# Team-local templating
+#
+# - team_name fixes this project to SALES (other teams have their own dir)
+# - proj_code stays for reference but real naming uses team_name now
+# - User roles + service roles are PLATFORM-owned — referenced here but not
+#   created. deploy_query_warehouse flag toggles the shared ALL_*_QUERY_WH.
+# -----------------------------------------------------------------------------
+templating:
+  defaults:
+    team_name: "SALES"
+    data_retention_days: 1
+
+  configurations:
+    DEV:
+      env_code: "DEV"
+
+    STG:
+      env_code: "STG"
+      data_retention_days: 3
+
+    PRD:
+      env_code: "PRD"
+      data_retention_days: 7

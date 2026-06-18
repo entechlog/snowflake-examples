@@ -3,6 +3,7 @@
 # =============================================================================
 *.pem
 *.pub
+*.p8
 *.env
 *connect-secrets.properties
 *my_password.txt
@@ -68,3 +69,17 @@ dbt_packages/
 # Logs
 # =============================================================================
 logs/
+
+# =============================================================================
+# DCM Projects (Snowflake) — generated plan artifacts + per-user CLI config
+# =============================================================================
+out/
+**/out/
+output/
+**/output/
+config.toml
+
+# Synced macros — canonical copy is snow-infra/dcm/shared/macros/.
+# Local + CI run scripts/sync_macros.sh to populate these before plan/deploy.
+snow-infra/dcm/platform/dcm/sources/macros/*.sql
+snow-infra/dcm/teams/*/dcm/sources/macros/*.sql

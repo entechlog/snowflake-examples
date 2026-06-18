@@ -1,0 +1,74 @@
+name: 'Ensure team DCM PROJECT exists'
+description: >-
+  Idempotently creates the team's DCM PROJECT object for one env
+  (CREATE SCHEMA IF NOT EXISTS + CREATE DCM PROJECT IF NOT EXISTS).
+  Runs as SVC_<TEAM>_DCM_ROLE, which platform deploy created.
+
+inputs:
+  env_code:
+    description: 'DEV / STG / PRD'
+    required: true
+  team:
+    description: 'Team name (will be uppercased)'
+    required: true
+  snowflake_account:
+    description: 'ORG-ACCOUNT identifier'
+    required: true
+  snowflake_user:
+    description: 'Snowflake service user (e.g. SVC_SALES_DCM_USER)'
+    required: true
+  snowflake_role:
+    description: 'Role to assume (e.g. SVC_SALES_DCM_ROLE)'
+    required: true
+  snowflake_private_key:
+    description: 'Raw PKCS8 PEM contents of the service user private key'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Snow CLI
+      shell: bash
+      run: pip install --quiet "snowflake-cli>=3.16.0"
+
+    - name: Create DCM PROJECT (idempotent)
+      shell: bash
+      env:
+        SNOWFLAKE_PRIVATE_KEY: ${{ inputs.snowflake_private_key }}
+        SF_ACCOUNT:            ${{ inputs.snowflake_account }}
+        SF_USER:               ${{ inputs.snowflake_user }}
+        SF_ROLE:               ${{ inputs.snowflake_role }}
+        ENV_CODE:              ${{ inputs.env_code }}
+        TEAM:                  ${{ inputs.team }}
+      run: |
+        set -euo pipefail
+        ENV_UPPER="$(printf '%s' "$ENV_CODE" | tr '[:lower:]' '[:upper:]')"
+        TEAM_UPPER="$(printf '%s' "$TEAM"     | tr '[:lower:]' '[:upper:]')"
+        DB="${ENV_UPPER}_${TEAM_UPPER}_DCM_DB"
+        WH="SVC_${TEAM_UPPER}_DCM_WH_XS"
+
+        KEY_FILE="$RUNNER_TEMP/sf_key.p8"
+        CFG_DIR="$RUNNER_TEMP/.snowflake"
+        mkdir -p "$CFG_DIR"
+        printf '%s' "$SNOWFLAKE_PRIVATE_KEY" > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+
+        cat > "$CFG_DIR/config.toml" <<EOF
+        [connections.ci]
+        account            = "$SF_ACCOUNT"
+        user               = "$SF_USER"
+        role               = "$SF_ROLE"
+        warehouse          = "$WH"
+        authenticator      = "SNOWFLAKE_JWT"
+        private_key_path   = "$KEY_FILE"
+        EOF
+        chmod 600 "$CFG_DIR/config.toml"
+        export SNOWFLAKE_HOME="$CFG_DIR"
+
+        echo "==> Ensuring ${DB}.PROJECTS.INFRA exists"
+        snow sql --connection ci -q "
+          USE ROLE ${SF_ROLE};
+          USE WAREHOUSE ${WH};
+          CREATE SCHEMA IF NOT EXISTS ${DB}.PROJECTS;
+          CREATE DCM PROJECT IF NOT EXISTS ${DB}.PROJECTS.INFRA;
+        "

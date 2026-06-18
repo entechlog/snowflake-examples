@@ -77,7 +77,7 @@ aws s3 ls s3://your-bucket/slingdata.db/ --recursive
 
 ## Known Limitations
 
-Sling's Go-based Iceberg writer (`iceberg-go`) produces manifest files that are **not compatible with Snowflake**. Tables are queryable in Athena but fail in Snowflake with `error 300010`. This is a known issue — the same data re-written by PyIceberg works in Snowflake. See [sling-cli GitHub issue](https://github.com/slingdata-io/sling-cli/issues) for tracking.
+Sling's Go-based Iceberg writer (`iceberg-go`) produces manifest files that are **not compatible with Snowflake**. Tables are queryable in Athena but fail in Snowflake with `error 300010`. This is a known issue - the same data re-written by PyIceberg works in Snowflake. See [sling-cli GitHub issue](https://github.com/slingdata-io/sling-cli/issues) for tracking.
 
 For Snowflake-compatible Iceberg ingestion, use the Python generator (`ingestion/python/`) or Kafka Connect (`ingestion/kafka-connect/`).
 

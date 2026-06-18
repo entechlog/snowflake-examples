@@ -1,0 +1,285 @@
+# =============================================================================
+# CI/CD: DCM Plan & Deploy (using official Snowflake-Labs actions)
+#
+# PRs touching snow-infra/dcm/:  plan only, posts diff as PR comment
+# Push to develop:               plan + deploy to DEV (auto-runs post_scripts)
+# Push to main:                  plan + deploy to STG, then PRD (PRD gated)
+#
+# Manifest target fields use {{ env.SNOWFLAKE_ACCOUNT }} and
+# {{ env.SNOWFLAKE_ROLE }} interpolation, so the env vars set here drive the
+# manifest's account_identifier and project_owner at runtime. Local dev sets
+# the same env vars in the shell before running snow CLI.
+#
+# Macros live in snow-infra/dcm/shared/macros/ and are synced into each
+# project's sources/macros/ by scripts/sync_macros.sh. CI runs the sync
+# before every plan/deploy as a safety net so a stale copy never ships.
+#
+# ADO Migration Notes:
+#   - Replace `uses: Snowflake-Labs/...` with `script:` blocks invoking snow CLI
+#   - Replace `secrets.*` with ADO variable groups or key-vault references
+#   - PR-comment feature requires custom logic (gh-style API call)
+#   - Manual PRD approval: configure an "Environment" approval check in
+#     ADO Pipelines -> Environments
+#   - SNOWFLAKE_PRIVATE_KEY: store as ADO secure file, load via DownloadSecureFile
+# =============================================================================
+
+name: DCM Plan & Deploy
+
+on:
+  pull_request:
+    paths:
+      - 'snow-infra/dcm/**'
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'snow-infra/dcm/**'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'DCM target'
+        required: true
+        default: 'DCM_SALES_DEV'
+        type: choice
+        options:
+          - DCM_SALES_DEV
+          - DCM_SALES_STG
+          - DCM_SALES_PRD
+      action:
+        description: 'plan | deploy (deploy from manual trigger lets you test any env from a feature branch)'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - deploy
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write   # required for plan PR comments
+
+env:
+  TEAM_PROJECT_PATH: snow-infra/dcm/teams/sales/dcm
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Plan: runs on every PR + before every deploy
+  # ---------------------------------------------------------------------------
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'snowflake-stg' || 'snowflake-dev' }}
+
+    env:
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'main' && 'DCM_SALES_STG' || 'DCM_SALES_DEV') }}
+      # Manifest interpolation source
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_ROLE: SVC_SALES_DCM_ROLE
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sync canonical macros into project
+        shell: bash
+        run: snow-infra/dcm/scripts/sync_macros.sh
+
+      - name: DCM plan
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
+        with:
+          target:         ${{ env.TARGET }}
+          project-path:   ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user: ${{ secrets.SNOWFLAKE_USER }}
+          comment-on-pr:  "true"
+
+  # ---------------------------------------------------------------------------
+  # Deploy DEV: push to develop
+  # ---------------------------------------------------------------------------
+  deploy-dev:
+    name: Deploy to DEV
+    needs: plan
+    if: github.event_name == 'push' && github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    environment: snowflake-dev
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_ROLE: SVC_SALES_DCM_ROLE
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sync canonical macros into project
+        shell: bash
+        run: snow-infra/dcm/scripts/sync_macros.sh
+
+      - name: Ensure team DCM PROJECT exists (idempotent)
+        uses: ./.github/actions/ensure-team-dcm-project
+        with:
+          env_code:               DEV
+          team:                   SALES
+          snowflake_account:      ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          snowflake_user:         ${{ secrets.SNOWFLAKE_USER }}
+          snowflake_role:         SVC_SALES_DCM_ROLE
+          snowflake_private_key:  ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: DCM deploy (DEV)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_SALES_DEV
+          project-path:      ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user:    ${{ secrets.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"
+
+  # ---------------------------------------------------------------------------
+  # Deploy STG then PRD: push to main (PRD gated by GitHub environment)
+  # ---------------------------------------------------------------------------
+  deploy-stg:
+    name: Deploy to STG
+    needs: plan
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    environment: snowflake-stg
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_ROLE: SVC_SALES_DCM_ROLE
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sync canonical macros into project
+        shell: bash
+        run: snow-infra/dcm/scripts/sync_macros.sh
+
+      - name: Ensure team DCM PROJECT exists (idempotent)
+        uses: ./.github/actions/ensure-team-dcm-project
+        with:
+          env_code:               STG
+          team:                   SALES
+          snowflake_account:      ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          snowflake_user:         ${{ secrets.SNOWFLAKE_USER }}
+          snowflake_role:         SVC_SALES_DCM_ROLE
+          snowflake_private_key:  ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: DCM deploy (STG)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_SALES_STG
+          project-path:      ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user:    ${{ secrets.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"
+
+  deploy-prd:
+    name: Deploy to PRD
+    needs: deploy-stg
+    runs-on: ubuntu-latest
+    environment: snowflake-prd       # manual approval gate configured in GitHub UI
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_ROLE: SVC_SALES_DCM_ROLE
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sync canonical macros into project
+        shell: bash
+        run: snow-infra/dcm/scripts/sync_macros.sh
+
+      - name: DCM plan (PRD pre-flight)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
+        with:
+          target:         DCM_SALES_PRD
+          project-path:   ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user: ${{ secrets.SNOWFLAKE_USER }}
+
+      - name: Ensure team DCM PROJECT exists (idempotent)
+        uses: ./.github/actions/ensure-team-dcm-project
+        with:
+          env_code:               PRD
+          team:                   SALES
+          snowflake_account:      ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          snowflake_user:         ${{ secrets.SNOWFLAKE_USER }}
+          snowflake_role:         SVC_SALES_DCM_ROLE
+          snowflake_private_key:  ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: DCM deploy (PRD)
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            DCM_SALES_PRD
+          project-path:      ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user:    ${{ secrets.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"
+          comment-on-pr:     "true"
+
+  # ---------------------------------------------------------------------------
+  # Manual deploy (workflow_dispatch from any branch — for feature-branch testing)
+  # ---------------------------------------------------------------------------
+  manual-deploy:
+    name: Manual deploy (${{ inputs.target }})
+    needs: plan
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'deploy'
+    runs-on: ubuntu-latest
+    environment: >-
+      ${{
+        contains(inputs.target, 'PRD') && 'snowflake-prd'
+        || contains(inputs.target, 'STG') && 'snowflake-stg'
+        || 'snowflake-dev'
+      }}
+
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_ROLE:    SVC_SALES_DCM_ROLE
+      ENV_CODE: >-
+        ${{
+          contains(inputs.target, 'PRD') && 'PRD'
+          || contains(inputs.target, 'STG') && 'STG'
+          || 'DEV'
+        }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sync canonical macros into project
+        shell: bash
+        run: snow-infra/dcm/scripts/sync_macros.sh
+
+      - name: Ensure team DCM PROJECT exists (idempotent)
+        uses: ./.github/actions/ensure-team-dcm-project
+        with:
+          env_code:               ${{ env.ENV_CODE }}
+          team:                   SALES
+          snowflake_account:      ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          snowflake_user:         ${{ secrets.SNOWFLAKE_USER }}
+          snowflake_role:         SVC_SALES_DCM_ROLE
+          snowflake_private_key:  ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: DCM deploy
+        uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy@v1
+        with:
+          target:            ${{ inputs.target }}
+          project-path:      ${{ env.TEAM_PROJECT_PATH }}
+          snowflake-user:    ${{ secrets.SNOWFLAKE_USER }}
+          allow-drops:       "false"
+          test-expectations: "true"
+          post-scripts-path: "post_scripts"

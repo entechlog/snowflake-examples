@@ -1,6 +1,6 @@
 # snowflake-examples
 
-Snowflake examples and demos — infrastructure, data engineering, AI/ML, and analytics.
+Snowflake examples and demos - infrastructure, data engineering, AI/ML, and analytics.
 
 ## Demos
 
@@ -8,7 +8,7 @@ Snowflake examples and demos — infrastructure, data engineering, AI/ML, and an
 |---|---|
 | [snow-infra](./snow-infra/README.md) | Snowflake infrastructure (databases, schemas, roles, warehouses) via Terraform |
 | [snow-tools](./snow-tools/README.md) | Developer tools Docker container (SnowSQL, Terraform, Snowflake CLI, Cortex Code CLI) |
-| [snow-cortex-analyst](./snow-cortex-analyst/README.md) | Cortex Analyst agents with semantic views — two approaches: dbt and Cortex Code CLI (CoCo) |
+| [snow-cortex-analyst](./snow-cortex-analyst/README.md) | Cortex Analyst agents with semantic views - two approaches: dbt and Cortex Code CLI (CoCo) |
 | [snow-iceberg](./snow-iceberg/README.md) | Iceberg tables with external volumes (S3 + Glue) |
 | [snow-chat](./snow-chat/README.md) | Chat with your data using ChatGPT, dbt, and Streamlit |
 | [snow-mage-ai](./snow-mage-ai/README.md) | Data engineering demo using Mage |

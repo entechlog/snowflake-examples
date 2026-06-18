@@ -85,7 +85,7 @@ jobs:
 
       - name: Sync canonical macros into project
         shell: bash
-        run: snow-infra/dcm/scripts/sync_macros.sh
+        run: bash snow-infra/dcm/scripts/sync_macros.sh
 
       - name: DCM plan
         uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
@@ -116,7 +116,7 @@ jobs:
 
       - name: Sync canonical macros into project
         shell: bash
-        run: snow-infra/dcm/scripts/sync_macros.sh
+        run: bash snow-infra/dcm/scripts/sync_macros.sh
 
       - name: Ensure team DCM PROJECT exists (idempotent)
         uses: ./.github/actions/ensure-team-dcm-project
@@ -160,7 +160,7 @@ jobs:
 
       - name: Sync canonical macros into project
         shell: bash
-        run: snow-infra/dcm/scripts/sync_macros.sh
+        run: bash snow-infra/dcm/scripts/sync_macros.sh
 
       - name: Ensure team DCM PROJECT exists (idempotent)
         uses: ./.github/actions/ensure-team-dcm-project
@@ -200,7 +200,7 @@ jobs:
 
       - name: Sync canonical macros into project
         shell: bash
-        run: snow-infra/dcm/scripts/sync_macros.sh
+        run: bash snow-infra/dcm/scripts/sync_macros.sh
 
       - name: DCM plan (PRD pre-flight)
         uses: Snowflake-Labs/snowflake_dcm_projects/actions/dcm-plan@v1
@@ -262,7 +262,7 @@ jobs:
 
       - name: Sync canonical macros into project
         shell: bash
-        run: snow-infra/dcm/scripts/sync_macros.sh
+        run: bash snow-infra/dcm/scripts/sync_macros.sh
 
       - name: Ensure team DCM PROJECT exists (idempotent)
         uses: ./.github/actions/ensure-team-dcm-project

@@ -1,0 +1,108 @@
+name: 'Snow CLI plan or deploy (key-pair auth)'
+description: >-
+  Drop-in replacement for Snowflake-Labs/snowflake_dcm_projects/actions/dcm-{plan,deploy}
+  that uses SNOWFLAKE_JWT (key-pair) instead of OIDC and supports our manifest
+  env-var interpolation via snow CLI.
+
+inputs:
+  action:
+    description: 'plan | deploy'
+    required: true
+  target:
+    description: 'DCM target name (e.g. DCM_SALES_DEV)'
+    required: true
+  project_path:
+    description: 'Path to DCM project dir (containing manifest.yml)'
+    required: true
+  alias:
+    description: 'Deploy alias (required when action=deploy)'
+    required: false
+    default: ''
+  allow_drops:
+    description: 'Pass --allow-drops to deploy'
+    required: false
+    default: 'false'
+  snowflake_account:
+    required: true
+  snowflake_user:
+    required: true
+  snowflake_role:
+    required: true
+  snowflake_warehouse:
+    required: true
+  snowflake_private_key:
+    description: 'Raw PKCS8 PEM contents of the service user private key'
+    required: true
+
+outputs:
+  plan_file:
+    description: 'Path to the plan output JSON (when action=plan)'
+    value: ${{ steps.dcm.outputs.plan_file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Snow CLI
+      shell: bash
+      run: pip install --quiet "snowflake-cli>=3.16.0"
+
+    - name: Configure Snow CLI connection
+      shell: bash
+      env:
+        SNOWFLAKE_PRIVATE_KEY: ${{ inputs.snowflake_private_key }}
+        SF_ACCOUNT:            ${{ inputs.snowflake_account }}
+        SF_USER:               ${{ inputs.snowflake_user }}
+        SF_ROLE:               ${{ inputs.snowflake_role }}
+        SF_WH:                 ${{ inputs.snowflake_warehouse }}
+      run: |
+        set -euo pipefail
+        KEY_FILE="$RUNNER_TEMP/sf_key.p8"
+        CFG_DIR="$RUNNER_TEMP/.snowflake"
+        mkdir -p "$CFG_DIR"
+        printf '%s' "$SNOWFLAKE_PRIVATE_KEY" > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+        cat > "$CFG_DIR/config.toml" <<EOF
+        [connections.ci]
+        account            = "$SF_ACCOUNT"
+        user               = "$SF_USER"
+        role               = "$SF_ROLE"
+        warehouse          = "$SF_WH"
+        authenticator      = "SNOWFLAKE_JWT"
+        private_key_path   = "$KEY_FILE"
+        EOF
+        chmod 600 "$CFG_DIR/config.toml"
+        echo "SNOWFLAKE_HOME=$CFG_DIR" >> $GITHUB_ENV
+
+    - name: Run snow dcm ${{ inputs.action }}
+      id: dcm
+      shell: bash
+      env:
+        # DCM manifest interpolation source — matches local pattern
+        SNOWFLAKE_ACCOUNT: ${{ inputs.snowflake_account }}
+        SNOWFLAKE_ROLE:    ${{ inputs.snowflake_role }}
+        ACTION:            ${{ inputs.action }}
+        TARGET:            ${{ inputs.target }}
+        PROJECT_PATH:      ${{ inputs.project_path }}
+        ALIAS:             ${{ inputs.alias }}
+        ALLOW_DROPS:       ${{ inputs.allow_drops }}
+      run: |
+        set -euo pipefail
+        cd "$PROJECT_PATH"
+
+        case "$ACTION" in
+          plan)
+            snow dcm plan --target "$TARGET" --connection ci --save-output
+            PLAN_FILE="$(pwd)/out/plan.json"
+            echo "plan_file=$PLAN_FILE" >> "$GITHUB_OUTPUT"
+            ;;
+          deploy)
+            [[ -n "$ALIAS" ]] || { echo "alias is required for deploy" >&2; exit 2; }
+            DROP_FLAG=""
+            [[ "$ALLOW_DROPS" == "true" ]] && DROP_FLAG="--allow-drops"
+            snow dcm deploy --target "$TARGET" --alias "$ALIAS" --connection ci $DROP_FLAG
+            ;;
+          *)
+            echo "Unknown action: $ACTION (must be plan or deploy)" >&2
+            exit 2
+            ;;
+        esac

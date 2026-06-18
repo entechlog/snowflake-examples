@@ -6,7 +6,7 @@ Snowflake examples and demos - infrastructure, data engineering, AI/ML, and anal
 
 | Demo | Description |
 |---|---|
-| [snow-infra](./snow-infra/README.md) | Snowflake infrastructure (databases, schemas, roles, warehouses) via Terraform |
+| [snow-infra](./snow-infra/README.md) | Snowflake infrastructure (databases, schemas, roles, warehouses) — two parallel implementations: Terraform ([`snow-infra/terraform`](./snow-infra/terraform/)) and DCM Projects ([`snow-infra/dcm`](./snow-infra/dcm/)) |
 | [snow-tools](./snow-tools/README.md) | Developer tools Docker container (SnowSQL, Terraform, Snowflake CLI, Cortex Code CLI) |
 | [snow-cortex-analyst](./snow-cortex-analyst/README.md) | Cortex Analyst agents with semantic views - two approaches: dbt and Cortex Code CLI (CoCo) |
 | [snow-iceberg](./snow-iceberg/README.md) | Iceberg tables with external volumes (S3 + Glue) |

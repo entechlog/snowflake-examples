@@ -13,13 +13,13 @@ module "dbt_role" {
   depends_on = [module.all_service_accounts]
 }
 
-module "atlan_role" {
+module "superset_role" {
   source       = "./modules/roles"
-  role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_ATLAN_ROLE"
-  role_comment = "Snowflake role used by Atlan in ${var.env_code}"
+  role_name    = "${upper(var.env_code)}_SVC_${upper(var.project_code)}_SNOW_SUPERSET_ROLE"
+  role_comment = "Snowflake role used by Superset in ${var.env_code}"
 
   roles = ["SYSADMIN"]
-  users = [lower("${var.env_code}_svc_${lower(var.project_code)}_snow_atlan_user")]
+  users = [lower("${var.env_code}_svc_${lower(var.project_code)}_snow_superset_user")]
 
   depends_on = [module.all_service_accounts]
 }
@@ -63,14 +63,28 @@ module "de_role" {
   depends_on = [module.all_user_accounts]
 }
 
-module "demo_role" {
-  source = "./modules/roles"
-  # count        = local.enable_in_dev_flag
-  role_name    = "${upper(local.resource_name_prefix)}_DEMO_ROLE"
-  role_comment = "Snowflake role used by demo user in ${var.env_code}"
+module "cortex_role" {
+  source       = "./modules/roles"
+  count        = local.enable_in_dev_flag
+  role_name    = "${upper(var.project_code)}_CORTEX_ROLE"
+  role_comment = "Snowflake role used by Cortex Analyst consumers"
 
   roles = ["SYSADMIN"]
-  users = [lower("${var.env_code}_${lower(var.project_code)}_demo_user")]
+  users = [lower("admin@entechlog.com")]
+
+  depends_on = [module.all_user_accounts]
+}
+
+module "pipe_admin_role" {
+  source       = "./modules/roles"
+  count        = local.enable_in_dev_flag
+  role_name    = "${upper(var.project_code)}_PIPE_ADMIN_ROLE"
+  role_comment = "Snowflake role used by Snowpipe Admins"
+
+  roles = ["SYSADMIN"]
+  users = [lower("admin@entechlog.com"),
+    lower("${var.env_code}_svc_${lower(var.project_code)}_snow_dbt_user")
+  ]
 
   depends_on = [module.all_service_accounts]
 }

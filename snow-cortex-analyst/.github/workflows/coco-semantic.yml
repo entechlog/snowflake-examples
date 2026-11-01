@@ -1,0 +1,83 @@
+# =============================================================================
+# CI/CD: CoCo Semantic View + Agent Deployment
+#
+# Deploys semantic views from YAML and agents via deploy.py.
+# Triggered on push to develop (→ dev) and main (→ prd).
+#
+# ADO Migration Notes:
+#   - Replace `on: push` with `trigger: branches: [...]`
+#   - Replace `secrets.*` with ADO variable groups or key vault references
+#   - Replace `actions/checkout@v4` with `checkout: self`
+#   - Replace `run:` steps with `script:` tasks
+#   - Use `pool: vmImage: 'ubuntu-latest'` instead of `runs-on`
+#   - For SNOWFLAKE_PASSWORD, use ADO key vault linked variable group
+#   - For key-pair auth, set SNOWFLAKE_AUTHENTICATOR=snowflake_jwt
+#     and SNOWFLAKE_PRIVATE_KEY_PATH via secure file task
+# =============================================================================
+
+name: Deploy CoCo Semantic Views
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'snow-cortex-analyst/coco/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prd
+
+env:
+  PROJ_CODE: entechlog
+
+jobs:
+  deploy:
+    name: Deploy (${{ github.ref_name == 'main' && 'prd' || 'dev' }})
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+
+    env:
+      ENV_CODE: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLE: ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}_SVC_ENTECHLOG_SNOW_DBT_ROLE
+      SNOWFLAKE_WAREHOUSE: ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}_ENTECHLOG_DBT_WH_XS
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml snowflake-connector-python
+
+      # Prerequisite: seed + OBT must exist (deployed by dbt workflow)
+      # If running standalone, uncomment these steps:
+      # - name: Install dbt
+      #   run: pip install dbt-core dbt-snowflake
+      # - name: Seed + OBT
+      #   working-directory: snow-cortex-analyst/dbt
+      #   run: dbt deps && dbt seed && dbt run --select tag:obt
+
+      - name: Deploy semantic views + agents
+        working-directory: snow-cortex-analyst/coco/scripts
+        run: python deploy.py
+
+      - name: Show status
+        working-directory: snow-cortex-analyst/coco/scripts
+        run: python deploy.py --status

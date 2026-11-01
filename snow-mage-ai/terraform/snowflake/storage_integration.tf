@@ -3,7 +3,7 @@
 //***************************************************************************//
 
 module "str_s3_intg" {
-  source                    = "../../../snow-objects/terraform/modules/storage-integration"
+  source                    = "../../../snow-infra/terraform/modules/storage-integration"
   name                      = "${upper(local.resource_prefix_with_env)}_STR_S3_INTG"
   comment                   = ""
   storage_provider          = "S3"

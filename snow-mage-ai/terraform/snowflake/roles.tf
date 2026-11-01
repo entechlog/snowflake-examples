@@ -4,7 +4,7 @@
 //***************************************************************************//
 
 module "dbt_role" {
-  source       = "../../../snow-objects/terraform/modules/roles"
+  source       = "../../../snow-infra/terraform/modules/roles"
   role_name    = "${upper(local.resource_prefix_with_env)}_DBT_ROLE"
   role_comment = "Snowflake role used by dbt in ${var.env_code}"
 
@@ -20,7 +20,7 @@ module "dbt_role" {
 //***************************************************************************//
 
 module "da_role" {
-  source       = "../../../snow-objects/terraform/modules/roles"
+  source       = "../../../snow-infra/terraform/modules/roles"
   count        = local.enable_in_dev_flag
   role_name    = "${upper(local.resource_prefix_without_env)}_DA_ROLE"
   role_comment = "Snowflake role used by Analyst"
@@ -32,7 +32,7 @@ module "da_role" {
 }
 
 module "de_role" {
-  source       = "../../../snow-objects/terraform/modules/roles"
+  source       = "../../../snow-infra/terraform/modules/roles"
   count        = local.enable_in_dev_flag
   role_name    = "${upper(local.resource_prefix_without_env)}_DE_ROLE"
   role_comment = "Snowflake role used by Developers"

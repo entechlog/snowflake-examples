@@ -1,0 +1,138 @@
+name: marketing_campaign_stats_1d
+description: >
+  Daily marketing campaign statistics at channel + region grain.
+  Each row represents one day of campaign activity for a specific
+  channel in a specific region.
+
+tables:
+  - name: marketing_campaign_stats_1d
+    description: "Daily marketing campaign metrics by channel and region"
+    base_table:
+      database: __DATABASE__
+      schema: OBT
+      table: MARKETING_CAMPAIGN_STATS_1D
+
+    time_dimensions:
+      - name: campaign_date
+        synonyms: ["date", "campaign day"]
+        description: "Calendar date of campaign activity. Query MAX(campaign_date) to find latest data."
+        expr: CAMPAIGN_DATE
+        data_type: DATE
+
+    dimensions:
+      - name: channel
+        synonyms: ["marketing channel", "campaign channel", "medium"]
+        description: "Marketing channel. Values: Email, Social Media, Paid Search, Display Ads."
+        expr: CHANNEL
+        data_type: VARCHAR
+        is_enum: true
+
+      - name: region
+        synonyms: ["geography", "market"]
+        description: "Geographic region. Values: Northeast, Southeast, Midwest, West."
+        expr: REGION
+        data_type: VARCHAR
+        is_enum: true
+
+    facts:
+      - name: impressions
+        synonyms: ["views", "ad views", "reach"]
+        description: "Number of times the ad was shown. CUMULATIVE: SUM()."
+        expr: IMPRESSIONS
+        data_type: NUMBER
+
+      - name: clicks
+        synonyms: ["ad clicks", "click-throughs"]
+        description: "Number of clicks on the ad. CUMULATIVE: SUM()."
+        expr: CLICKS
+        data_type: NUMBER
+
+      - name: spend
+        synonyms: ["ad spend", "campaign cost", "budget spent"]
+        description: "Total campaign spend in USD. CUMULATIVE: SUM()."
+        expr: SPEND
+        data_type: NUMBER
+
+      - name: conversions
+        synonyms: ["sales from ads", "campaign conversions"]
+        description: "Number of conversions (purchases) from the campaign. CUMULATIVE: SUM()."
+        expr: CONVERSIONS
+        data_type: NUMBER
+
+      - name: conversion_revenue
+        synonyms: ["campaign revenue", "attributed revenue"]
+        description: "Revenue attributed to campaign conversions in USD. CUMULATIVE: SUM()."
+        expr: CONVERSION_REVENUE
+        data_type: NUMBER
+
+      - name: net_campaign_value
+        synonyms: ["campaign profit", "campaign ROI value"]
+        description: "Net value of campaign (conversion_revenue - spend). CUMULATIVE: SUM()."
+        expr: NET_CAMPAIGN_VALUE
+        data_type: NUMBER
+
+    metrics:
+      - name: click_through_rate
+        synonyms: ["CTR"]
+        description: "Click-through rate: clicks / impressions. Never SUM this directly."
+        expr: SUM(clicks) * 100.0 / NULLIF(SUM(impressions), 0)
+
+      - name: cost_per_click
+        synonyms: ["CPC"]
+        description: "Cost per click: spend / clicks. Never SUM this directly."
+        expr: SUM(spend) / NULLIF(SUM(clicks), 0)
+
+      - name: conversion_rate
+        synonyms: ["CVR"]
+        description: "Conversion rate: conversions / clicks. Never SUM this directly."
+        expr: SUM(conversions) * 100.0 / NULLIF(SUM(clicks), 0)
+
+      - name: cost_per_conversion
+        synonyms: ["CPA", "cost per acquisition"]
+        description: "Cost per conversion: spend / conversions. Never SUM this directly."
+        expr: SUM(spend) / NULLIF(SUM(conversions), 0)
+
+      - name: return_on_ad_spend
+        synonyms: ["ROAS"]
+        description: "Return on ad spend: conversion_revenue / spend."
+        expr: SUM(conversion_revenue) / NULLIF(SUM(spend), 0)
+
+verified_queries:
+  - name: spend_by_channel
+    question: "What is the total spend by marketing channel?"
+    sql: |
+      SELECT channel, SUM(spend) AS total_spend
+      FROM __marketing_campaign_stats_1d
+      GROUP BY channel
+      ORDER BY total_spend DESC
+    use_as_onboarding_question: true
+
+  - name: roas_by_channel
+    question: "What is the return on ad spend by channel?"
+    sql: |
+      SELECT channel,
+             SUM(conversion_revenue) / NULLIF(SUM(spend), 0) AS roas
+      FROM __marketing_campaign_stats_1d
+      GROUP BY channel
+      ORDER BY roas DESC
+    use_as_onboarding_question: true
+
+  - name: weekly_conversion_trend
+    question: "Show me weekly conversion trends"
+    sql: |
+      SELECT DATE_TRUNC('WEEK', campaign_date) AS week,
+             SUM(conversions) AS total_conversions
+      FROM __marketing_campaign_stats_1d
+      GROUP BY week
+      ORDER BY week
+    use_as_onboarding_question: true
+
+  - name: ctr_by_region
+    question: "Which region has the best click-through rate?"
+    sql: |
+      SELECT region,
+             SUM(clicks) * 100.0 / NULLIF(SUM(impressions), 0) AS ctr
+      FROM __marketing_campaign_stats_1d
+      GROUP BY region
+      ORDER BY ctr DESC
+    use_as_onboarding_question: true

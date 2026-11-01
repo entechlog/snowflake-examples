@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: semantic__order_stats_1d
+    description: >
+      Semantic view for daily order statistics.
+      Maps 1:1 to the OBT table order_stats_1d.
+    meta:
+      verified_queries:
+        - name: revenue_by_category
+          question: "What is the total revenue by product category?"
+          sql: "SELECT product_category, SUM(revenue) AS total_revenue FROM __order_stats_1d GROUP BY product_category ORDER BY total_revenue DESC"
+          use_as_onboarding_question: true
+        - name: weekly_order_trend
+          question: "Show me weekly order count trends"
+          sql: "SELECT DATE_TRUNC('WEEK', order_date) AS week, SUM(order_count) AS total_orders FROM __order_stats_1d GROUP BY week ORDER BY week"
+          use_as_onboarding_question: true
+        - name: aov_by_region
+          question: "Which region has the highest average order value?"
+          sql: "SELECT region, SUM(revenue) / NULLIF(SUM(order_count), 0) AS avg_order_value FROM __order_stats_1d GROUP BY region ORDER BY avg_order_value DESC"
+          use_as_onboarding_question: true
+        - name: net_revenue_electronics
+          question: "What is the net revenue for Electronics?"
+          sql: "SELECT SUM(net_revenue) AS net_revenue FROM __order_stats_1d WHERE product_category = 'Electronics'"

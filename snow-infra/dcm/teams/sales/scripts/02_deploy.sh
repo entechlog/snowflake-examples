@@ -3,12 +3,12 @@
 # Deploy — apply changes to an environment
 # =============================================================================
 # Usage:
-#   ./02_deploy.sh                       # defaults to DCM_DEV, alias = deploy-<timestamp>
-#   ./02_deploy.sh DCM_STG "stg release 2026-06-01"
-#   ./02_deploy.sh DCM_PRD "prd release v1.2.0"
+#   ./02_deploy.sh                             # defaults to DCM_SALES_DEV, alias = deploy-<timestamp>
+#   ./02_deploy.sh DCM_SALES_STG "stg release 2026-06-01"
+#   ./02_deploy.sh DCM_SALES_PRD "prd release v1.2.0"
 #
 # Run inside the snow-tools container. Requires SNOWFLAKE_HOME + a connection
-# named "dcm-<env>" (or override with SNOWFLAKE_CONNECTION).
+# named "dcm-sales-<env>" (or override with SNOWFLAKE_CONNECTION).
 #
 # The alias is recorded in the DCM project history — make it meaningful.
 # Post-deploy post_scripts/*.sql do NOT run from this wrapper (or from CI);

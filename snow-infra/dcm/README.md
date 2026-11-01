@@ -94,6 +94,8 @@ RAW_DB           PREP_DB           DW_DB                    DCM_DB
 
 PREP mirrors DW's `DIM` / `FACT` shape — PREP is the conformed staging form, DW is the consumer-facing final form. DCM_DB holds the DCM project object (state) and nothing else.
 
+The DW `DIM.CUSTOMER` and `FACT.SALES_ORDER` tables are declared to show plain and clustered tables under DCM, but nothing loads them — that's the job of your transformation tool (dbt etc.). The OBT dynamic table reads straight from the PREP views so the demo has a working chain without one.
+
 ## Macros — single source of truth via `shared/`
 
 DCM requires macros to live INSIDE each project's `sources/macros/` directory. With multiple projects (platform + per-team), keeping N copies in git would let them drift. So:
@@ -286,7 +288,7 @@ The marketing team can now plan/deploy independently of SALES. Both teams' proje
 
 | Variable | Where | Drives |
 |---|---|---|
-| `proj_code` / `team_name` | platform manifest `teams:` list / team manifest defaults | Object name infix |
+| `teams[].name` / `team_name` | platform manifest `teams:` list / team manifest defaults | Object name infix |
 | `env_code` | per-target config | Env prefix on env-scoped objects |
 | `deploy_account_user_roles` | true only in PLATFORM_DEV target | Account-level team DCM role created once across envs |
 | `data_retention_days` | per-target | Snowflake Time Travel retention |
@@ -345,7 +347,7 @@ To exercise the workflow on a non-`develop` / non-`main` branch (e.g. `feature/<
 
 Three options depending on what you want to keep.
 
-**1. DCM-aware purge** (preferred — keeps DCM PROJECT objects, deploy history intact):
+**1. DCM-aware purge** (preferred — keeps DCM PROJECT objects, deploy history intact). Purge every team env first, and the platform **DEV** project last: it owns the cross-env team role and warehouse, so purging it removes them for STG/PRD too:
 ```bash
 snow sql -f teams/sales/scripts/04_purge.sql --connection dcm-sales-dev
 snow sql -f platform/scripts/04_purge.sql   --connection dcm-platform-dev

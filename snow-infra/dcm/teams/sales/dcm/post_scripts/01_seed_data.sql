@@ -1,11 +1,9 @@
 -- =============================================================================
 -- Post-deploy: seed sample data + refresh dynamic tables
 -- =============================================================================
--- Lives in dcm/post_scripts/ so the official
--- Snowflake-Labs/snowflake_dcm_projects/actions/dcm-deploy action runs it
--- automatically after every deploy (post-scripts-path: "post_scripts").
---
--- For local runs, call explicitly:
+-- Lives outside sources/ so DCM doesn't upload it. Neither the local
+-- 02_deploy.sh wrapper nor the key-pair CI workflow runs it - call it
+-- explicitly after deploy:
 --   snow sql -f dcm/post_scripts/01_seed_data.sql --connection dcm-sales-dev
 --
 -- Re-runnable: INSERT statements would duplicate rows on second run - the

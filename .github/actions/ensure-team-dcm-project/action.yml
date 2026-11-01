@@ -29,7 +29,7 @@ runs:
   steps:
     - name: Install Snow CLI
       shell: bash
-      run: pip install --quiet "snowflake-cli>=3.16.0"
+      run: pip install --quiet "snowflake-cli>=3.24.0"
 
     - name: Create DCM PROJECT (idempotent)
       shell: bash

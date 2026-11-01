@@ -16,11 +16,11 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DCM_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SHARED="$DCM_ROOT/shared/macros"
 
-# Every DCM project that needs the macros — add a new line per team
-TARGETS=(
-    "$DCM_ROOT/platform/dcm/sources/macros"
-    "$DCM_ROOT/teams/sales/dcm/sources/macros"
-)
+# Every DCM project that needs the macros — platform + each teams/<name>/dcm
+TARGETS=("$DCM_ROOT/platform/dcm/sources/macros")
+for team_dcm in "$DCM_ROOT"/teams/*/dcm; do
+    [[ -f "$team_dcm/manifest.yml" ]] && TARGETS+=("$team_dcm/sources/macros")
+done
 
 if [[ ! -d "$SHARED" ]]; then
     echo "ERROR: $SHARED does not exist" >&2

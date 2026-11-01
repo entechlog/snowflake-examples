@@ -39,6 +39,8 @@ DEFINE WAREHOUSE SVC_{{ team.name | upper }}_DCM_WH_XS
     AUTO_SUSPEND        = 30
     AUTO_RESUME         = TRUE
     INITIALLY_SUSPENDED = TRUE
+    ENABLE_QUERY_ACCELERATION           = FALSE
+    QUERY_ACCELERATION_MAX_SCALE_FACTOR = 8
     COMMENT             = '{{ team.name }} DCM ops warehouse';
 
 GRANT OWNERSHIP ON WAREHOUSE SVC_{{ team.name | upper }}_DCM_WH_XS

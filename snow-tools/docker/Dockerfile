@@ -35,8 +35,8 @@ RUN curl -fsSL "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/li
     alien -i /tmp/snowflake-snowsql.rpm && \
     rm /tmp/snowflake-snowsql.rpm
 
-# Install Snowflake CLI (snow) — pinned for DCM Projects support
-RUN pip install --no-cache-dir "snowflake-cli>=3.16.0"
+# Install Snowflake CLI (snow) — DCM Projects (GA) requires 3.24.0+
+RUN pip install --no-cache-dir "snowflake-cli>=3.24.0"
 
 # Install Cortex Code CLI (best-effort)
 RUN curl -LsS https://ai.snowflake.com/static/cc-scripts/install.sh | sh || true

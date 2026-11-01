@@ -8,11 +8,12 @@
 #   ./01_plan.sh DCM_PRD
 #
 # Run inside the snow-tools container. Requires:
-#   - Snow CLI v3.16.0+
+#   - Snow CLI v3.24.0+ (minimum for DCM Projects GA)
 #   - SNOWFLAKE_HOME pointing at a dir with config.toml that defines a
 #     connection named "dcm-<env>" (or override with SNOWFLAKE_CONNECTION).
 #
-# Plan output is written to dcm/out/plan.json by --save-output.
+# Plan output is written to dcm/out/plan_result.json by --save-output
+# (rendered SQL lands in dcm/out/rendered/).
 # =============================================================================
 set -euo pipefail
 
@@ -34,6 +35,6 @@ snow dcm plan \
     --save-output
 
 echo ""
-echo "==> Plan saved to ./out/plan.json"
-echo "==> Review with: jq '.changeset[] | {type, object_id: .object_id.fqn}' ./out/plan.json"
+echo "==> Plan saved to ./out/plan_result.json"
+echo "==> Review with: jq '.changeset[] | {type, object_id: .object_id.fqn}' ./out/plan_result.json"
 echo "==> Then deploy: ./scripts/02_deploy.sh ${TARGET} \"<alias>\""

@@ -3,14 +3,14 @@
 # Plan (dry-run) — preview changes for an environment
 # =============================================================================
 # Usage:
-#   ./01_plan.sh                # defaults to DCM_DEV
-#   ./01_plan.sh DCM_STG
-#   ./01_plan.sh DCM_PRD
+#   ./01_plan.sh                      # defaults to DCM_SALES_DEV
+#   ./01_plan.sh DCM_SALES_STG
+#   ./01_plan.sh DCM_SALES_PRD
 #
 # Run inside the snow-tools container. Requires:
 #   - Snow CLI v3.24.0+ (minimum for DCM Projects GA)
 #   - SNOWFLAKE_HOME pointing at a dir with config.toml that defines a
-#     connection named "dcm-<env>" (or override with SNOWFLAKE_CONNECTION).
+#     connection named "dcm-sales-<env>" (or override with SNOWFLAKE_CONNECTION).
 #
 # Plan output is written to dcm/out/plan_result.json by --save-output
 # (rendered SQL lands in dcm/out/rendered/).

@@ -29,9 +29,8 @@ targets:
 # Team-local templating
 #
 # - team_name fixes this project to SALES (other teams have their own dir)
-# - proj_code stays for reference but real naming uses team_name now
-# - User roles + service roles are PLATFORM-owned — referenced here but not
-#   created. deploy_query_warehouse flag toggles the shared ALL_*_QUERY_WH.
+# - The deployer role (SVC_SALES_DCM_ROLE), its warehouse and the
+#   {ENV}_SALES_DCM_DB shell are PLATFORM-owned — referenced here, not declared.
 # -----------------------------------------------------------------------------
 templating:
   defaults:

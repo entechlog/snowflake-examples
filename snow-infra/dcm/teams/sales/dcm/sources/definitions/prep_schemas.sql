@@ -1,7 +1,7 @@
 -- =============================================================================
 -- PREP schemas — staging / standardization layer
 -- =============================================================================
--- Database is platform-owned. Team only creates these schemas.
+-- Database is declared in team_databases.sql (team-owned).
 -- PREP mirrors DW's DIM/FACT shape so the
 -- same modeling concepts live in both layers - PREP is the conformed staging
 -- ground, DW is the consumer-facing final form.

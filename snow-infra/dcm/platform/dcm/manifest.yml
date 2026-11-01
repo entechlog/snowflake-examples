@@ -36,8 +36,6 @@ targets:
 # -----------------------------------------------------------------------------
 templating:
   defaults:
-    proj_code: "ENTECHLOG"   # parent org / project code (was used as team code in Pattern A demo)
-
     data_retention_days: 1
 
     teams:

@@ -22,7 +22,7 @@
 SVC_{{ team | upper }}_DCM_ROLE
 {%- endmacro %}
 
-{# Team DCM deployer user — created out-of-band, granted role via DCM #}
+{# Team DCM deployer user — created and role-granted by platform deploy pre/post scripts (DCM can't declare users) #}
 {% macro team_dcm_user(team) -%}
 SVC_{{ team | upper }}_DCM_USER
 {%- endmacro %}

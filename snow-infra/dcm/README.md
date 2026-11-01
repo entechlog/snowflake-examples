@@ -40,7 +40,7 @@ flowchart TB
     class RBAC future
 ```
 
-After Day-0 onboarding, the platform layer never touches the team again. Team's DCM role can `CREATE DATABASE` / `CREATE ROLE` / `CREATE WAREHOUSE` on the account — but **not** `MANAGE GRANTS`, because team OWNS the objects it creates and owner-grants (including FUTURE grants on owned DBs) work without MANAGE GRANTS.
+After Day-0 onboarding, the platform layer never touches the team again. Team's DCM role can `CREATE DATABASE` / `CREATE ROLE` / `CREATE WAREHOUSE` on the account — but **not** `MANAGE GRANTS`, because team OWNS the objects it creates and can grant privileges on them without it. The one gap is FUTURE grants: Snowflake requires the global `MANAGE GRANTS` for those (owning the database isn't enough). See [Optional RBAC layer](#optional-rbac-layer-out-of-demo-scope-documented-for-completeness) for how to cover that without giving teams `MANAGE GRANTS`.
 
 ## Naming conventions
 
@@ -70,7 +70,14 @@ The full Snowflake RBAC pattern that scales (Snowflake-recommended) is **AR / FR
 Anti-patterns:
 - Never grant an AR directly to a user — always user → FR → AR
 - Never grant FR to another FR — compose FRs from ARs only
-- Never grant `MANAGE GRANTS` to a team role — team owns its DBs, so owner-grants are sufficient
+- Never grant `MANAGE GRANTS` to a team role — team owns its objects, so plain grants on them work without it
+
+**FUTURE grants without `MANAGE GRANTS`:** defining `GRANT … ON FUTURE …` needs the global `MANAGE GRANTS` privilege, even on databases the team owns. Pick one:
+- Create team schemas `WITH MANAGED ACCESS` — the schema owner (the team role) can then define schema-level future grants inside them
+- Have the platform layer (which holds `MANAGE GRANTS`) issue the ARs' future grants
+- Use inherited grants with container-level `MANAGE GRANTS` (see the DCM note below; preview)
+
+Also note: if a schema has its own future grants for an object type, database-level future grants for that type are ignored in that schema.
 
 > **DCM note:** inside DCM definition files, `GRANT … ON FUTURE` and `GRANT … ON ALL` still work but are slated for deprecation in favor of `GRANT … ON INHERITED …` (preview; needs `ALTER ACCOUNT SET FEATURE_RBAC_INHERITED_GRANTS = 'ENABLED'`). Prefer inherited grants when you declare ARs here.
 

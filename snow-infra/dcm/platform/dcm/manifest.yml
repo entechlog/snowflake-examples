@@ -28,10 +28,11 @@ targets:
 # -----------------------------------------------------------------------------
 # Templating
 #
-# `teams` is the list of teams the platform manages — each gets a DB triplet
-# (RAW/PREP/DW), a DCM service role, and a DCM PROJECT object inside their
-# DW database. Adding a team is a one-line change here + a new teams/<name>/
-# directory.
+# `teams` is the list of teams the platform manages — each gets a DCM service
+# role, a DCM warehouse, and an {ENV}_<TEAM>_DCM_DB shell (team creates its
+# own RAW/PREP/DW). Adding a team is a one-line change here + a new
+# teams/<name>/ directory. platform/scripts/_ensure_team_users.sh and
+# _attach_team_roles.sh read this list too.
 # -----------------------------------------------------------------------------
 templating:
   defaults:
@@ -42,7 +43,7 @@ templating:
     teams:
       - name: SALES
         # In a real org you'd list MARKETING, FINANCE, etc. here too;
-        # the team_databases.sql + team_dcm_scaffolding.sql files loop over this.
+        # team_dcm_scaffolding.sql loops over this.
 
   configurations:
     DEV:

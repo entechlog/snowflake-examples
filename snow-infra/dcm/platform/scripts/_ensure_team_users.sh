@@ -13,14 +13,17 @@
 #
 # Invoked by platform/scripts/02_deploy.sh — not meant to be called directly.
 #
-# Override the team list with TEAMS env var:
+# Team list defaults to the `teams:` names in platform/dcm/manifest.yml.
+# Override with TEAMS env var:
 #   TEAMS="SALES MARKETING FINANCE" ENV_CODE=DEV ./_ensure_team_users.sh
 # =============================================================================
 set -euo pipefail
 
 : "${ENV_CODE:?ENV_CODE required (DEV/STG/PRD)}"
 CONN="${SNOWFLAKE_CONNECTION:-dcm-platform-${ENV_CODE,,}}"
-TEAMS="${TEAMS:-SALES}"
+MANIFEST="$(cd "$(dirname "$0")/../dcm" && pwd)/manifest.yml"
+TEAMS="${TEAMS:-$(sed -nE 's/^[[:space:]]*-[[:space:]]*name:[[:space:]]*"?([A-Za-z0-9_]+)"?.*/\1/p' "$MANIFEST")}"
+[[ -n "$TEAMS" ]] || { echo "No teams found in $MANIFEST" >&2; exit 1; }
 
 for team in $TEAMS; do
   TEAM_UPPER="${team^^}"

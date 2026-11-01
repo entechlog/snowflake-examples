@@ -17,4 +17,4 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR/../dcm"
 echo "==> Platform plan: ${TARGET} (connection: ${CONN})"
 snow dcm plan --target "${TARGET}" --connection "${CONN}" --save-output
-echo "==> Plan saved to ./out/plan.json"
+echo "==> Plan saved to ./out/plan_result.json (rendered SQL in ./out/rendered/)"

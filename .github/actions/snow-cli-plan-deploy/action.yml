@@ -19,7 +19,7 @@ inputs:
     required: false
     default: ''
   allow_drops:
-    description: 'Pass --allow-drops to deploy'
+    description: 'Allow deploy when the plan contains DROP changes (snow CLI has no --allow-drops flag, so this action enforces it)'
     required: false
     default: 'false'
   snowflake_account:
@@ -44,7 +44,7 @@ runs:
   steps:
     - name: Install Snow CLI
       shell: bash
-      run: pip install --quiet "snowflake-cli>=3.16.0"
+      run: pip install --quiet "snowflake-cli>=3.24.0"
 
     - name: Configure Snow CLI connection
       shell: bash
@@ -92,14 +92,23 @@ runs:
         case "$ACTION" in
           plan)
             snow dcm plan --target "$TARGET" --connection ci --save-output
-            PLAN_FILE="$(pwd)/out/plan.json"
+            PLAN_FILE="$(pwd)/out/plan_result.json"
             echo "plan_file=$PLAN_FILE" >> "$GITHUB_OUTPUT"
             ;;
           deploy)
             [[ -n "$ALIAS" ]] || { echo "alias is required for deploy" >&2; exit 2; }
-            DROP_FLAG=""
-            [[ "$ALLOW_DROPS" == "true" ]] && DROP_FLAG="--allow-drops"
-            snow dcm deploy --target "$TARGET" --alias "$ALIAS" --connection ci $DROP_FLAG
+            # Drop guard: snow CLI deploy has no --allow-drops flag, so re-plan
+            # and refuse to deploy if the changeset would drop anything.
+            if [[ "$ALLOW_DROPS" != "true" ]]; then
+              snow dcm plan --target "$TARGET" --connection ci --save-output
+              DROPS="$(jq '[.changeset[] | select(.type == "DROP")] | length' out/plan_result.json)"
+              if [[ "$DROPS" -gt 0 ]]; then
+                echo "Plan contains ${DROPS} DROP change(s); refusing to deploy (set allow_drops: 'true' to override):" >&2
+                jq -r '.changeset[] | select(.type == "DROP") | "  DROP \(.object_id.domain) \(.object_id.fqn)"' out/plan_result.json >&2
+                exit 1
+              fi
+            fi
+            snow dcm deploy --target "$TARGET" --alias "$ALIAS" --connection ci
             ;;
           *)
             echo "Unknown action: $ACTION (must be plan or deploy)" >&2

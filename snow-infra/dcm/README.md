@@ -4,6 +4,8 @@ End-to-end Database Change Management example for Snowflake using **DCM Projects
 
 Swap `team_name` in `platform/dcm/manifest.yml` `teams:` list (and add a matching `teams/<name>/` directory) to model your own domains.
 
+> **Status:** DCM Projects is generally available (Aug 2026). This demo was built during preview and re-verified against the GA service with Snowflake CLI 3.31. The CLI needs **3.24.0+** for `snow dcm`.
+
 ## Architecture (platform-thin + team-self-service)
 
 Two DCM projects per team. **Platform** runs rarely (only when onboarding new teams or changing org-wide scaffolding). **Team** runs on every team change.
@@ -53,7 +55,7 @@ Env-first prefix groups all DEV things together for Snowsight browsing. The demo
 | Functional Role (no env, per job) | `{TEAM}_{ROLE}_FR` | `SALES_DA_FR` | team |
 | Service-FR (per env, per tool) | `{ENV}_{TEAM}_{TOOL}_SVC_FR` | `DEV_SALES_DBT_SVC_FR` | team |
 | Team DCM deployer role | `SVC_{TEAM}_DCM_ROLE` | `SVC_SALES_DCM_ROLE` | platform |
-| Team DCM deployer user | `SVC_{TEAM}_DCM_USER` | `SVC_SALES_DCM_USER` | platform (created out-of-band, role granted via DCM) |
+| Team DCM deployer user | `SVC_{TEAM}_DCM_USER` | `SVC_SALES_DCM_USER` | platform (created and role-granted by deploy pre/post scripts — DCM can't declare users) |
 | DCM project (platform) | `{ENV}_PLATFORM_DCM_DB.PROJECTS.INFRA` | `DEV_PLATFORM_DCM_DB.PROJECTS.INFRA` | platform |
 | DCM project (team) | `{ENV}_{TEAM}_DCM_DB.PROJECTS.INFRA` | `DEV_SALES_DCM_DB.PROJECTS.INFRA` | platform-bootstrapped, team-owned |
 
@@ -69,6 +71,8 @@ Anti-patterns:
 - Never grant an AR directly to a user — always user → FR → AR
 - Never grant FR to another FR — compose FRs from ARs only
 - Never grant `MANAGE GRANTS` to a team role — team owns its DBs, so owner-grants are sufficient
+
+> **DCM note:** inside DCM definition files, `GRANT … ON FUTURE` and `GRANT … ON ALL` still work but are slated for deprecation in favor of `GRANT … ON INHERITED …` (preview; needs `ALTER ACCOUNT SET FEATURE_RBAC_INHERITED_GRANTS = 'ENABLED'`). Prefer inherited grants when you declare ARs here.
 
 This demo intentionally doesn't deploy this layer because it isn't required to show DCM mechanics. Teams adopting the demo declare their own AR/FR/SVC_FR in their team DCM project, following the patterns in the naming table above.
 
@@ -125,6 +129,7 @@ Edit `snow-tools/.env` once, then `docker-compose down && docker-compose up -d` 
 ## Prerequisites
 
 - Snowflake account with **ACCOUNTADMIN access** (one-time bootstrap only)
+- Snowflake CLI **3.24.0+** (the `snow-tools` image installs it; check with `snow --version` and rebuild with `--build` if older)
 - The `snow-tools` container from this repo with `.env` configured (see above):
   ```bash
   cd ../../snow-tools
@@ -181,11 +186,11 @@ Creates `{ENV}_PLATFORM_DCM_DB.PROJECTS.INFRA` for each of DEV / STG / PRD.
 
 ### Step 5 - Platform plan + deploy
 
-The deploy script pre-creates each team's service USER (via `_ensure_team_users.sh`) since DCM doesn't support USER as a declarable entity. Everything else (role, scoped account privileges, team DCM warehouse, team DCM_DB shell, ownership transfers, role-to-user grant) is declarative DCM.
+The deploy script pre-creates each team's service USER (via `_ensure_team_users.sh`) since DCM doesn't support USER as a declarable entity, and grants the team role to that user afterwards (via `_attach_team_roles.sh`). Everything else (role, scoped account privileges, team DCM warehouse, team DCM_DB shell, ownership transfers) is declarative DCM.
 
 ```bash
 ./scripts/sync_macros.sh                              # one-time per shell after fresh clone
-./platform/scripts/01_plan.sh DEV                     # review out/plan.json
+./platform/scripts/01_plan.sh DEV                     # review platform/dcm/out/plan_result.json
 ./platform/scripts/02_deploy.sh DEV "initial-platform"
 ```
 
@@ -212,7 +217,7 @@ snow connection test --connection dcm-sales-dev
 
 ### Step 7 - Create the SALES team DCM PROJECT object
 
-DCM can't declare a DCM PROJECT inside another DCM project. Create it once per env, scripted:
+DCM can't declare a DCM PROJECT inside another DCM project. Create it once per env, scripted (`snow dcm create --target DCM_SALES_DEV --if-not-exists` from `teams/sales/dcm` also works once the `PROJECTS` schema exists):
 
 ```bash
 snow sql --connection dcm-sales-dev -q "
@@ -228,15 +233,15 @@ CI does this automatically via the `ensure-team-dcm-project` composite action on
 ### Step 8 - SALES team plan + deploy
 
 ```bash
-./teams/sales/scripts/01_plan.sh DCM_SALES_DEV         # review out/plan.json
+./teams/sales/scripts/01_plan.sh DCM_SALES_DEV         # review teams/sales/dcm/out/plan_result.json
 ./teams/sales/scripts/02_deploy.sh DCM_SALES_DEV "initial-team"
 ```
 
-This creates 16 entities: 3 DBs (RAW/PREP/DW), 6 schemas, 4 tables, 2 views, 1 dynamic table.
+On a fresh env this deploys 20 entities: 3 DBs (RAW/PREP/DW), 9 schemas (6 declared + the 3 auto-created `PUBLIC` schemas, which DCM now tracks), 4 tables, 2 views, 1 dynamic table, plus the team role's ownership grants.
 
 ### Step 9 - Seed data
 
-The local `02_deploy.sh` doesn't run post-scripts (CI's `dcm-deploy` action does, via `post-scripts-path`). Run it manually after team deploy:
+Neither the local `02_deploy.sh` nor CI runs post-scripts. Run it manually after team deploy (set `ENV_CODE` at the top of the file for STG/PRD):
 
 ```bash
 snow sql --connection dcm-sales-dev -f teams/sales/dcm/post_scripts/01_seed_data.sql
@@ -258,14 +263,14 @@ Rows means the chain works end-to-end. (To validate the FR → AR chain instead,
 
 To onboard `MARKETING`:
 
-1. **Platform manifest**: add `{ name: MARKETING }` to the `teams:` list in `platform/dcm/manifest.yml`
-2. **Platform deploy** — `./platform/scripts/02_deploy.sh DEV "onboard-marketing"`. The deploy script's pre-step creates `SVC_MARKETING_DCM_USER`; DCM creates the role, WH, DCM_DB, grants, ownership transfers.
+1. **Platform manifest**: add `- name: MARKETING` to the `teams:` list in `platform/dcm/manifest.yml` (the user/role scripts read team names from this list)
+2. **Platform deploy** — `./platform/scripts/02_deploy.sh DEV "onboard-marketing"`. The deploy script's pre-step creates `SVC_MARKETING_DCM_USER`; DCM creates the role, WH, DCM_DB, grants, ownership transfers. Repeat for STG / PRD to create those envs' DCM_DB shells.
 3. **Generate + register the MARKETING RSA key**:
    ```bash
    SF_USER=SVC_MARKETING_DCM_USER KEY_NAME=svc_marketing_dcm \
      ./teams/sales/bootstrap/00_generate_rsa_key.sh --register-via dcm-platform-dev
    ```
-4. **Copy** `teams/sales/` → `teams/marketing/`, swap `team_name: MARKETING` in the team manifest, add MARKETING connections to `config.toml`, commit.
+4. **Copy** `teams/sales/` → `teams/marketing/`, swap `team_name: MARKETING`, the target names, and the `project_name`s in the team manifest, add MARKETING connections to `config.toml`, commit. (`sync_macros.sh` picks up the new `teams/marketing/dcm` automatically.)
 5. **Team deploy** — `./teams/marketing/scripts/02_deploy.sh DCM_MARKETING_DEV "initial-team"` (the team DCM PROJECT object is created idempotently on first deploy if you wire the same composite-action pattern; otherwise run the Step 7 SQL once per env).
 
 The marketing team can now plan/deploy independently of SALES. Both teams' projects live in their own DBs; neither can see the other's plan history.
@@ -278,7 +283,6 @@ The marketing team can now plan/deploy independently of SALES. Both teams' proje
 | `env_code` | per-target config | Env prefix on env-scoped objects |
 | `deploy_account_user_roles` | true only in PLATFORM_DEV target | Account-level team DCM role created once across envs |
 | `data_retention_days` | per-target | Snowflake Time Travel retention |
-| `*_wh_size`, `auto_suspend_seconds` | per-target | Per-env warehouse sizing |
 
 DCM forbids `{% import %}` / `{% extends %}` / `{% include %}` - macros under `sources/macros/` are auto-loaded globally per project. Call by bare name.
 
@@ -288,22 +292,25 @@ DCM is fully declarative. First deploy → CREATEs. No code change → empty pla
 
 ## CI/CD
 
-`.github/workflows/dcm-deploy.yml` uses the official `Snowflake-Labs/snowflake_dcm_projects/actions/` actions:
+`.github/workflows/dcm-deploy.yml` uses two local composite actions instead of the official `Snowflake-Labs/snowflake_dcm_projects/actions/` (those are OIDC-only and still in preview; this demo uses key-pair auth):
+
+- `.github/actions/snow-cli-plan-deploy` — installs Snow CLI 3.24.0+ and runs `snow dcm plan` / `snow dcm deploy`
+- `.github/actions/ensure-team-dcm-project` — idempotently creates the team's DCM PROJECT object
 
 | Trigger | Action | Target |
 |---|---|---|
-| PR touching `snow-infra/dcm/**` | `dcm-plan` - posts plan as PR comment | DEV |
+| PR touching `snow-infra/dcm/**` | plan (log only) | DEV |
 | Push to `develop` | plan + deploy | DEV |
 | Push to `main` | plan + deploy → STG, then PRD (gated by `snowflake-prd` GitHub environment) | STG → PRD |
 | `workflow_dispatch` (manual) | plan or deploy — pick target + action in the UI | any |
 
 Built-in safety:
-- `allow-drops: "false"` - deploy fails if plan contains DROP
-- `comment-on-pr: "true"` - plan diff visible inline
-- `post-scripts-path: "post_scripts"` - `01_seed_data.sql` auto-runs after deploy
-- `test-expectations: "true"` - runs DCM expectations, fails on regressions
+- **Drop guard** — `snow dcm deploy` has no `--allow-drops` flag, so the deploy action re-plans first and fails if the changeset contains any `DROP` (set the action's `allow_drops: "true"` input to override)
+- PRD needs the `snowflake-prd` environment's manual approval
 
-**End-to-end automation (zero manual Step 7):** every deploy job runs a pre-step (`.github/actions/ensure-team-dcm-project`) that idempotently issues `CREATE SCHEMA IF NOT EXISTS …` + `CREATE DCM PROJECT IF NOT EXISTS …` before `dcm-deploy`. So on a new team or new env, you don't need to bootstrap the DCM PROJECT manually — first deploy creates it, every subsequent one is a no-op.
+Not wired (yet): plan-as-PR-comment, running `post_scripts/` after deploy, and DCM expectations (`snow dcm test` is still preview). Run `01_seed_data.sql` manually after the first deploy of an env.
+
+**End-to-end automation (zero manual Step 7):** every deploy job runs a pre-step (`.github/actions/ensure-team-dcm-project`) that idempotently issues `CREATE SCHEMA IF NOT EXISTS …` + `CREATE DCM PROJECT IF NOT EXISTS …` before deploy. So on a new team or new env, you don't need to bootstrap the DCM PROJECT manually — first deploy creates it, every subsequent one is a no-op. The team's `{ENV}_SALES_DCM_DB` itself must already exist, so **run the platform deploy for that env first**.
 
 **Required GitHub secrets per environment** (`snowflake-dev`, `snowflake-stg`, `snowflake-prd`):
 - `SNOWFLAKE_ACCOUNT` — your `ORG-ACCOUNT` (e.g. `MYORG-MYACCOUNT`)
@@ -314,7 +321,7 @@ Built-in safety:
 
 To exercise the workflow on a non-`develop` / non-`main` branch (e.g. `feature/<name>`):
 
-1. **PR plan** — open a PR from your feature branch. The `plan` job runs and posts the diff as a PR comment. No deploy.
+1. **PR plan** — open a PR from your feature branch. The `plan` job runs and prints the diff in the job log. No deploy.
 2. **Manual deploy to any env** — `Actions` tab → *DCM Plan & Deploy* → *Run workflow* → select your feature branch + a `target` (DCM_SALES_DEV / STG / PRD) + `action = deploy`. The `manual-deploy` job:
    - Picks the matching GitHub Environment automatically (`snowflake-dev` / `snowflake-stg` / `snowflake-prd`)
    - Runs plan first, then the idempotent DCM-PROJECT pre-step, then deploy
@@ -395,13 +402,14 @@ GRANT CREATE USER      ON ACCOUNT TO ROLE SVC_PLATFORM_DCM_ROLE WITH GRANT OPTIO
 
 The current `01_create_platform_service_role.sql` already includes these — if you bootstrapped from an older revision, just re-run the script (it's idempotent).
 
-### `⚠️ Account mismatch` warning on every plan/deploy
+### `⚠️ Account mismatch` / `⚠️ Role mismatch` warning on plan/deploy/create
 
 ```
 manifest target specifies account_identifier '{{ env.SNOWFLAKE_ACCOUNT }}', but the current session account is '...'
+manifest target specifies project_owner '"{{ env.SNOWFLAKE_ROLE }}"', but the current session role is '...'
 ```
 
-Cosmetic only. DCM compares the raw manifest string (pre-interpolation) against the session account; the connection itself uses the interpolated env var and works fine. Safe to ignore.
+Cosmetic only. The CLI compares the raw manifest string (pre-interpolation) against the session account/role; the connection itself uses the interpolated env var and works fine. Safe to ignore.
 
 ### `00_generate_*_rsa_key.sh` says key already exists
 
@@ -411,6 +419,8 @@ Re-running without `--force` is idempotent: it skips generation and reprints the
 
 - [DCM Projects overview](https://docs.snowflake.com/en/user-guide/dcm-projects/dcm-projects-overview)
 - [DCM Projects files & templates](https://docs.snowflake.com/en/user-guide/dcm-projects/dcm-projects-files)
+- [DCM Projects supported entities](https://docs.snowflake.com/en/user-guide/dcm-projects/dcm-projects-supported-entities)
+- [Managing DCM projects using Snowflake CLI](https://docs.snowflake.com/en/developer-guide/snowflake-cli/data-pipelines/dcm-projects)
 - [Snowflake-Labs/snowflake-dcm-projects](https://github.com/Snowflake-Labs/snowflake-dcm-projects) - canonical examples + GitHub Actions
 - [Snowflake RBAC best practices (select.dev)](https://select.dev/posts/snowflake-rbac-best-practices) - AR/FR/SR pattern source
 - [Snowflake object naming conventions (entechlog blog)](https://www.entechlog.com/blog/data/snowflake-object-naming-conventions/) - companion blog post

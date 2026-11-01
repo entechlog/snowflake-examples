@@ -1,0 +1,96 @@
+# Load environment variables from shared .env file
+x-common-env: &common-env
+  env_file:
+    - ../../.env
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL - Source database with seed data
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    hostname: postgres
+    container_name: sling-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: sling
+      POSTGRES_PASSWORD: sling
+      POSTGRES_DB: slingdb
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U sling -d slingdb
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Sling - Replicates PostgreSQL to Iceberg tables via Glue catalog
+  # ---------------------------------------------------------------------------
+  sling:
+    <<: *common-env
+    image: slingdata/sling:latest
+    container_name: sling
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./sling/replication.yaml:/replications/replication.yaml:ro
+    environment:
+      SLING_HOME_DIR: /tmp/sling-config/
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mkdir -p /tmp/sling-config
+        cat > /tmp/sling-config/env.yaml << EOF
+        connections:
+          POSTGRES_SOURCE:
+            type: postgres
+            host: postgres
+            port: 5432
+            user: sling
+            password: sling
+            database: slingdb
+            schema: public
+
+          ICEBERG_TARGET:
+            type: iceberg
+            catalog_type: glue
+            glue_warehouse: s3://$$S3_BUCKET_NAME
+            glue_region: $$AWS_REGION
+            s3_access_key_id: $$AWS_ACCESS_KEY_ID
+            s3_secret_access_key: $$AWS_SECRET_ACCESS_KEY
+            s3_region: $$AWS_REGION
+        EOF
+        sling run -r /replications/replication.yaml
+        echo "Replication complete. Container staying alive for debugging..."
+        tail -f /dev/null
+
+  # ---------------------------------------------------------------------------
+  # pgAdmin - Web UI for PostgreSQL
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sling-pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  default:
+    name: sling-iceberg-network

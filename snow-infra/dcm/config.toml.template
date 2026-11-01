@@ -1,0 +1,66 @@
+# =============================================================================
+# Snow CLI connection config template — HYBRID PATTERN
+# =============================================================================
+# Two layers, two service users, two RSA keys, two sets of connections.
+#
+# - dcm-platform-*  → SVC_PLATFORM_DCM_USER (account-level deployer)
+# - dcm-sales-*     → SVC_SALES_DCM_USER    (team-level deployer)
+#
+# Both users are TYPE=SERVICE — RSA key-pair only (no passwords).
+#
+# Generate keys with:
+#   ./platform/bootstrap/00_generate_platform_rsa_key.sh
+#   ./teams/sales/bootstrap/00_generate_rsa_key.sh
+#
+# account format: ORG-ACCOUNT (NOT the locator xy12345.region).
+# =============================================================================
+
+# ----------------- PLATFORM LAYER -----------------
+[connections.dcm-platform-dev]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_PLATFORM_DCM_USER"
+role = "SVC_PLATFORM_DCM_ROLE"
+warehouse = "SVC_PLATFORM_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
+
+[connections.dcm-platform-stg]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_PLATFORM_DCM_USER"
+role = "SVC_PLATFORM_DCM_ROLE"
+warehouse = "SVC_PLATFORM_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
+
+[connections.dcm-platform-prd]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_PLATFORM_DCM_USER"
+role = "SVC_PLATFORM_DCM_ROLE"
+warehouse = "SVC_PLATFORM_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_platform_dcm.p8"
+
+# ----------------- SALES TEAM LAYER -----------------
+[connections.dcm-sales-dev]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_SALES_DCM_USER"
+role = "SVC_SALES_DCM_ROLE"
+warehouse = "SVC_SALES_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_sales_dcm.p8"
+
+[connections.dcm-sales-stg]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_SALES_DCM_USER"
+role = "SVC_SALES_DCM_ROLE"
+warehouse = "SVC_SALES_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_sales_dcm.p8"
+
+[connections.dcm-sales-prd]
+account = "<YOUR-ORG>-<YOUR-ACCOUNT>"
+user = "SVC_SALES_DCM_USER"
+role = "SVC_SALES_DCM_ROLE"
+warehouse = "SVC_SALES_DCM_WH_XS"
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = "/C/Users/nadesansiva/.snowflake/keys/svc_sales_dcm.p8"

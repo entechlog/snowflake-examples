@@ -17,21 +17,19 @@ resource "snowflake_warehouse" "warehouse" {
 //***************************************************************************//
 // Create Snowflake warehouse grants
 //***************************************************************************//
-resource "snowflake_grant_privileges_to_role" "ownership_warehouse_grant" {
+resource "snowflake_grant_ownership" "ownership_warehouse_grant" {
   for_each = { for k, v in var.warehouse_grant : k => v if v.privileges[0] == "OWNERSHIP" }
 
-  on_account_object {
+  on {
     object_type = "WAREHOUSE"
     object_name = snowflake_warehouse.warehouse.name
   }
 
-  privileges        = each.value.privileges
-  role_name         = each.value.role_name
-  with_grant_option = true
+  account_role_name = each.value.role_name
   depends_on        = [snowflake_warehouse.warehouse]
 }
 
-resource "snowflake_grant_privileges_to_role" "warehouse_grant" {
+resource "snowflake_grant_privileges_to_account_role" "warehouse_grant" {
   for_each = { for k, v in var.warehouse_grant : k => v if v.privileges[0] != "OWNERSHIP" }
 
   on_account_object {
@@ -39,8 +37,8 @@ resource "snowflake_grant_privileges_to_role" "warehouse_grant" {
     object_name = snowflake_warehouse.warehouse.name
   }
 
-  privileges = each.value.privileges
-  role_name  = each.value.role_name
+  privileges        = each.value.privileges
+  account_role_name = each.value.role_name
 
-  depends_on = [snowflake_warehouse.warehouse, snowflake_grant_privileges_to_role.ownership_warehouse_grant]
+  depends_on = [snowflake_warehouse.warehouse, snowflake_grant_ownership.ownership_warehouse_grant]
 }

@@ -1,0 +1,35 @@
+services:
+  # Data generator - generates fake data and writes as Iceberg tables
+  generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data-generator
+    env_file:
+      - ../../.env
+    environment:
+      # Schema and config paths (container-specific, not in .env)
+      - SCHEMA_FILE=schema.yaml
+      - ICEBERG_CONFIG_FILE=/app/config/iceberg_config.yaml
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      # Mount schema.yaml for easy editing without rebuild
+      - ./schema.yaml:/app/schema.yaml:ro
+      # Mount shared iceberg config from parent ingestion folder
+      - ../iceberg_config.yaml:/app/config/iceberg_config.yaml:ro
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: faker-generator-network

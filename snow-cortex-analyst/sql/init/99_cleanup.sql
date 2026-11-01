@@ -1,0 +1,62 @@
+-- =============================================================================
+-- Cleanup: Remove all demo objects
+-- =============================================================================
+
+-- Set variables at the beginning of the script
+-- Modify these values as needed for your environment
+SET ENV_CODE = 'DEV';        -- Options: DEV, STG, PRD
+SET PROJ_CODE = 'ENTECHLOG'; -- Your project code
+
+-- Construct database, warehouse, and role names using the variables
+SET RAW_DB_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_RAW_DB';
+SET DW_DB_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_DW_DB';
+SET DBT_WH_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_DBT_WH_XS';
+SET CORTEX_WH_NAME = $ENV_CODE || '_' || $PROJ_CODE || '_CORTEX_WH_XS';
+SET DBT_ROLE_NAME = $ENV_CODE || '_SVC_' || $PROJ_CODE || '_SNOW_DBT_ROLE';
+SET CORTEX_ROLE_NAME = $PROJ_CODE || '_CORTEX_ROLE';
+SET AGENT_NAME = $ENV_CODE || '_sales_agent';
+
+SET AGENT_FQN = $DW_DB_NAME || '.SEMANTIC.' || $AGENT_NAME;
+SET SV_ORDER_STATS = $DW_DB_NAME || '.SEMANTIC.order_stats_1d';
+SET SV_CUSTOMER_STATS = $DW_DB_NAME || '.SEMANTIC.customer_stats_1d';
+SET OBT_ORDER_STATS = $DW_DB_NAME || '.OBT.order_stats_1d';
+SET OBT_CUSTOMER_STATS = $DW_DB_NAME || '.OBT.customer_stats_1d';
+SET SEED_ORDER_STATS = $RAW_DB_NAME || '.SEED.order_stats_1d';
+SET SEED_CUSTOMER_STATS = $RAW_DB_NAME || '.SEED.customer_stats_1d';
+SET SCHEMA_SEMANTIC = $DW_DB_NAME || '.SEMANTIC';
+SET SCHEMA_OBT = $DW_DB_NAME || '.OBT';
+SET SCHEMA_SEED = $RAW_DB_NAME || '.SEED';
+
+USE ROLE SYSADMIN;
+
+-- Drop agents first (if they exist)
+DROP AGENT IF EXISTS IDENTIFIER($AGENT_FQN);
+
+-- Drop semantic views
+DROP SEMANTIC VIEW IF EXISTS IDENTIFIER($SV_ORDER_STATS);
+DROP SEMANTIC VIEW IF EXISTS IDENTIFIER($SV_CUSTOMER_STATS);
+
+-- Drop OBT views
+DROP VIEW IF EXISTS IDENTIFIER($OBT_ORDER_STATS);
+DROP VIEW IF EXISTS IDENTIFIER($OBT_CUSTOMER_STATS);
+
+-- Drop seed tables
+DROP TABLE IF EXISTS IDENTIFIER($SEED_ORDER_STATS);
+DROP TABLE IF EXISTS IDENTIFIER($SEED_CUSTOMER_STATS);
+
+-- Drop schemas
+DROP SCHEMA IF EXISTS IDENTIFIER($SCHEMA_SEMANTIC);
+DROP SCHEMA IF EXISTS IDENTIFIER($SCHEMA_OBT);
+DROP SCHEMA IF EXISTS IDENTIFIER($SCHEMA_SEED);
+
+-- Drop warehouses
+DROP WAREHOUSE IF EXISTS IDENTIFIER($CORTEX_WH_NAME);
+DROP WAREHOUSE IF EXISTS IDENTIFIER($DBT_WH_NAME);
+
+-- Drop database
+DROP DATABASE IF EXISTS IDENTIFIER($DW_DB_NAME);
+
+-- Drop roles
+USE ROLE SECURITYADMIN;
+DROP ROLE IF EXISTS IDENTIFIER($CORTEX_ROLE_NAME);
+DROP ROLE IF EXISTS IDENTIFIER($DBT_ROLE_NAME);

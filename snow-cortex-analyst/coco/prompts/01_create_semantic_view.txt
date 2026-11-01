@@ -1,0 +1,30 @@
+-- EXAMPLE PROMPT: Adapt the table name, columns, and rules for your own data.
+-- Run via: cortex -f prompts/01_create_semantic_view.txt
+
+I need to create a Semantic View for Cortex Analyst. Use the semantic-view optimization skill.
+
+The source table is DEV_ENTECHLOG_DW_DB.OBT.MARKETING_CAMPAIGN_STATS_1D with these columns:
+- campaign_date (DATE) — daily grain
+- channel (VARCHAR) — Email, Social Media, Paid Search, Display Ads
+- region (VARCHAR) — Northeast, Southeast, Midwest, West
+- impressions (NUMBER) — ad views, cumulative, SUM() valid
+- clicks (NUMBER) — ad clicks, cumulative, SUM() valid
+- spend (NUMBER) — campaign spend in USD, cumulative, SUM() valid
+- conversions (NUMBER) — purchases from ads, cumulative, SUM() valid
+- conversion_revenue (NUMBER) — revenue from conversions in USD, cumulative, SUM() valid
+- net_campaign_value (NUMBER) — conversion_revenue minus spend, cumulative, SUM() valid
+
+Important rules:
+1. All facts are cumulative — SUM() is always valid
+2. Rate metrics must be computed as metrics, NOT stored as facts:
+   - CTR: SUM(clicks) * 100.0 / NULLIF(SUM(impressions), 0)
+   - CPC: SUM(spend) / NULLIF(SUM(clicks), 0)
+   - CVR: SUM(conversions) * 100.0 / NULLIF(SUM(clicks), 0)
+   - CPA: SUM(spend) / NULLIF(SUM(conversions), 0)
+   - ROAS: SUM(conversion_revenue) / NULLIF(SUM(spend), 0)
+3. Add synonyms for business-friendly names
+4. Mark channel and region as is_enum: true
+5. Include 3-4 verified_queries with use_as_onboarding_question: true
+6. Use __marketing_campaign_stats_1d prefix for logical table names in verified queries
+
+Create the semantic view named marketing_campaign_stats_1d in the SEMANTIC schema.

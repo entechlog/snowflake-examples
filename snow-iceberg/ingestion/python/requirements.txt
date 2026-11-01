@@ -1,0 +1,18 @@
+# Web framework for health checks
+flask==3.0.0
+
+# Fake data generation
+faker==22.0.0
+
+# Data processing
+pandas==2.1.4
+pyarrow==14.0.2
+
+# Apache Iceberg (latest version with better partitioning support)
+pyiceberg[glue,s3fs]==0.8.1
+
+# AWS SDK
+boto3==1.34.28
+
+# YAML parsing
+pyyaml==6.0.1
